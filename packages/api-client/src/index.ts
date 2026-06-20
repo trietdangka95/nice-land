@@ -9,11 +9,13 @@ import type {
   AuthResponse,
   AuthUser,
   ContactRequestInput,
+  ForgotPasswordInput,
   HealthResponse,
   ImageCompleteInput,
   ImagePresignInput,
   ImageReorderInput,
   LoginInput,
+  ResetPasswordInput,
   RenewalRequestInput,
   SiteSettings,
   SiteSettingsInput,
@@ -93,6 +95,16 @@ export function createApiClient(options: ApiClientOptions) {
     health: () => request<HealthResponse>("/health/live"),
     login: (input: LoginInput) =>
       request<AuthResponse>("/v1/auth/login", {
+        method: "POST",
+        body: JSON.stringify(input),
+      }),
+    forgotPassword: (input: ForgotPasswordInput) =>
+      request<{ message: string }>("/v1/auth/forgot-password", {
+        method: "POST",
+        body: JSON.stringify(input),
+      }),
+    resetPassword: (input: ResetPasswordInput) =>
+      request<{ message: string }>("/v1/auth/reset-password", {
         method: "POST",
         body: JSON.stringify(input),
       }),

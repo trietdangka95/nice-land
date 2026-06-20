@@ -16,6 +16,12 @@ export const subscriptionStatusSchema = z.enum([
   "EXPIRED",
   "SUSPENDED",
 ]);
+export const publicThemeSchema = z.enum([
+  "CLASSIC_ESTATE",
+  "MODERN_GRID",
+  "EDITORIAL",
+  "WARM_MINIMAL",
+]);
 
 export const tenantHostSchema = z
   .string()
@@ -86,6 +92,15 @@ export const publicPostListQuerySchema = z
 
 export const loginInputSchema = z.object({
   username: z.string().trim().min(3).max(120),
+  password: z.string().min(8).max(200),
+});
+
+export const forgotPasswordInputSchema = z.object({
+  identifier: z.string().trim().min(3).max(180),
+});
+
+export const resetPasswordInputSchema = z.object({
+  token: z.string().trim().min(32).max(256),
   password: z.string().min(8).max(200),
 });
 
@@ -165,6 +180,7 @@ export const siteSettingsInputSchema = z.object({
   tagline: z.string().trim().max(240).nullable().optional(),
   logo: optionalUrlSchema,
   banner: optionalUrlSchema,
+  themeKey: publicThemeSchema,
   themeColor: z
     .string()
     .trim()
@@ -209,6 +225,7 @@ export const superAdminSiteCreateSchema = z.object({
   phone: z.string().trim().min(8).max(20),
   email: z.string().trim().email().max(180),
   address: z.string().trim().max(300).nullable().optional(),
+  themeKey: publicThemeSchema,
   planId: z.string().uuid(),
   subscriptionEnd: z.coerce.date(),
   adminName: z.string().trim().min(2).max(160),
@@ -222,6 +239,7 @@ export const superAdminSiteUpdateSchema = z.object({
   phone: z.string().trim().min(8).max(20),
   email: z.string().trim().email().max(180),
   address: z.string().trim().max(300).nullable().optional(),
+  themeKey: publicThemeSchema,
   planId: z.string().uuid().nullable(),
   subscriptionStatus: subscriptionStatusSchema,
   subscriptionEnd: z.coerce.date().nullable(),
@@ -266,6 +284,7 @@ export type UserRole = z.infer<typeof userRoleSchema>;
 export type PropertyType = z.infer<typeof propertyTypeSchema>;
 export type PostStatus = z.infer<typeof postStatusSchema>;
 export type SubscriptionStatus = z.infer<typeof subscriptionStatusSchema>;
+export type PublicTheme = z.infer<typeof publicThemeSchema>;
 export type ContactRequestInput = z.infer<typeof contactRequestInputSchema>;
 export type PropertyLeadInput = z.infer<typeof propertyLeadInputSchema>;
 export type LeadUpdate = z.infer<typeof leadUpdateSchema>;
@@ -274,6 +293,8 @@ export type PropertyInteractionInput = z.infer<
 >;
 export type PublicPostListQuery = z.infer<typeof publicPostListQuerySchema>;
 export type LoginInput = z.infer<typeof loginInputSchema>;
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordInputSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordInputSchema>;
 export type AdminPostInput = z.infer<typeof adminPostInputSchema>;
 export type AdminPostUpdate = z.infer<typeof adminPostUpdateSchema>;
 export type AdminPostListQuery = z.infer<typeof adminPostListQuerySchema>;
@@ -301,6 +322,7 @@ export interface SuperAdminSite {
   phone: string | null;
   email: string | null;
   address: string | null;
+  themeKey: PublicTheme;
   isActive: boolean;
   subscriptionStatus: SubscriptionStatus;
   subscriptionStart: string | null;
@@ -412,6 +434,7 @@ export interface SiteSettings {
   tagline: string | null;
   logo: string | null;
   banner: string | null;
+  themeKey: PublicTheme;
   themeColor: string;
   phone: string;
   email: string;
