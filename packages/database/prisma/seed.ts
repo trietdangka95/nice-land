@@ -77,12 +77,7 @@ async function main() {
   });
 
   await prisma.user.upsert({
-    where: {
-      username_siteId: {
-        username: "superadmin",
-        siteId: null,
-      },
-    },
+    where: { email: "admin@datcuatoi.vn" },
     update: {
       passwordHash,
       role: UserRole.SUPER_ADMIN,
