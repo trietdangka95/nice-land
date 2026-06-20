@@ -8,6 +8,7 @@ const userSelect = {
   id: true,
   siteId: true,
   username: true,
+  email: true,
   passwordHash: true,
   fullName: true,
   role: true,
@@ -114,5 +115,86 @@ export class PrismaAuthRepository implements AuthRepository {
       where: { id: userId },
       data: { lastLoginAt: now },
     });
+  }
+
+  findUserForPasswordReset(identifier: string, siteId: string | null) {
+    return prisma.user.findFirst({
+      where: {
+        siteId,
+        deletedAt: null,
+        OR: [{ username: identifier }, { email: identifier.toLowerCase() }],
+      },
+      select: userSelect,
+    });
+  }
+
+  async invalidatePasswordResetTokens(userId: string, now: Date) {
+    await prisma.passwordResetToken.updateMany({
+      where: { userId, usedAt: null },
+      data: { usedAt: now },
+    });
+  }
+
+  async createPasswordResetToken(input: {
+    userId: string;
+    tokenHash: string;
+    expiresAt: Date;
+  }) {
+    await prisma.passwordResetToken.create({ data: input });
+  }
+
+  findValidPasswordResetToken(
+    tokenHash: string,
+    siteId: string | null,
+    now: Date,
+  ) {
+    return prisma.passwordResetToken.findFirst({
+      where: {
+        tokenHash,
+        usedAt: null,
+        expiresAt: { gt: now },
+        user: {
+          siteId,
+          isActive: true,
+          deletedAt: null,
+        },
+      },
+      select: {
+        id: true,
+        userId: true,
+        expiresAt: true,
+        usedAt: true,
+      },
+    });
+  }
+
+  async resetPassword(input: {
+    tokenId: string;
+    userId: string;
+    passwordHash: string;
+    now: Date;
+  }) {
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: input.userId },
+        data: { passwordHash: input.passwordHash },
+      }),
+      prisma.passwordResetToken.update({
+        where: { id: input.tokenId },
+        data: { usedAt: input.now },
+      }),
+      prisma.passwordResetToken.updateMany({
+        where: {
+          userId: input.userId,
+          id: { not: input.tokenId },
+          usedAt: null,
+        },
+        data: { usedAt: input.now },
+      }),
+      prisma.refreshSession.updateMany({
+        where: { userId: input.userId, revokedAt: null },
+        data: { revokedAt: input.now },
+      }),
+    ]);
   }
 }

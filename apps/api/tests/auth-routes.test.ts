@@ -23,6 +23,7 @@ async function createAuthApp() {
       id: "admin-a",
       siteId: "site-a",
       username: "admin",
+      email: "admin@example.com",
       passwordHash,
       fullName: "Admin A",
       role: "ADMIN" as const,
@@ -32,6 +33,7 @@ async function createAuthApp() {
       id: "super-1",
       siteId: null,
       username: "superadmin",
+      email: "superadmin@example.com",
       passwordHash,
       fullName: "Super Admin",
       role: "SUPER_ADMIN" as const,
@@ -39,6 +41,15 @@ async function createAuthApp() {
     },
   ];
   const sessions = new Map<string, RefreshSessionRecord>();
+  const resetTokens = new Map<
+    string,
+    {
+      id: string;
+      userId: string;
+      expiresAt: Date;
+      usedAt: Date | null;
+    }
+  >();
   const repository: AuthRepository = {
     findUserForLogin: async (username, siteId) =>
       users.find(
@@ -80,6 +91,51 @@ async function createAuthApp() {
       if (record) record.revokedAt = new Date();
     },
     updateLastLogin: async () => undefined,
+    findUserForPasswordReset: async (identifier, siteId) =>
+      users.find(
+        (user) =>
+          user.siteId === siteId &&
+          (user.username === identifier || user.email === identifier),
+      ) ?? null,
+    invalidatePasswordResetTokens: async (userId, now) => {
+      for (const token of resetTokens.values()) {
+        if (token.userId === userId && !token.usedAt) token.usedAt = now;
+      }
+    },
+    createPasswordResetToken: async (input) => {
+      resetTokens.set(input.tokenHash, {
+        id: crypto.randomUUID(),
+        userId: input.userId,
+        expiresAt: input.expiresAt,
+        usedAt: null,
+      });
+    },
+    findValidPasswordResetToken: async (tokenHash, siteId, now) => {
+      const token = resetTokens.get(tokenHash);
+      const user = token
+        ? users.find((candidate) => candidate.id === token.userId)
+        : undefined;
+      return token &&
+        user?.siteId === siteId &&
+        !token.usedAt &&
+        token.expiresAt > now
+        ? token
+        : null;
+    },
+    resetPassword: async (input) => {
+      const user = users.find((candidate) => candidate.id === input.userId);
+      if (user) user.passwordHash = input.passwordHash;
+      for (const token of resetTokens.values()) {
+        if (token.userId === input.userId && !token.usedAt) {
+          token.usedAt = input.now;
+        }
+      }
+      for (const session of sessions.values()) {
+        if (session.userId === input.userId && !session.revokedAt) {
+          session.revokedAt = input.now;
+        }
+      }
+    },
   };
   const tenantRepository: TenantSiteRepository = {
     findBySlug: async (slug) =>
@@ -114,6 +170,9 @@ async function createAuthApp() {
   );
   const authService = new AuthService(repository, accessTokens, {
     refreshTokenTtlDays: config.REFRESH_TOKEN_TTL_DAYS,
+    passwordResetTtlMinutes: config.PASSWORD_RESET_TTL_MINUTES,
+    appUrl: config.APP_URL,
+    passwordResetNotifier: { notify: async () => undefined },
   });
   const app = buildApp(config, {
     tenantRepository,
@@ -187,5 +246,26 @@ describe("auth routes", () => {
 
     expect(response.statusCode).toBe(403);
     expect(response.json()).toMatchObject({ code: "TENANT_MISMATCH" });
+  });
+
+  it("returns the same accepted response for password reset requests", async () => {
+    const app = await createAuthApp();
+
+    const existing = await app.inject({
+      method: "POST",
+      url: "/v1/auth/forgot-password",
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
+      payload: { identifier: "admin@example.com" },
+    });
+    const missing = await app.inject({
+      method: "POST",
+      url: "/v1/auth/forgot-password",
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
+      payload: { identifier: "missing@example.com" },
+    });
+
+    expect(existing.statusCode).toBe(202);
+    expect(missing.statusCode).toBe(202);
+    expect(existing.json()).toEqual(missing.json());
   });
 });

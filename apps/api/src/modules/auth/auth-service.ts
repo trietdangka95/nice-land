@@ -1,11 +1,20 @@
 import { createHash, randomBytes } from "node:crypto";
-import { compare } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import type { AuthUser, UserRole } from "@nice-land/contracts";
 import type { AccessTokenService } from "./token-service.js";
+import type { PasswordResetNotifier } from "./password-reset-notifier.js";
 
 export interface AuthUserRecord extends AuthUser {
+  email: string | null;
   passwordHash: string;
   isActive: boolean;
+}
+
+export interface PasswordResetTokenRecord {
+  id: string;
+  userId: string;
+  expiresAt: Date;
+  usedAt: Date | null;
 }
 
 export interface RefreshSessionRecord {
@@ -45,12 +54,34 @@ export interface AuthRepository {
   ): Promise<RefreshSessionRecord>;
   revokeRefreshSession(tokenHash: string): Promise<void>;
   updateLastLogin(userId: string, now: Date): Promise<void>;
+  findUserForPasswordReset(
+    identifier: string,
+    siteId: string | null,
+  ): Promise<AuthUserRecord | null>;
+  invalidatePasswordResetTokens(userId: string, now: Date): Promise<void>;
+  createPasswordResetToken(input: {
+    userId: string;
+    tokenHash: string;
+    expiresAt: Date;
+  }): Promise<void>;
+  findValidPasswordResetToken(
+    tokenHash: string,
+    siteId: string | null,
+    now: Date,
+  ): Promise<PasswordResetTokenRecord | null>;
+  resetPassword(input: {
+    tokenId: string;
+    userId: string;
+    passwordHash: string;
+    now: Date;
+  }): Promise<void>;
 }
 
 export type AuthErrorCode =
   | "INVALID_CREDENTIALS"
   | "ACCOUNT_DISABLED"
-  | "INVALID_REFRESH_TOKEN";
+  | "INVALID_REFRESH_TOKEN"
+  | "INVALID_RESET_TOKEN";
 
 export class AuthError extends Error {
   constructor(
@@ -65,6 +96,9 @@ export class AuthError extends Error {
 
 interface AuthServiceOptions {
   refreshTokenTtlDays: number;
+  passwordResetTtlMinutes: number;
+  appUrl: string;
+  passwordResetNotifier?: PasswordResetNotifier;
 }
 
 interface LoginInput {
@@ -213,5 +247,79 @@ export class AuthService {
     }
 
     return toPublicUser(user);
+  }
+
+  async requestPasswordReset(input: {
+    identifier: string;
+    siteId: string | null;
+    siteSlug?: string;
+  }) {
+    const notifier = this.options.passwordResetNotifier;
+    if (!notifier) return;
+
+    const user = await this.repository.findUserForPasswordReset(
+      input.identifier,
+      input.siteId,
+    );
+    if (
+      !user ||
+      !user.email ||
+      !user.isActive ||
+      !validateRoleContext(user.role, input.siteId)
+    ) {
+      return;
+    }
+
+    const now = new Date();
+    const token = createRefreshToken();
+    await this.repository.invalidatePasswordResetTokens(user.id, now);
+    await this.repository.createPasswordResetToken({
+      userId: user.id,
+      tokenHash: hashRefreshToken(token),
+      expiresAt: new Date(
+        now.getTime() + this.options.passwordResetTtlMinutes * 60_000,
+      ),
+    });
+
+    const resetPath =
+      user.role === "SUPER_ADMIN"
+        ? "/superadmin/reset-password"
+        : `/${input.siteSlug}/admin/reset-password`;
+    const resetUrl = new URL(resetPath, this.options.appUrl);
+    resetUrl.searchParams.set("token", token);
+
+    await notifier.notify({
+      recipient: user.email,
+      displayName: user.fullName ?? user.username,
+      resetUrl: resetUrl.toString(),
+      expiresInMinutes: this.options.passwordResetTtlMinutes,
+    });
+  }
+
+  async resetPassword(input: {
+    token: string;
+    password: string;
+    siteId: string | null;
+  }) {
+    const now = new Date();
+    const resetToken = await this.repository.findValidPasswordResetToken(
+      hashRefreshToken(input.token),
+      input.siteId,
+      now,
+    );
+    if (!resetToken) {
+      throw new AuthError(
+        "INVALID_RESET_TOKEN",
+        "Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.",
+        400,
+      );
+    }
+
+    await this.repository.resetPassword({
+      tokenId: resetToken.id,
+      userId: resetToken.userId,
+      passwordHash: await hash(input.password, 12),
+      now,
+    });
   }
 }

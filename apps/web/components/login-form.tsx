@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { LockKeyhole } from "lucide-react";
 import { ApiClientError } from "@nice-land/api-client";
 import { api, createTenantApi } from "@/lib/api";
@@ -84,6 +85,16 @@ export function LoginForm({
         <button className="button-primary mt-2" disabled={loading}>
           {loading ? "Đang đăng nhập..." : "Đăng nhập"}
         </button>
+        <Link
+          className="text-center text-sm font-semibold text-moss hover:underline"
+          href={
+            superAdmin
+              ? "/superadmin/forgot-password"
+              : `/${slug}/admin/forgot-password`
+          }
+        >
+          Quên mật khẩu?
+        </Link>
         {error && (
           <p role="alert" className="text-sm font-semibold text-red-700">
             {error}

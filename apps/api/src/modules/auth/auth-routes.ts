@@ -1,6 +1,10 @@
 import type { FastifyInstance } from "fastify";
 import type { AuthResponse } from "@nice-land/contracts";
-import { loginInputSchema } from "@nice-land/contracts";
+import {
+  forgotPasswordInputSchema,
+  loginInputSchema,
+  resetPasswordInputSchema,
+} from "@nice-land/contracts";
 import type { AppConfig } from "../../config.js";
 import {
   createOptionalTenantPreHandler,
@@ -69,6 +73,58 @@ export async function registerAuthRoutes(
         );
 
         return toAuthResponse(result, options.config.ACCESS_TOKEN_TTL_SECONDS);
+      } catch (error) {
+        if (error instanceof AuthError) {
+          return reply.status(error.statusCode).send({
+            code: error.code,
+            message: error.message,
+            requestId: request.id,
+          });
+        }
+        throw error;
+      }
+    },
+  );
+
+  app.post(
+    "/v1/auth/forgot-password",
+    { preHandler: optionalTenant },
+    async (request, reply) => {
+      const input = forgotPasswordInputSchema.parse(request.body);
+      try {
+        await options.authService.requestPasswordReset({
+          ...input,
+          siteId: request.tenant?.siteId ?? null,
+          siteSlug: request.tenant?.slug,
+        });
+      } catch (error) {
+        request.log.error(
+          { err: error },
+          "password reset notification failed",
+        );
+      }
+      return reply.status(202).send({
+        message:
+          "Nếu tài khoản tồn tại, hướng dẫn đặt lại mật khẩu sẽ được gửi qua email.",
+      });
+    },
+  );
+
+  app.post(
+    "/v1/auth/reset-password",
+    { preHandler: optionalTenant },
+    async (request, reply) => {
+      const input = resetPasswordInputSchema.parse(request.body);
+      try {
+        await options.authService.resetPassword({
+          ...input,
+          siteId: request.tenant?.siteId ?? null,
+        });
+        reply.clearCookie(
+          options.config.REFRESH_COOKIE_NAME,
+          cookieOptions(options.config),
+        );
+        return { message: "Mật khẩu đã được cập nhật." };
       } catch (error) {
         if (error instanceof AuthError) {
           return reply.status(error.statusCode).send({

@@ -14,6 +14,7 @@ async function createFixture() {
       id: "admin-a",
       siteId: "site-a",
       username: "admin",
+      email: "admin@example.com",
       passwordHash,
       fullName: "Admin A",
       role: "ADMIN" as const,
@@ -23,6 +24,7 @@ async function createFixture() {
       id: "super-1",
       siteId: null,
       username: "superadmin",
+      email: "superadmin@example.com",
       passwordHash,
       fullName: "Super Admin",
       role: "SUPER_ADMIN" as const,
@@ -40,6 +42,16 @@ async function createFixture() {
       revokedAt: Date | null;
     }
   >();
+  const resetTokens = new Map<
+    string,
+    {
+      id: string;
+      userId: string;
+      expiresAt: Date;
+      usedAt: Date | null;
+    }
+  >();
+  const notifications: Array<{ recipient: string; resetUrl: string }> = [];
 
   const repository: AuthRepository = {
     findUserForLogin: async (username, siteId) =>
@@ -82,6 +94,51 @@ async function createFixture() {
       if (session) session.revokedAt = new Date();
     },
     updateLastLogin: async () => undefined,
+    findUserForPasswordReset: async (identifier, siteId) =>
+      users.find(
+        (user) =>
+          user.siteId === siteId &&
+          (user.username === identifier || user.email === identifier),
+      ) ?? null,
+    invalidatePasswordResetTokens: async (userId, now) => {
+      for (const token of resetTokens.values()) {
+        if (token.userId === userId && !token.usedAt) token.usedAt = now;
+      }
+    },
+    createPasswordResetToken: async (input) => {
+      resetTokens.set(input.tokenHash, {
+        id: `reset-${resetTokens.size + 1}`,
+        userId: input.userId,
+        expiresAt: input.expiresAt,
+        usedAt: null,
+      });
+    },
+    findValidPasswordResetToken: async (tokenHash, siteId, now) => {
+      const token = resetTokens.get(tokenHash);
+      const user = token
+        ? users.find((candidate) => candidate.id === token.userId)
+        : undefined;
+      return token &&
+        user?.siteId === siteId &&
+        !token.usedAt &&
+        token.expiresAt > now
+        ? token
+        : null;
+    },
+    resetPassword: async (input) => {
+      const user = users.find((candidate) => candidate.id === input.userId);
+      if (user) user.passwordHash = input.passwordHash;
+      for (const token of resetTokens.values()) {
+        if (token.userId === input.userId && !token.usedAt) {
+          token.usedAt = input.now;
+        }
+      }
+      for (const session of sessions.values()) {
+        if (session.userId === input.userId && !session.revokedAt) {
+          session.revokedAt = input.now;
+        }
+      }
+    },
   };
 
   const tokenService = new AccessTokenService(
@@ -90,9 +147,16 @@ async function createFixture() {
   );
   const service = new AuthService(repository, tokenService, {
     refreshTokenTtlDays: 30,
+    passwordResetTtlMinutes: 30,
+    appUrl: "http://localhost:3002",
+    passwordResetNotifier: {
+      notify: async (notification) => {
+        notifications.push(notification);
+      },
+    },
   });
 
-  return { service, tokenService, sessions };
+  return { service, tokenService, sessions, notifications };
 }
 
 describe("AuthService", () => {
@@ -182,5 +246,76 @@ describe("AuthService", () => {
     await expect(service.refresh(login.refreshToken)).rejects.toMatchObject({
       code: "INVALID_REFRESH_TOKEN",
     });
+  });
+
+  it("creates a one-time tenant reset link without exposing the stored token", async () => {
+    const { service, notifications } = await createFixture();
+
+    await service.requestPasswordReset({
+      identifier: "admin@example.com",
+      siteId: "site-a",
+      siteSlug: "minhphat",
+    });
+
+    expect(notifications).toHaveLength(1);
+    expect(notifications[0]).toMatchObject({
+      recipient: "admin@example.com",
+    });
+    expect(notifications[0]?.resetUrl).toContain(
+      "/minhphat/admin/reset-password?token=",
+    );
+  });
+
+  it("returns silently for an unknown password-reset account", async () => {
+    const { service, notifications } = await createFixture();
+
+    await expect(
+      service.requestPasswordReset({
+        identifier: "unknown@example.com",
+        siteId: "site-a",
+        siteSlug: "minhphat",
+      }),
+    ).resolves.toBeUndefined();
+    expect(notifications).toHaveLength(0);
+  });
+
+  it("resets the password once and revokes existing sessions", async () => {
+    const { service, notifications } = await createFixture();
+    const login = await service.login({
+      username: "admin",
+      password: "ValidPassword123!",
+      siteId: "site-a",
+    });
+    await service.requestPasswordReset({
+      identifier: "admin",
+      siteId: "site-a",
+      siteSlug: "minhphat",
+    });
+    const resetUrl = new URL(notifications[0]!.resetUrl);
+    const token = resetUrl.searchParams.get("token")!;
+
+    await service.resetPassword({
+      token,
+      password: "NewPassword123!",
+      siteId: "site-a",
+    });
+
+    await expect(service.refresh(login.refreshToken)).rejects.toMatchObject({
+      code: "INVALID_REFRESH_TOKEN",
+    });
+    await expect(
+      service.resetPassword({
+        token,
+        password: "AnotherPassword123!",
+        siteId: "site-a",
+      }),
+    ).rejects.toMatchObject({ code: "INVALID_RESET_TOKEN" });
+    await expect(
+      service.login({
+        username: "admin",
+        password: "NewPassword123!",
+        siteId: "site-a",
+      }),
+    ).resolves.toMatchObject({ user: { id: "admin-a" } });
   });
 });
