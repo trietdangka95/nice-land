@@ -8,7 +8,7 @@ import { PropertyCard } from "@/components/property-card";
 import { propertyTypeLabels } from "@/lib/format";
 import { buildPublicPostsHref } from "@/lib/pagination";
 import type { PropertyPost, PropertyType } from "@/lib/types";
-import type { PropertyCategory } from "@datcuatoi/contracts";
+import type { PropertyCategory } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 
 export function PropertyBrowser({

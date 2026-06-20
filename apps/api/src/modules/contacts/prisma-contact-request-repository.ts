@@ -1,4 +1,4 @@
-import { prisma } from "@datcuatoi/database";
+import { prisma } from "@nice-land/database";
 import type {
   ContactRequestRepository,
   CreateContactRequestInput,

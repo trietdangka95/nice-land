@@ -1,8 +1,8 @@
-import { Prisma, prisma } from "@datcuatoi/database";
+import { Prisma, prisma } from "@nice-land/database";
 import type {
   RenewalRequestInput,
   SiteSettingsInput,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import {
   type AdminSiteRepository,
   PendingRenewalRequestError,

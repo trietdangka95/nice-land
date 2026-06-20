@@ -1,4 +1,4 @@
-import type { SiteSettings } from "@datcuatoi/contracts";
+import type { SiteSettings } from "@nice-land/contracts";
 
 export interface AdminSiteIdentity {
   id: string;

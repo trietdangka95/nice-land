@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { TenantLead } from "@datcuatoi/contracts";
+import type { TenantLead } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 import { StatusPill } from "@/components/status-pill";
 

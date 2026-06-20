@@ -1,5 +1,5 @@
 import { jwtVerify, SignJWT } from "jose";
-import type { UserRole } from "@datcuatoi/contracts";
+import type { UserRole } from "@nice-land/contracts";
 
 export interface AccessTokenClaims {
   sub: string;

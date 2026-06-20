@@ -1,13 +1,13 @@
 import { randomBytes } from "node:crypto";
 import { hash } from "bcryptjs";
-import { Prisma, prisma } from "@datcuatoi/database";
+import { Prisma, prisma } from "@nice-land/database";
 import type {
   RenewalResolutionInput,
   SubscriptionPlanInput,
   SuperAdminSiteCreate,
   SuperAdminSiteListQuery,
   SuperAdminSiteUpdate,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import {
   SuperAdminConflictError,
   type SuperAdminRepository,

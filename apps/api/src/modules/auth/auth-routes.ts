@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
-import type { AuthResponse } from "@datcuatoi/contracts";
-import { loginInputSchema } from "@datcuatoi/contracts";
+import type { AuthResponse } from "@nice-land/contracts";
+import { loginInputSchema } from "@nice-land/contracts";
 import type { AppConfig } from "../../config.js";
 import {
   createOptionalTenantPreHandler,

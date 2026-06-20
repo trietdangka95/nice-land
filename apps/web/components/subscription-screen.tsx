@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { CalendarDays, Check, Gauge, ImageIcon, Send } from "lucide-react";
-import type { AdminSubscription } from "@datcuatoi/contracts";
+import type { AdminSubscription } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 
 const statusLabels: Record<AdminSubscription["status"], string> = {

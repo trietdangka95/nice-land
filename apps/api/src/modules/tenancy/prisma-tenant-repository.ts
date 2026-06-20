@@ -1,4 +1,4 @@
-import { prisma, type SubscriptionStatus } from "@datcuatoi/database";
+import { prisma, type SubscriptionStatus } from "@nice-land/database";
 import type {
   TenantSiteRecord,
   TenantSiteRepository,

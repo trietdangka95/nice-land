@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Building2, FileText, Plus, RefreshCw, Users } from "lucide-react";
-import type { SuperAdminRenewalRequest, SuperAdminSite } from "@datcuatoi/contracts";
+import type { SuperAdminRenewalRequest, SuperAdminSite } from "@nice-land/contracts";
 import { api } from "@/lib/api";
 import { DashboardStat } from "@/components/dashboard-stat";
 import { StatusPill } from "@/components/status-pill";

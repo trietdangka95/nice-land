@@ -4,7 +4,7 @@ import {
   S3Client,
   type _Object,
 } from "@aws-sdk/client-s3";
-import { prisma } from "@datcuatoi/database";
+import { prisma } from "@nice-land/database";
 import { loadConfig } from "../config.js";
 
 const DEFAULT_GRACE_PERIOD_MS = 24 * 60 * 60 * 1000;

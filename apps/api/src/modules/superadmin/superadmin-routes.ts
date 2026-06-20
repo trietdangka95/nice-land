@@ -7,7 +7,7 @@ import {
   superAdminSiteCreateSchema,
   superAdminSiteListQuerySchema,
   superAdminSiteUpdateSchema,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import { createRequireAuth, requireRole } from "../auth/auth-guards.js";
 import type { AccessTokenService } from "../auth/token-service.js";
 import {

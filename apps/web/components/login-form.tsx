@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LockKeyhole } from "lucide-react";
-import { ApiClientError } from "@datcuatoi/api-client";
+import { ApiClientError } from "@nice-land/api-client";
 import { api, createTenantApi } from "@/lib/api";
 
 export function LoginForm({

@@ -1,7 +1,7 @@
 import { buildApp } from "./app.js";
 import { loadConfig } from "./config.js";
 import { PrismaTenantSiteRepository } from "./modules/tenancy/prisma-tenant-repository.js";
-import { prisma } from "@datcuatoi/database";
+import { prisma } from "@nice-land/database";
 import { PrismaPublicSiteRepository } from "./modules/sites/prisma-public-site-repository.js";
 import { PrismaContactRequestRepository } from "./modules/contacts/prisma-contact-request-repository.js";
 import { PrismaPublicPostRepository } from "./modules/posts/prisma-public-post-repository.js";

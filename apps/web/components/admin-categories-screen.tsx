@@ -5,7 +5,7 @@ import { Pencil, Plus, Tags, Trash2, X } from "lucide-react";
 import type {
   PropertyCategory,
   PropertyCategoryInput,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 
 function slugify(value: string) {

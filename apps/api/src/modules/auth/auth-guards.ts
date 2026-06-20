@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import type { UserRole } from "@datcuatoi/contracts";
+import type { UserRole } from "@nice-land/contracts";
 import type {
   AccessTokenClaims,
   AccessTokenService,

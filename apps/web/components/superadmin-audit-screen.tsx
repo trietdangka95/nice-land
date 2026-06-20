@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Search, ShieldCheck } from "lucide-react";
-import type { AuditLogItem } from "@datcuatoi/contracts";
+import type { AuditLogItem } from "@nice-land/contracts";
 import { api } from "@/lib/api";
 
 export function SuperAdminAuditScreen() {

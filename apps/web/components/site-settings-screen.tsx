@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Check, ExternalLink, Palette, Save } from "lucide-react";
-import type { SiteSettingsInput } from "@datcuatoi/contracts";
+import type { SiteSettingsInput } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 
 const colors = ["#315c45", "#8b5a3c", "#24405e", "#6b4f7d", "#9a6d22"];

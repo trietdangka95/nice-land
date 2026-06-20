@@ -2,7 +2,7 @@ import type { FastifyInstance } from "fastify";
 import {
   renewalRequestInputSchema,
   siteSettingsInputSchema,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import type { AppConfig } from "../../config.js";
 import {
   createRequireAuth,

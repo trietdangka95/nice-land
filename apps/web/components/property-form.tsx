@@ -18,7 +18,7 @@ import type {
   PostStatus,
   PropertyCategory,
   PropertyType,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 
 type FormState = {

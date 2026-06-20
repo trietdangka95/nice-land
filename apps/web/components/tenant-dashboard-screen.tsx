@@ -15,7 +15,7 @@ import type {
   AdminPost,
   AdminSubscription,
   TenantAnalytics,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 import { DashboardStat } from "@/components/dashboard-stat";
 import { StatusPill } from "@/components/status-pill";

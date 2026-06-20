@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import type { PropertyInteractionInput } from "@datcuatoi/contracts";
+import type { PropertyInteractionInput } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 
 export function TrackedContactLink({

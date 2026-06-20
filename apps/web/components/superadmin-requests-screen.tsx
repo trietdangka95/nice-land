@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Mail, Phone } from "lucide-react";
-import type { SuperAdminContact, SuperAdminRenewalRequest } from "@datcuatoi/contracts";
+import type { SuperAdminContact, SuperAdminRenewalRequest } from "@nice-land/contracts";
 import { api } from "@/lib/api";
 import { StatusPill } from "@/components/status-pill";
 

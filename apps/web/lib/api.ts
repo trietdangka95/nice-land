@@ -1,4 +1,4 @@
-import { createApiClient } from "@datcuatoi/api-client";
+import { createApiClient } from "@nice-land/api-client";
 
 export const api = createApiClient({
   baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000",

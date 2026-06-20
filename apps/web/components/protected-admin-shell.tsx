@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ApiClientError } from "@datcuatoi/api-client";
+import { ApiClientError } from "@nice-land/api-client";
 import { AdminShell } from "@/components/admin-shell";
 import { AuthGuard } from "@/components/auth-guard";
 import { createTenantApi } from "@/lib/api";

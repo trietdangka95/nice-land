@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { Save } from "lucide-react";
-import type { SubscriptionPlan, SubscriptionStatus } from "@datcuatoi/contracts";
+import type { SubscriptionPlan, SubscriptionStatus } from "@nice-land/contracts";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 

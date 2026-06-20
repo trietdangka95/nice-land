@@ -6,7 +6,7 @@ import {
   publicPostListQuerySchema,
   type ApiError,
   type HealthResponse,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import { ZodError } from "zod";
 import type { AppConfig } from "./config.js";
 import {

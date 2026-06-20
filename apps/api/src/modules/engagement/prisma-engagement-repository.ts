@@ -1,5 +1,5 @@
-import { prisma } from "@datcuatoi/database";
-import type { LeadUpdate, PropertyLeadInput } from "@datcuatoi/contracts";
+import { prisma } from "@nice-land/database";
+import type { LeadUpdate, PropertyLeadInput } from "@nice-land/contracts";
 import type { EngagementRepository } from "./engagement-repository.js";
 
 export class PrismaEngagementRepository implements EngagementRepository {

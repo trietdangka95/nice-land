@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { ExternalLink, KeyRound, Pencil, Plus, Search } from "lucide-react";
-import type { SuperAdminSite } from "@datcuatoi/contracts";
+import type { SuperAdminSite } from "@nice-land/contracts";
 import { api } from "@/lib/api";
 import { StatusPill } from "@/components/status-pill";
 

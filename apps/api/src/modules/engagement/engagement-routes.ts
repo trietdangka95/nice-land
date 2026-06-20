@@ -4,7 +4,7 @@ import {
   leadUpdateSchema,
   propertyInteractionInputSchema,
   propertyLeadInputSchema,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import type { AppConfig } from "../../config.js";
 import { createRequireAuth, requireRole, requireTenantMatch } from "../auth/auth-guards.js";
 import type { AccessTokenService } from "../auth/token-service.js";

@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import type { SubscriptionPlan, SubscriptionPlanInput } from "@datcuatoi/contracts";
+import type { SubscriptionPlan, SubscriptionPlanInput } from "@nice-land/contracts";
 import { api } from "@/lib/api";
 
 const empty: SubscriptionPlanInput = { name: "", code: "", maxPosts: 30, maxImagesPerPost: 10, price: 0, durationDays: 30, isActive: true };

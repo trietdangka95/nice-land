@@ -3,7 +3,7 @@ import type {
   PropertyLeadInput,
   TenantAnalytics,
   TenantLead,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 
 export interface EngagementRepository {
   recordView(input: {

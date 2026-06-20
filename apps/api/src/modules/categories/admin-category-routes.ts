@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { propertyCategoryInputSchema } from "@datcuatoi/contracts";
+import { propertyCategoryInputSchema } from "@nice-land/contracts";
 import type { AppConfig } from "../../config.js";
 import {
   createRequireAuth,

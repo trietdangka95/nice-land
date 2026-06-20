@@ -1,7 +1,7 @@
 import type {
   PropertyCategory,
   PropertyCategoryInput,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 
 export interface AdminCategoryRepository {
   list(siteId: string): Promise<PropertyCategory[]>;

@@ -3,7 +3,7 @@ import {
   adminPostInputSchema,
   adminPostListQuerySchema,
   adminPostUpdateSchema,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import { z } from "zod";
 import type { AppConfig } from "../../config.js";
 import type { AccessTokenService } from "../auth/token-service.js";

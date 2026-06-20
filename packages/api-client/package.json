@@ -1,5 +1,5 @@
 {
-  "name": "@datcuatoi/api-client",
+  "name": "@nice-land/api-client",
   "version": "0.2.0",
   "private": true,
   "type": "module",
@@ -16,7 +16,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@datcuatoi/contracts": "workspace:*"
+    "@nice-land/contracts": "workspace:*"
   },
   "devDependencies": {
     "typescript": "catalog:",

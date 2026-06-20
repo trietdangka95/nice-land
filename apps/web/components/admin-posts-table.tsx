@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Archive, ChevronLeft, ChevronRight, Edit3, Plus, Search } from "lucide-react";
-import type { AdminPost, PostStatus, PropertyType } from "@datcuatoi/contracts";
+import type { AdminPost, PostStatus, PropertyType } from "@nice-land/contracts";
 import { StatusPill } from "@/components/status-pill";
 import { createTenantApi } from "@/lib/api";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";

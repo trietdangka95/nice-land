@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { compare } from "bcryptjs";
-import type { AuthUser, UserRole } from "@datcuatoi/contracts";
+import type { AuthUser, UserRole } from "@nice-land/contracts";
 import type { AccessTokenService } from "./token-service.js";
 
 export interface AuthUserRecord extends AuthUser {

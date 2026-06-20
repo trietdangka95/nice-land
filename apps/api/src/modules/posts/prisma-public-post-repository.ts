@@ -1,4 +1,4 @@
-import { Prisma, prisma } from "@datcuatoi/database";
+import { Prisma, prisma } from "@nice-land/database";
 import type {
   ListPublishedPostsInput,
   PublicPostDetail,

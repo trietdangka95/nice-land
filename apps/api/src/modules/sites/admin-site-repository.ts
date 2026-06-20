@@ -3,7 +3,7 @@ import type {
   RenewalRequestInput,
   SiteSettings,
   SiteSettingsInput,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 
 export interface AdminSiteRepository {
   getSettings(siteId: string): Promise<SiteSettings | null>;

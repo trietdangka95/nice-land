@@ -1,9 +1,9 @@
-import { Prisma, prisma } from "@datcuatoi/database";
+import { Prisma, prisma } from "@nice-land/database";
 import type {
   AdminPostInput,
   AdminPostListQuery,
   AdminPostUpdate,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import {
   type AdminPostMutationContext,
   type AdminPostRecord,

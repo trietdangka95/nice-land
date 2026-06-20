@@ -88,7 +88,7 @@ vẫn được giữ nguyên.
 Nếu máy chưa có PostgreSQL, có thể chạy Prisma Postgres local bằng Node 22+:
 
 ```bash
-corepack pnpm --filter @datcuatoi/database exec prisma dev --name nice-land --detach
+corepack pnpm --filter @nice-land/database exec prisma dev --name nice-land --detach
 ```
 
 Copy URL được in ra vào `DATABASE_URL` trong `.env`, rồi chạy migration và seed.
@@ -138,7 +138,7 @@ corepack pnpm dlx @prisma/cli@latest auth login
 corepack pnpm dlx @prisma/cli@latest project link proj_cmqllfy7j0qm2w0fathh7y2kb
 
 # Dùng connection URL một lần của Primary database để chạy migration.
-DATABASE_URL="postgresql://..." corepack pnpm --filter @datcuatoi/database db:deploy
+DATABASE_URL="postgresql://..." corepack pnpm --filter @nice-land/database db:deploy
 ```
 
 AWS S3 bucket cần CORS cho frontend Vercel:
@@ -159,10 +159,10 @@ Cleanup ảnh S3 không còn được database tham chiếu:
 
 ```bash
 # Dry-run, chỉ in danh sách object cũ hơn 24 giờ
-corepack pnpm --filter @datcuatoi/api cleanup:images
+corepack pnpm --filter @nice-land/api cleanup:images
 
 # Xóa thật sau khi đã kiểm tra dry-run
-corepack pnpm --filter @datcuatoi/api cleanup:images:apply
+corepack pnpm --filter @nice-land/api cleanup:images:apply
 ```
 
 Production nên chạy dry-run/cleanup mỗi đêm bằng cron hoặc systemd timer. IAM

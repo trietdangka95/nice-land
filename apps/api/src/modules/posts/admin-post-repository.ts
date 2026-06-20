@@ -4,7 +4,7 @@ import type {
   AdminPostUpdate,
   PostStatus,
   PropertyType,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 
 export interface AdminPostRecord {
   id: string;

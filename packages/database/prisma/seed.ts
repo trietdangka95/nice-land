@@ -77,7 +77,7 @@ async function main() {
   });
 
   await prisma.user.upsert({
-    where: { email: "admin@datcuatoi.vn" },
+    where: { email: "admin@nice-land.vn" },
     update: {
       passwordHash,
       role: UserRole.SUPER_ADMIN,
@@ -85,7 +85,7 @@ async function main() {
     },
     create: {
       username: "superadmin",
-      email: "admin@datcuatoi.vn",
+      email: "admin@nice-land.vn",
       passwordHash,
       fullName: "Quản trị Đất Của Tôi",
       role: UserRole.SUPER_ADMIN,

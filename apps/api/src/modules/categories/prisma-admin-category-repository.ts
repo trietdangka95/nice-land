@@ -1,5 +1,5 @@
-import { Prisma, prisma } from "@datcuatoi/database";
-import type { PropertyCategoryInput } from "@datcuatoi/contracts";
+import { Prisma, prisma } from "@nice-land/database";
+import type { PropertyCategoryInput } from "@nice-land/contracts";
 import {
   CategoryInUseError,
   CategorySlugConflictError,

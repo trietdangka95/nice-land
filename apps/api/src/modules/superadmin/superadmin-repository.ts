@@ -9,7 +9,7 @@ import type {
   SuperAdminSiteCreate,
   SuperAdminSiteListQuery,
   SuperAdminSiteUpdate,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 
 export interface SuperAdminRepository {
   listSites(input: SuperAdminSiteListQuery): Promise<{ items: SuperAdminSite[]; total: number }>;

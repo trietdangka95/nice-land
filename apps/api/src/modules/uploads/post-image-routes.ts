@@ -3,7 +3,7 @@ import {
   imageCompleteInputSchema,
   imagePresignInputSchema,
   imageReorderInputSchema,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 import type { AppConfig } from "../../config.js";
 import type { AccessTokenService } from "../auth/token-service.js";
 import {

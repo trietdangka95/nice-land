@@ -2,7 +2,7 @@ import type {
   PostStatus,
   PropertyType,
   PublicPostListQuery,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 
 export interface PublicPostSummary {
   id: string;

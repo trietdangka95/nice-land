@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { TenantAnalytics } from "@datcuatoi/contracts";
+import type { TenantAnalytics } from "@nice-land/contracts";
 import { Eye, Users } from "lucide-react";
 import { createTenantApi } from "@/lib/api";
 import { DashboardStat } from "@/components/dashboard-stat";

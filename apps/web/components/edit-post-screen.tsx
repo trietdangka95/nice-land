@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { AdminPost } from "@datcuatoi/contracts";
+import type { AdminPost } from "@nice-land/contracts";
 import { PropertyForm } from "@/components/property-form";
 import { createTenantApi } from "@/lib/api";
 

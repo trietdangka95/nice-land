@@ -37,7 +37,7 @@ import type {
   PropertyCategoryInput,
   TenantAnalytics,
   TenantLead,
-} from "@datcuatoi/contracts";
+} from "@nice-land/contracts";
 
 export interface ApiClientOptions {
   baseUrl: string;
