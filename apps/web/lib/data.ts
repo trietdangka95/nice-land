@@ -1,0 +1,211 @@
+import type { PropertyPost, Site } from "@/lib/types";
+
+export const sites: Site[] = [
+  {
+    id: "site-minhphat",
+    name: "Nhà Đất Minh Phát",
+    slug: "minhphat",
+    tagline: "Chọn đúng nơi, dựng đúng tổ ấm",
+    logoMark: "MP",
+    themeColor: "#315c45",
+    phone: "0903 868 979",
+    email: "hello@minhphat.vn",
+    address: "28 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+    facebookUrl: "https://facebook.com",
+    zaloPhone: "0903868979",
+    isActive: true,
+    subscriptionStatus: "ACTIVE",
+    subscriptionEnd: "2027-06-30",
+    plan: "Chuyên nghiệp",
+    createdAt: "2025-09-12",
+  },
+  {
+    id: "site-anland",
+    name: "An Land",
+    slug: "anland",
+    tagline: "Không gian sống bình yên giữa lòng thành phố",
+    logoMark: "AL",
+    themeColor: "#8b5a3c",
+    phone: "0912 333 558",
+    email: "contact@anland.vn",
+    address: "Thủ Đức, TP. Hồ Chí Minh",
+    isActive: true,
+    subscriptionStatus: "TRIAL",
+    subscriptionEnd: "2026-07-15",
+    plan: "Khởi đầu",
+    createdAt: "2026-05-02",
+  },
+  {
+    id: "site-gialoc",
+    name: "Địa Ốc Gia Lộc",
+    slug: "gialoc",
+    tagline: "Đồng hành cùng giá trị bền vững",
+    logoMark: "GL",
+    themeColor: "#24405e",
+    phone: "0988 445 221",
+    email: "hello@gialoc.vn",
+    address: "Biên Hòa, Đồng Nai",
+    isActive: false,
+    subscriptionStatus: "EXPIRED",
+    subscriptionEnd: "2026-05-30",
+    plan: "Chuyên nghiệp",
+    createdAt: "2025-11-20",
+  },
+];
+
+export const properties: PropertyPost[] = [
+  {
+    id: "villa-son-tra",
+    siteId: "site-minhphat",
+    title: "Biệt thự nhiệt đới nhìn ra bán đảo Sơn Trà",
+    description:
+      "Căn biệt thự ba tầng được thiết kế theo tinh thần nghỉ dưỡng, ôm trọn ánh sáng tự nhiên và khoảng xanh. Không gian phòng khách nối liền sân vườn, hồ bơi riêng và ban công hướng biển.",
+    type: "HOUSE",
+    price: 18500000000,
+    area: 285,
+    address: "Đường Hoàng Sa, Thọ Quang",
+    province: "Đà Nẵng",
+    district: "Sơn Trà",
+    ward: "Thọ Quang",
+    latitude: 16.102,
+    longitude: 108.277,
+    status: "PUBLISHED",
+    featured: true,
+    images: [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85",
+      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=85",
+    ],
+    createdAt: "2026-06-12",
+  },
+  {
+    id: "townhouse-hai-chau",
+    siteId: "site-minhphat",
+    title: "Nhà phố thanh lịch giữa trung tâm Hải Châu",
+    description:
+      "Nhà phố hoàn thiện mới, bố trí tối ưu cho gia đình trẻ. Khu dân cư yên tĩnh, chỉ vài phút đến sông Hàn và trung tâm hành chính.",
+    type: "HOUSE",
+    price: 8900000000,
+    area: 112,
+    address: "Lê Đình Dương, Phước Ninh",
+    province: "Đà Nẵng",
+    district: "Hải Châu",
+    ward: "Phước Ninh",
+    status: "PUBLISHED",
+    images: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
+    ],
+    createdAt: "2026-06-08",
+  },
+  {
+    id: "apartment-my-khe",
+    siteId: "site-minhphat",
+    title: "Căn hộ hai phòng ngủ, ban công hướng biển Mỹ Khê",
+    description:
+      "Căn hộ nội thất gỗ sáng màu, ban công rộng và tầm nhìn thoáng. Phù hợp ở lâu dài hoặc khai thác cho thuê.",
+    type: "APARTMENT",
+    price: 4250000000,
+    area: 78,
+    address: "Võ Nguyên Giáp, Mỹ An",
+    province: "Đà Nẵng",
+    district: "Ngũ Hành Sơn",
+    ward: "Mỹ An",
+    status: "PUBLISHED",
+    images: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=85",
+    ],
+    createdAt: "2026-05-29",
+  },
+  {
+    id: "land-hoa-vang",
+    siteId: "site-minhphat",
+    title: "Đất vườn ven sông, không gian mở tại Hòa Vang",
+    description:
+      "Lô đất vuông vức, đường xe hơi, thích hợp làm nhà vườn cuối tuần hoặc đầu tư trung hạn.",
+    type: "LAND",
+    price: 2700000000,
+    area: 340,
+    address: "Hòa Phong",
+    province: "Đà Nẵng",
+    district: "Hòa Vang",
+    ward: "Hòa Phong",
+    status: "SOLD",
+    images: [
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85",
+    ],
+    createdAt: "2026-05-18",
+  },
+  {
+    id: "rental-riverside",
+    siteId: "site-minhphat",
+    title: "Căn hộ dịch vụ bên sông Hàn, đầy đủ nội thất",
+    description:
+      "Không gian gọn gàng, nhiều ánh sáng, phù hợp chuyên gia làm việc dài hạn tại Đà Nẵng.",
+    type: "RENTAL",
+    price: 18000000,
+    area: 65,
+    address: "Trần Hưng Đạo, An Hải Bắc",
+    province: "Đà Nẵng",
+    district: "Sơn Trà",
+    ward: "An Hải Bắc",
+    status: "PUBLISHED",
+    images: [
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=85",
+    ],
+    createdAt: "2026-05-11",
+  },
+  {
+    id: "anland-garden",
+    siteId: "site-anland",
+    title: "Nhà vườn riêng tư tại Thủ Đức",
+    description: "Nhà vườn một tầng với khoảng xanh bao quanh.",
+    type: "HOUSE",
+    price: 12000000000,
+    area: 230,
+    address: "Long Phước",
+    province: "TP. Hồ Chí Minh",
+    district: "Thủ Đức",
+    ward: "Long Phước",
+    status: "PUBLISHED",
+    images: [
+      "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1200&q=85",
+    ],
+    createdAt: "2026-06-02",
+  },
+];
+
+export const plans = [
+  {
+    name: "Khởi đầu",
+    price: 299000,
+    description: "Dành cho môi giới cá nhân bắt đầu xây thương hiệu.",
+    features: ["30 tin đăng", "10 ảnh mỗi tin", "Website theo thương hiệu", "Hỗ trợ tiêu chuẩn"],
+  },
+  {
+    name: "Chuyên nghiệp",
+    price: 599000,
+    description: "Cho đội nhóm cần vận hành nội dung thường xuyên.",
+    features: ["150 tin đăng", "20 ảnh mỗi tin", "Tùy chỉnh giao diện", "Hỗ trợ ưu tiên"],
+    popular: true,
+  },
+  {
+    name: "Doanh nghiệp",
+    price: 1299000,
+    description: "Năng lực lớn hơn cho sàn và doanh nghiệp địa ốc.",
+    features: ["Không giới hạn tin", "30 ảnh mỗi tin", "Tên miền riêng", "Hỗ trợ chuyên trách"],
+  },
+];
+
+export function getSiteBySlug(slug: string) {
+  return sites.find((site) => site.slug === slug);
+}
+
+export function getPublicPosts(siteId: string) {
+  return properties.filter(
+    (post) => post.siteId === siteId && ["PUBLISHED", "SOLD"].includes(post.status),
+  );
+}
+
+export function getPublicPost(siteId: string, postId: string) {
+  return getPublicPosts(siteId).find((post) => post.id === postId);
+}

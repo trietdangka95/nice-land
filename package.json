@@ -1,0 +1,16 @@
+{
+  "name": "dat-cua-toi",
+  "version": "0.2.0",
+  "private": true,
+  "packageManager": "pnpm@10.12.1",
+  "scripts": {
+    "predev": "corepack pnpm --filter @datcuatoi/contracts build && corepack pnpm --filter @datcuatoi/api-client build",
+    "dev": "corepack pnpm --parallel --filter @datcuatoi/web --filter @datcuatoi/api dev",
+    "dev:web": "corepack pnpm --filter @datcuatoi/web dev",
+    "dev:api": "corepack pnpm --filter @datcuatoi/api dev",
+    "build": "corepack pnpm -r build",
+    "test": "corepack pnpm -r test",
+    "typecheck": "corepack pnpm -r typecheck",
+    "lint": "corepack pnpm -r lint"
+  }
+}
