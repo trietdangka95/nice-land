@@ -1,19 +1,81 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { MoreHorizontal, Plus, Search } from "lucide-react";
+import { Archive, ChevronLeft, ChevronRight, Edit3, Plus, Search } from "lucide-react";
+import type { AdminPost, PostStatus, PropertyType } from "@datcuatoi/contracts";
 import { StatusPill } from "@/components/status-pill";
+import { createTenantApi } from "@/lib/api";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
-import type { PropertyPost } from "@/lib/types";
 
-export function AdminPostsTable({ posts, slug }: { posts: PropertyPost[]; slug: string }) {
+const statusLabels: Record<PostStatus, string> = {
+  DRAFT: "Bản nháp",
+  PUBLISHED: "Đang đăng",
+  HIDDEN: "Đang ẩn",
+  SOLD: "Đã bán",
+  ARCHIVED: "Đã lưu trữ",
+};
+
+export function AdminPostsTable({ slug }: { slug: string }) {
+  const client = useMemo(() => createTenantApi(slug), [slug]);
+  const [posts, setPosts] = useState<AdminPost[]>([]);
   const [query, setQuery] = useState("");
-  const visible = useMemo(
-    () => posts.filter((post) => post.title.toLowerCase().includes(query.toLowerCase())),
-    [posts, query],
-  );
+  const [status, setStatus] = useState<PostStatus | "">("");
+  const [type, setType] = useState<PropertyType | "">("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    const timeout = window.setTimeout(() => {
+      setLoading(true);
+      setError("");
+      void client
+        .listAdminPosts({
+          q: query || undefined,
+          status: status || undefined,
+          type: type || undefined,
+          page,
+          limit: 10,
+        })
+        .then((result) => {
+          if (active) {
+            setPosts(result.items);
+            setTotal(result.total);
+            setTotalPages(result.totalPages);
+          }
+        })
+        .catch((requestError: Error) => {
+          if (active) setError(requestError.message);
+        })
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+    }, 250);
+    return () => {
+      active = false;
+      window.clearTimeout(timeout);
+    };
+  }, [client, page, query, refreshKey, status, type]);
+
+  async function archive(post: AdminPost) {
+    if (!window.confirm(`Lưu trữ tin “${post.title}”?`)) return;
+    setError("");
+    try {
+      await client.archiveAdminPost(post.id, post.version);
+      if (posts.length === 1 && page > 1) {
+        setPage((value) => value - 1);
+      } else {
+        setRefreshKey((value) => value + 1);
+      }
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Không thể lưu trữ tin.");
+    }
+  }
 
   return (
     <>
@@ -21,7 +83,9 @@ export function AdminPostsTable({ posts, slug }: { posts: PropertyPost[]; slug: 
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-moss">Nội dung website</p>
           <h1 className="mt-2 font-display text-4xl font-medium">Quản lý tin đăng</h1>
-          <p className="mt-2 text-sm text-ink/50">{posts.length} tin trong website này</p>
+          <p className="mt-2 text-sm text-ink/50">
+            <span className="tabular-nums">{total}</span> tin phù hợp bộ lọc
+          </p>
         </div>
         <Link href={`/${slug}/admin/posts/create`} className="button-primary">
           <Plus size={17} />
@@ -36,69 +100,142 @@ export function AdminPostsTable({ posts, slug }: { posts: PropertyPost[]; slug: 
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/35" size={17} />
             <input
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
               className="h-11 w-full bg-[#f4f5f2] pl-11 pr-4 text-sm"
               placeholder="Tìm theo tiêu đề..."
             />
           </label>
-          <select className="h-11 border border-ink/10 bg-white px-4 text-sm font-semibold" aria-label="Lọc trạng thái">
-            <option>Tất cả trạng thái</option>
-            <option>Đang đăng</option>
-            <option>Bản nháp</option>
-            <option>Đã bán</option>
+          <select
+            value={status}
+            onChange={(event) => {
+              setStatus(event.target.value as PostStatus | "");
+              setPage(1);
+            }}
+            className="h-11 border border-ink/10 bg-white px-4 text-sm font-semibold"
+            aria-label="Lọc trạng thái"
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option value="PUBLISHED">Đang đăng</option>
+            <option value="DRAFT">Bản nháp</option>
+            <option value="HIDDEN">Đang ẩn</option>
+            <option value="SOLD">Đã bán</option>
           </select>
-          <select className="h-11 border border-ink/10 bg-white px-4 text-sm font-semibold" aria-label="Lọc loại hình">
-            <option>Tất cả loại hình</option>
-            <option>Nhà ở</option>
-            <option>Căn hộ</option>
-            <option>Đất</option>
+          <select
+            value={type}
+            onChange={(event) => {
+              setType(event.target.value as PropertyType | "");
+              setPage(1);
+            }}
+            className="h-11 border border-ink/10 bg-white px-4 text-sm font-semibold"
+            aria-label="Lọc loại hình"
+          >
+            <option value="">Tất cả loại hình</option>
+            {Object.entries(propertyTypeLabels).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
           </select>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[780px] text-left">
-            <thead className="bg-[#f8f8f5] text-[10px] font-bold uppercase tracking-[0.12em] text-ink/40">
-              <tr>
-                <th className="px-5 py-4">Bất động sản</th>
-                <th className="px-5 py-4">Loại hình</th>
-                <th className="px-5 py-4">Mức giá</th>
-                <th className="px-5 py-4">Trạng thái</th>
-                <th className="px-5 py-4">Ngày tạo</th>
-                <th className="px-5 py-4"><span className="sr-only">Thao tác</span></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-ink/10">
-              {visible.map((post) => (
-                <tr key={post.id} className="hover:bg-[#fafaf7]">
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="relative size-12 shrink-0 overflow-hidden bg-sand">
-                        <Image src={post.images[0]} alt="" fill className="object-cover" sizes="48px" />
-                      </div>
+        {error && <p role="alert" className="border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700">{error}</p>}
+
+        {loading ? (
+          <div className="space-y-3 p-5" aria-busy="true" aria-label="Đang tải tin đăng">
+            {[1, 2, 3].map((item) => <div key={item} className="h-16 animate-pulse bg-ink/5" />)}
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="px-5 py-14 text-center">
+            <h2 className="font-display text-2xl">Chưa có tin phù hợp</h2>
+            <p className="mt-2 text-sm text-ink/50">Thử đổi bộ lọc hoặc tạo tin đăng đầu tiên.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[780px] text-left">
+              <thead className="bg-[#f8f8f5] text-[10px] font-bold uppercase tracking-[0.12em] text-ink/40">
+                <tr>
+                  <th className="px-5 py-4">Bất động sản</th>
+                  <th className="px-5 py-4">Loại hình</th>
+                  <th className="px-5 py-4">Mức giá</th>
+                  <th className="px-5 py-4">Trạng thái</th>
+                  <th className="px-5 py-4">Cập nhật</th>
+                  <th className="px-5 py-4"><span className="sr-only">Thao tác</span></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-ink/10">
+                {posts.map((post) => (
+                  <tr key={post.id} className="hover:bg-[#fafaf7]">
+                    <td className="px-5 py-4">
                       <div className="max-w-xs">
                         <p className="truncate text-sm font-bold">{post.title}</p>
-                        <p className="mt-1 text-xs text-ink/40">{post.area} m² · {post.district}</p>
+                        <p className="mt-1 text-xs text-ink/40">{post.area ? `${post.area} m²` : "Chưa nhập diện tích"} · {post.district ?? "Chưa nhập khu vực"}</p>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-4 text-sm text-ink/60">{propertyTypeLabels[post.type]}</td>
-                  <td className="px-5 py-4 text-sm font-bold">{formatPrice(post.price, post.type)}</td>
-                  <td className="px-5 py-4">
-                    <StatusPill tone={post.status === "PUBLISHED" ? "green" : post.status === "SOLD" ? "gold" : "gray"}>
-                      {post.status === "PUBLISHED" ? "Đang đăng" : post.status === "SOLD" ? "Đã bán" : post.status}
-                    </StatusPill>
-                  </td>
-                  <td className="px-5 py-4 text-xs text-ink/45">{new Date(post.createdAt).toLocaleDateString("vi-VN")}</td>
-                  <td className="px-5 py-4">
-                    <button className="grid size-9 place-items-center hover:bg-cream" aria-label={`Thao tác với ${post.title}`}>
-                      <MoreHorizontal size={18} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    </td>
+                    <td className="px-5 py-4 text-sm text-ink/60">{propertyTypeLabels[post.type]}</td>
+                    <td className="px-5 py-4 text-sm font-bold">{post.price === null ? "Liên hệ" : formatPrice(post.price, post.type)}</td>
+                    <td className="px-5 py-4">
+                      <StatusPill tone={post.status === "PUBLISHED" ? "green" : post.status === "SOLD" ? "gold" : "gray"}>
+                        {statusLabels[post.status]}
+                      </StatusPill>
+                    </td>
+                    <td className="px-5 py-4 text-xs text-ink/45">{new Date(post.updatedAt).toLocaleDateString("vi-VN")}</td>
+                    <td className="px-5 py-4">
+                      <div className="flex justify-end gap-1">
+                        <Link
+                          href={`/${slug}/admin/posts/${post.id}/edit`}
+                          className="grid size-9 place-items-center hover:bg-cream"
+                          aria-label={`Sửa ${post.title}`}
+                        >
+                          <Edit3 size={16} />
+                        </Link>
+                        <button
+                          onClick={() => void archive(post)}
+                          className="grid size-9 place-items-center hover:bg-red-50 hover:text-red-700"
+                          aria-label={`Lưu trữ ${post.title}`}
+                        >
+                          <Archive size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {!loading && totalPages > 1 && (
+          <nav
+            className="flex flex-col items-center justify-between gap-4 border-t border-ink/10 p-4 sm:flex-row"
+            aria-label="Phân trang tin đăng quản trị"
+          >
+            <p className="text-sm text-ink/50">
+              Trang <strong className="tabular-nums text-ink">{page}</strong> /{" "}
+              <strong className="tabular-nums text-ink">{totalPages}</strong>
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={page <= 1}
+                onClick={() => setPage((value) => value - 1)}
+                className="button-secondary min-h-11 px-4 disabled:opacity-40"
+              >
+                <ChevronLeft size={17} aria-hidden="true" />
+                Trang trước
+              </button>
+              <button
+                type="button"
+                disabled={page >= totalPages}
+                onClick={() => setPage((value) => value + 1)}
+                className="button-secondary min-h-11 px-4 disabled:opacity-40"
+              >
+                Trang sau
+                <ChevronRight size={17} aria-hidden="true" />
+              </button>
+            </div>
+          </nav>
+        )}
       </section>
     </>
   );

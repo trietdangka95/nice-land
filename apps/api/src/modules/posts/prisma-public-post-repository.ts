@@ -51,6 +51,7 @@ export class PrismaPublicPostRepository implements PublicPostRepository {
       deletedAt: null,
       status: { in: ["PUBLISHED", "SOLD"] },
       ...(input.type ? { type: input.type } : {}),
+      ...(input.categoryId ? { categoryId: input.categoryId } : {}),
       ...(input.province
         ? { province: { equals: input.province, mode: "insensitive" } }
         : {}),
