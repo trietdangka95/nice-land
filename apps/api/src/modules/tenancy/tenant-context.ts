@@ -16,6 +16,7 @@ declare module "fastify" {
 export function createTenantPreHandler(
   config: AppConfig,
   repository: TenantSiteRepository,
+  options: { allowExpired?: boolean } = {},
 ) {
   return async function tenantPreHandler(
     request: FastifyRequest,
@@ -30,8 +31,9 @@ export function createTenantPreHandler(
     try {
       request.tenant = await resolveTenant({
         host,
-        rootDomain: config.ROOT_DOMAIN,
-        repository,
+      rootDomain: config.ROOT_DOMAIN,
+      repository,
+      allowExpired: options.allowExpired,
       });
     } catch (error) {
       if (error instanceof TenantResolutionError) {

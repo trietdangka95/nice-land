@@ -47,6 +47,7 @@ interface ResolveTenantOptions {
   rootDomain: string;
   repository: TenantSiteRepository;
   now?: Date;
+  allowExpired?: boolean;
 }
 
 function normalizeHostname(value: string) {
@@ -70,6 +71,7 @@ export async function resolveTenant({
   rootDomain,
   repository,
   now = new Date(),
+  allowExpired = false,
 }: ResolveTenantOptions): Promise<TenantContext> {
   const hostname = normalizeHostname(host);
   const normalizedRootDomain = normalizeHostname(rootDomain);
@@ -98,8 +100,10 @@ export async function resolveTenant({
   }
 
   if (
-    site.subscriptionStatus === "EXPIRED" ||
-    (site.subscriptionEnd !== null && site.subscriptionEnd.getTime() < now.getTime())
+    (!allowExpired && site.subscriptionStatus === "EXPIRED") ||
+    (!allowExpired &&
+      site.subscriptionEnd !== null &&
+      site.subscriptionEnd.getTime() < now.getTime())
   ) {
     throw new TenantResolutionError(
       "TENANT_EXPIRED",

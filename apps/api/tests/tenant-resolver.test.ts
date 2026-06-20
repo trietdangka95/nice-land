@@ -93,6 +93,30 @@ describe("resolveTenant", () => {
     ).rejects.toMatchObject({ code: "TENANT_EXPIRED" } satisfies Partial<TenantResolutionError>);
   });
 
+  it("can resolve an expired tenant for login and renewal flows", async () => {
+    const repository: TenantSiteRepository = {
+      findBySlug: async () => ({
+        ...activeSite,
+        subscriptionStatus: "EXPIRED",
+        subscriptionEnd: new Date("2026-05-01T00:00:00.000Z"),
+      }),
+      findByHostname: async () => null,
+    };
+
+    const tenant = await resolveTenant({
+      host: "minhphat.datcuatoi.vn",
+      rootDomain: "datcuatoi.vn",
+      repository,
+      now: new Date("2026-06-19T00:00:00.000Z"),
+      allowExpired: true,
+    });
+
+    expect(tenant).toMatchObject({
+      siteId: "site-a",
+      subscriptionStatus: "EXPIRED",
+    });
+  });
+
   it("rejects unknown or root hosts", async () => {
     await expect(
       resolveTenant({
