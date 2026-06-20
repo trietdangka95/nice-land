@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Facebook, Menu, Phone } from "lucide-react";
+import { Facebook, Phone } from "lucide-react";
 import type { Site } from "@/lib/types";
+import { MobileNavigation } from "@/components/mobile-navigation";
 
 export function TenantHeader({ site }: { site: Site }) {
   return (
@@ -22,11 +23,11 @@ export function TenantHeader({ site }: { site: Site }) {
       <header className="border-b border-ink/10 bg-white">
         <div className="page-shell flex h-20 items-center justify-between">
           <Link href={`/${site.slug}`} className="flex min-w-0 items-center gap-3">
-            <span
-              className="grid size-11 shrink-0 place-items-center text-sm font-extrabold text-white"
-              style={{ backgroundColor: site.themeColor }}
-            >
-              {site.logoMark}
+            <span className="relative grid size-11 shrink-0 place-items-center overflow-hidden text-sm font-extrabold text-white" style={{ backgroundColor: site.themeColor }}>
+              {site.logo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={site.logo} alt="" className="size-full object-cover" />
+              ) : site.logoMark}
             </span>
             <span className="min-w-0">
               <strong className="block truncate font-display text-lg font-semibold sm:text-xl">
@@ -52,9 +53,38 @@ export function TenantHeader({ site }: { site: Site }) {
               <Phone size={16} />
               Gọi tư vấn
             </a>
-            <button className="grid size-11 place-items-center border border-ink/15 lg:hidden" aria-label="Mở menu">
-              <Menu size={20} />
-            </button>
+            <MobileNavigation
+              label="Mở menu"
+              title={site.name}
+              triggerClassName="grid size-11 place-items-center border border-ink/15 lg:hidden"
+            >
+              <nav
+                className="flex flex-col p-4 text-base font-semibold"
+                aria-label="Điều hướng website trên di động"
+              >
+                <Link href={`/${site.slug}`} className="border-b border-white/10 px-3 py-4">
+                  Trang chủ
+                </Link>
+                <Link href={`/${site.slug}#properties`} className="border-b border-white/10 px-3 py-4">
+                  Bất động sản
+                </Link>
+                <Link href={`/${site.slug}#about`} className="border-b border-white/10 px-3 py-4">
+                  Về chúng tôi
+                </Link>
+                <Link href={`/${site.slug}#contact`} className="border-b border-white/10 px-3 py-4">
+                  Liên hệ
+                </Link>
+              </nav>
+              <div className="mt-auto border-t border-white/10 p-4">
+                <a
+                  href={`tel:${site.phone.replace(/\s/g, "")}`}
+                  className="flex min-h-12 items-center justify-center gap-2 bg-white px-5 text-sm font-bold text-ink"
+                >
+                  <Phone size={17} aria-hidden="true" />
+                  Gọi {site.phone}
+                </a>
+              </div>
+            </MobileNavigation>
           </div>
         </div>
       </header>

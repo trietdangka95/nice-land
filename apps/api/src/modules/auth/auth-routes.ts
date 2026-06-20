@@ -153,7 +153,9 @@ export async function registerAuthRoutes(
     "/v1/auth/tenant-check",
     {
       preHandler: [
-        createTenantPreHandler(options.config, options.tenantRepository),
+        createTenantPreHandler(options.config, options.tenantRepository, {
+          allowExpired: true,
+        }),
         requireAuth,
       ],
     },

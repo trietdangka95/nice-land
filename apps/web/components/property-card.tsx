@@ -7,7 +7,7 @@ import type { PropertyPost } from "@/lib/types";
 export function PropertyCard({ post, slug }: { post: PropertyPost; slug: string }) {
   return (
     <article className="motion-card group bg-white">
-      <Link href={`/${slug}/posts/${post.id}`} className="block">
+      <Link href={`/${slug}/posts/${post.slug ?? post.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-sand">
           <Image
             src={post.images[0]}

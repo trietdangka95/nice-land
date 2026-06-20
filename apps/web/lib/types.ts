@@ -8,6 +8,8 @@ export interface Site {
   slug: string;
   tagline: string;
   logoMark: string;
+  logo?: string;
+  banner?: string;
   themeColor: string;
   phone: string;
   email: string;
@@ -23,6 +25,7 @@ export interface Site {
 
 export interface PropertyPost {
   id: string;
+  slug?: string;
   siteId: string;
   title: string;
   description: string;

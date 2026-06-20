@@ -1,10 +1,42 @@
 import type {
   ApiError,
+  AdminPost,
+  AdminPostInput,
+  AdminPostListQuery,
+  AdminPostListResponse,
+  AdminPostUpdate,
+  AdminSubscription,
   AuthResponse,
   AuthUser,
   ContactRequestInput,
   HealthResponse,
+  ImageCompleteInput,
+  ImagePresignInput,
+  ImageReorderInput,
   LoginInput,
+  RenewalRequestInput,
+  SiteSettings,
+  SiteSettingsInput,
+  SiteActiveInput,
+  SubscriptionPlan,
+  SubscriptionPlanInput,
+  SuperAdminContact,
+  SuperAdminRenewalRequest,
+  SuperAdminSite,
+  SuperAdminSiteCreate,
+  SuperAdminSiteListQuery,
+  SuperAdminSiteListResponse,
+  SuperAdminSiteUpdate,
+  RenewalResolutionInput,
+  AuditLogItem,
+  ContactStatusInput,
+  LeadUpdate,
+  PropertyLeadInput,
+  PropertyInteractionInput,
+  PropertyCategory,
+  PropertyCategoryInput,
+  TenantAnalytics,
+  TenantLead,
 } from "@datcuatoi/contracts";
 
 export interface ApiClientOptions {
@@ -73,10 +105,194 @@ export function createApiClient(options: ApiClientOptions) {
         method: "POST",
       }),
     me: () => request<AuthUser>("/v1/auth/me"),
+    listAdminPosts: (query: Partial<AdminPostListQuery> = {}) => {
+      const search = new URLSearchParams();
+      for (const [key, value] of Object.entries(query)) {
+        if (value !== undefined && value !== "") search.set(key, String(value));
+      }
+      const suffix = search.size ? `?${search.toString()}` : "";
+      return request<AdminPostListResponse>(`/v1/admin/posts${suffix}`);
+    },
+    getAdminPost: (id: string) =>
+      request<AdminPost>(`/v1/admin/posts/${encodeURIComponent(id)}`),
+    createAdminPost: (input: AdminPostInput) =>
+      request<AdminPost>("/v1/admin/posts", {
+        method: "POST",
+        body: JSON.stringify(input),
+      }),
+    updateAdminPost: (id: string, input: AdminPostUpdate) =>
+      request<AdminPost>(`/v1/admin/posts/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        body: JSON.stringify(input),
+      }),
+    archiveAdminPost: (id: string, version: number) =>
+      request<void>(
+        `/v1/admin/posts/${encodeURIComponent(id)}?version=${version}`,
+        { method: "DELETE" },
+      ),
+    listAdminCategories: () =>
+      request<PropertyCategory[]>("/v1/admin/categories"),
+    createAdminCategory: (input: PropertyCategoryInput) =>
+      request<PropertyCategory>("/v1/admin/categories", {
+        method: "POST",
+        body: JSON.stringify(input),
+      }),
+    updateAdminCategory: (id: string, input: PropertyCategoryInput) =>
+      request<PropertyCategory>(
+        `/v1/admin/categories/${encodeURIComponent(id)}`,
+        { method: "PATCH", body: JSON.stringify(input) },
+      ),
+    deleteAdminCategory: (id: string) =>
+      request<void>(`/v1/admin/categories/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      }),
+    listPublicCategories: () =>
+      request<PropertyCategory[]>("/v1/public/categories"),
+    presignPostImage: (postId: string, input: ImagePresignInput) =>
+      request<{
+        uploadUrl: string;
+        objectKey: string;
+        expiresIn: number;
+        headers: Record<string, string>;
+      }>(`/v1/admin/posts/${encodeURIComponent(postId)}/images/presign`, {
+        method: "POST",
+        body: JSON.stringify(input),
+      }),
+    completePostImage: (postId: string, input: ImageCompleteInput) =>
+      request<{ id: string; url: string; sortOrder: number }>(
+        `/v1/admin/posts/${encodeURIComponent(postId)}/images/complete`,
+        {
+          method: "POST",
+          body: JSON.stringify(input),
+        },
+      ),
+    reorderPostImages: (postId: string, input: ImageReorderInput) =>
+      request<void>(
+        `/v1/admin/posts/${encodeURIComponent(postId)}/images/reorder`,
+        {
+          method: "PATCH",
+          body: JSON.stringify(input),
+        },
+      ),
+    deletePostImage: (postId: string, imageId: string) =>
+      request<void>(
+        `/v1/admin/posts/${encodeURIComponent(postId)}/images/${encodeURIComponent(imageId)}`,
+        { method: "DELETE" },
+      ),
+    getSiteSettings: () =>
+      request<SiteSettings>("/v1/admin/site-config"),
+    updateSiteSettings: (input: SiteSettingsInput) =>
+      request<SiteSettings>("/v1/admin/site-config", {
+        method: "PUT",
+        body: JSON.stringify(input),
+      }),
+    getSubscription: () =>
+      request<AdminSubscription>("/v1/admin/subscription"),
+    createRenewalRequest: (input: RenewalRequestInput) =>
+      request<NonNullable<AdminSubscription["latestRenewalRequest"]>>(
+        "/v1/admin/renewal-requests",
+        {
+          method: "POST",
+          body: JSON.stringify(input),
+        },
+      ),
+    listSuperAdminSites: (query: Partial<SuperAdminSiteListQuery> = {}) => {
+      const search = new URLSearchParams();
+      for (const [key, value] of Object.entries(query)) {
+        if (value !== undefined && value !== "") search.set(key, String(value));
+      }
+      return request<SuperAdminSiteListResponse>(
+        `/v1/superadmin/sites${search.size ? `?${search}` : ""}`,
+      );
+    },
+    getSuperAdminSite: (id: string) =>
+      request<SuperAdminSite>(`/v1/superadmin/sites/${encodeURIComponent(id)}`),
+    createSuperAdminSite: (input: SuperAdminSiteCreate) =>
+      request<SuperAdminSite>("/v1/superadmin/sites", {
+        method: "POST",
+        body: JSON.stringify(input),
+      }),
+    updateSuperAdminSite: (id: string, input: SuperAdminSiteUpdate) =>
+      request<SuperAdminSite>(`/v1/superadmin/sites/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        body: JSON.stringify(input),
+      }),
+    setSuperAdminSiteActive: (id: string, input: SiteActiveInput) =>
+      request<void>(`/v1/superadmin/sites/${encodeURIComponent(id)}/active`, {
+        method: "PATCH",
+        body: JSON.stringify(input),
+      }),
+    resetSuperAdminSitePassword: (id: string) =>
+      request<{ temporaryPassword: string }>(
+        `/v1/superadmin/sites/${encodeURIComponent(id)}/reset-password`,
+        { method: "POST" },
+      ),
+    setSuperAdminAdminActive: (id: string, input: SiteActiveInput) =>
+      request<void>(`/v1/superadmin/sites/${encodeURIComponent(id)}/admin-active`, {
+        method: "PATCH",
+        body: JSON.stringify(input),
+      }),
+    listSubscriptionPlans: () =>
+      request<SubscriptionPlan[]>("/v1/superadmin/plans"),
+    createSubscriptionPlan: (input: SubscriptionPlanInput) =>
+      request<SubscriptionPlan>("/v1/superadmin/plans", {
+        method: "POST",
+        body: JSON.stringify(input),
+      }),
+    updateSubscriptionPlan: (id: string, input: SubscriptionPlanInput) =>
+      request<SubscriptionPlan>(`/v1/superadmin/plans/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        body: JSON.stringify(input),
+      }),
+    deleteSubscriptionPlan: (id: string) =>
+      request<void>(`/v1/superadmin/plans/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      }),
+    listSuperAdminRenewals: () =>
+      request<SuperAdminRenewalRequest[]>("/v1/superadmin/renewal-requests"),
+    resolveSuperAdminRenewal: (id: string, input: RenewalResolutionInput) =>
+      request<SuperAdminRenewalRequest>(
+        `/v1/superadmin/renewal-requests/${encodeURIComponent(id)}`,
+        { method: "PATCH", body: JSON.stringify(input) },
+      ),
+    listSuperAdminContacts: () =>
+      request<SuperAdminContact[]>("/v1/superadmin/contacts"),
+    updateSuperAdminContactStatus: (id: string, input: ContactStatusInput) =>
+      request<void>(`/v1/superadmin/contacts/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        body: JSON.stringify(input),
+      }),
+    listAuditLogs: () =>
+      request<AuditLogItem[]>("/v1/superadmin/audit-logs"),
     createContactRequest: (input: ContactRequestInput) =>
       request<{ id: string; createdAt: string }>("/v1/public/contact-requests", {
         method: "POST",
         body: JSON.stringify(input),
       }),
+    trackPostView: (postId: string) =>
+      request<void>(`/v1/public/posts/${encodeURIComponent(postId)}/view`, {
+        method: "POST",
+      }),
+    createPropertyLead: (postId: string, input: PropertyLeadInput) =>
+      request<{ id: string; createdAt: string }>(
+        `/v1/public/posts/${encodeURIComponent(postId)}/leads`,
+        { method: "POST", body: JSON.stringify(input) },
+      ),
+    trackPropertyInteraction: (
+      postId: string,
+      input: PropertyInteractionInput,
+    ) =>
+      request<void>(
+        `/v1/public/posts/${encodeURIComponent(postId)}/interactions`,
+        { method: "POST", body: JSON.stringify(input) },
+      ),
+    listTenantLeads: () => request<TenantLead[]>("/v1/admin/leads"),
+    updateTenantLead: (id: string, input: LeadUpdate) =>
+      request<void>(`/v1/admin/leads/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        body: JSON.stringify(input),
+      }),
+    getTenantAnalytics: () =>
+      request<TenantAnalytics>("/v1/admin/analytics"),
   };
 }

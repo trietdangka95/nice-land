@@ -20,6 +20,22 @@ import type { PublicPostRepository } from "./modules/posts/public-post-repositor
 import type { AuthService } from "./modules/auth/auth-service.js";
 import type { AccessTokenService } from "./modules/auth/token-service.js";
 import { registerAuthRoutes } from "./modules/auth/auth-routes.js";
+import type { AdminPostRepository } from "./modules/posts/admin-post-repository.js";
+import { registerAdminPostRoutes } from "./modules/posts/admin-post-routes.js";
+import type {
+  PostImageRepository,
+  PostImageStorage,
+} from "./modules/uploads/post-image-service.js";
+import { registerPostImageRoutes } from "./modules/uploads/post-image-routes.js";
+import type { AdminSiteRepository } from "./modules/sites/admin-site-repository.js";
+import { registerAdminSiteRoutes } from "./modules/sites/admin-site-routes.js";
+import type { SuperAdminRepository } from "./modules/superadmin/superadmin-repository.js";
+import { registerSuperAdminRoutes } from "./modules/superadmin/superadmin-routes.js";
+import type { EngagementRepository } from "./modules/engagement/engagement-repository.js";
+import { registerEngagementRoutes } from "./modules/engagement/engagement-routes.js";
+import type { LeadNotifier } from "./modules/engagement/lead-notifier.js";
+import type { AdminCategoryRepository } from "./modules/categories/admin-category-repository.js";
+import { registerAdminCategoryRoutes } from "./modules/categories/admin-category-routes.js";
 
 interface BuildAppOptions {
   tenantRepository?: TenantSiteRepository;
@@ -28,6 +44,16 @@ interface BuildAppOptions {
   publicPostRepository?: PublicPostRepository;
   authService?: AuthService;
   accessTokens?: AccessTokenService;
+  adminPostRepository?: AdminPostRepository;
+  adminCategoryRepository?: AdminCategoryRepository;
+  adminSiteRepository?: AdminSiteRepository;
+  superAdminRepository?: SuperAdminRepository;
+  engagementRepository?: EngagementRepository;
+  leadNotifier?: LeadNotifier;
+  postImageDependencies?: {
+    repository: PostImageRepository;
+    storage: PostImageStorage;
+  };
   readinessCheck?: () => Promise<void>;
 }
 
@@ -47,6 +73,7 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
   void app.register(cors, {
     credentials: true,
     origin: config.CORS_ORIGINS.split(",").map((origin) => origin.trim()),
+    methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Tenant-Host"],
   });
 
@@ -71,8 +98,11 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
         : 500;
 
     const payload: ApiError = {
-      code: "INTERNAL_SERVER_ERROR",
-      message: config.NODE_ENV === "production" ? "Đã xảy ra lỗi hệ thống." : message,
+      code: statusCode >= 500 ? "INTERNAL_SERVER_ERROR" : "REQUEST_ERROR",
+      message:
+        config.NODE_ENV === "production" && statusCode >= 500
+          ? "Đã xảy ra lỗi hệ thống."
+          : message,
       requestId: request.id,
     };
 
@@ -220,6 +250,79 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
       authService: options.authService,
       accessTokens: options.accessTokens,
       tenantRepository: options.tenantRepository,
+    });
+  }
+
+  if (options.accessTokens && options.superAdminRepository) {
+    void registerSuperAdminRoutes(app, {
+      accessTokens: options.accessTokens,
+      repository: options.superAdminRepository,
+    });
+  }
+
+  if (
+    options.tenantRepository &&
+    options.accessTokens &&
+    options.engagementRepository
+  ) {
+    void registerEngagementRoutes(app, {
+      config,
+      tenantRepository: options.tenantRepository,
+      accessTokens: options.accessTokens,
+      repository: options.engagementRepository,
+      notifier: options.leadNotifier,
+    });
+  }
+
+  if (
+    options.tenantRepository &&
+    options.accessTokens &&
+    options.adminPostRepository
+  ) {
+    void registerAdminPostRoutes(app, {
+      config,
+      tenantRepository: options.tenantRepository,
+      accessTokens: options.accessTokens,
+      repository: options.adminPostRepository,
+    });
+  }
+
+  if (
+    options.tenantRepository &&
+    options.accessTokens &&
+    options.adminCategoryRepository
+  ) {
+    void registerAdminCategoryRoutes(app, {
+      config,
+      tenantRepository: options.tenantRepository,
+      accessTokens: options.accessTokens,
+      repository: options.adminCategoryRepository,
+    });
+  }
+
+  if (
+    options.tenantRepository &&
+    options.accessTokens &&
+    options.postImageDependencies
+  ) {
+    void registerPostImageRoutes(app, {
+      config,
+      tenantRepository: options.tenantRepository,
+      accessTokens: options.accessTokens,
+      ...options.postImageDependencies,
+    });
+  }
+
+  if (
+    options.tenantRepository &&
+    options.accessTokens &&
+    options.adminSiteRepository
+  ) {
+    void registerAdminSiteRoutes(app, {
+      config,
+      tenantRepository: options.tenantRepository,
+      accessTokens: options.accessTokens,
+      repository: options.adminSiteRepository,
     });
   }
 

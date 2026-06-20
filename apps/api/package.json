@@ -7,11 +7,16 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
+    "cleanup:images": "tsx src/jobs/cleanup-orphan-images.ts",
+    "cleanup:images:apply": "tsx src/jobs/cleanup-orphan-images.ts --apply",
+    "db:local": "prisma dev --name nice-land --detach",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1073.0",
+    "@aws-sdk/s3-request-presigner": "^3.1073.0",
     "@datcuatoi/contracts": "workspace:*",
     "@datcuatoi/database": "workspace:*",
     "@fastify/cookie": "^11.0.2",

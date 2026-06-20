@@ -4,8 +4,12 @@ import Link from "next/link";
 import { ArrowLeft, Facebook, Mail, MapPin, Maximize2, Phone, Share2 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { TenantHeader } from "@/components/tenant-header";
-import { getPublicPost, getSiteBySlug } from "@/lib/data";
+import { getTenantPost, getTenantSite } from "@/lib/server-api";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
+import { PropertyEngagement } from "@/components/property-engagement";
+import { TrackedContactLink } from "@/components/tracked-contact-link";
+
+const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3002";
 
 export async function generateMetadata({
   params,
@@ -13,13 +17,14 @@ export async function generateMetadata({
   params: Promise<{ slug: string; id: string }>;
 }): Promise<Metadata> {
   const { slug, id } = await params;
-  const site = getSiteBySlug(slug);
-  const post = site ? getPublicPost(site.id, id) : undefined;
+  const site = await getTenantSite(slug);
+  const post = site ? await getTenantPost(slug, site.id, id) : undefined;
   return {
     title: post?.title ?? "Chi tiết bất động sản",
     description: post?.description.slice(0, 155),
+    alternates: { canonical: `${appUrl}/${slug}/posts/${post?.slug ?? id}` },
     openGraph: post
-      ? { title: post.title, description: post.description.slice(0, 155), images: [post.images[0]] }
+      ? { title: post.title, description: post.description.slice(0, 155), url: `${appUrl}/${slug}/posts/${post.slug ?? id}`, images: [post.images[0]] }
       : undefined,
   };
 }
@@ -30,13 +35,34 @@ export default async function PropertyDetailPage({
   params: Promise<{ slug: string; id: string }>;
 }) {
   const { slug, id } = await params;
-  const site = getSiteBySlug(slug);
+  const site = await getTenantSite(slug);
   if (!site || !site.isActive || site.subscriptionStatus === "EXPIRED") notFound();
-  const post = getPublicPost(site.id, id);
+  const post = await getTenantPost(slug, site.id, id);
   if (!post) notFound();
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    name: post.title,
+    description: post.description,
+    url: `${appUrl}/${slug}/posts/${post.slug ?? id}`,
+    image: post.images,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: post.address,
+      addressLocality: post.district,
+      addressRegion: post.province,
+      addressCountry: "VN",
+    },
+    offers: {
+      "@type": "Offer",
+      price: post.price,
+      priceCurrency: "VND",
+    },
+  };
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <TenantHeader site={site} />
       <div className="page-shell py-7">
         <Link href={`/${slug}#properties`} className="inline-flex items-center gap-2 text-sm font-bold text-ink/60 hover:text-ink">
@@ -131,14 +157,20 @@ export default async function PropertyDetailPage({
                 <p className="mt-1 text-xs text-ink/45">Tư vấn bất động sản Đà Nẵng</p>
               </div>
             </div>
-            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="mt-6 flex min-h-13 items-center justify-center gap-2 bg-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-white">
+            <TrackedContactLink slug={slug} postId={post.id} source="PHONE_CLICK" href={`tel:${site.phone.replace(/\s/g, "")}`} className="mt-6 flex min-h-13 items-center justify-center gap-2 bg-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-white">
               <Phone size={17} />
               Gọi {site.phone}
-            </a>
+            </TrackedContactLink>
+            {site.zaloPhone && (
+              <TrackedContactLink slug={slug} postId={post.id} source="ZALO_CLICK" href={`https://zalo.me/${site.zaloPhone.replace(/\D/g, "")}`} className="mt-3 flex min-h-13 items-center justify-center gap-2 border border-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-[var(--tenant-color)]">
+                Nhắn Zalo
+              </TrackedContactLink>
+            )}
             <a href={`mailto:${site.email}`} className="mt-3 flex min-h-13 items-center justify-center gap-2 border border-ink/15 px-5 py-4 text-sm font-bold">
               <Mail size={17} />
               Gửi email
             </a>
+            <PropertyEngagement slug={slug} postId={post.id} />
             <div className="mt-6 flex items-center justify-center gap-6 border-t border-ink/10 pt-5 text-ink/45">
               <button aria-label="Chia sẻ tin đăng"><Share2 size={18} /></button>
               <a href={site.facebookUrl} aria-label="Chia sẻ Facebook"><Facebook size={18} /></a>

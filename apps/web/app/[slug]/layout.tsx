@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getSiteBySlug } from "@/lib/data";
+import { getTenantSite } from "@/lib/server-api";
 
 export default async function TenantLayout({
   children,
@@ -9,7 +9,7 @@ export default async function TenantLayout({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const site = getSiteBySlug(slug);
+  const site = await getTenantSite(slug);
   if (!site) notFound();
 
   return (

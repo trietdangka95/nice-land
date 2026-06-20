@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Globe2,
   Layers3,
-  Menu,
   MousePointerClick,
   Palette,
   ShieldCheck,
@@ -18,6 +17,7 @@ import { Logo } from "@/components/logo";
 import { SectionHeading } from "@/components/section-heading";
 import { ContactForm } from "@/components/contact-form";
 import { Faq } from "@/components/faq";
+import { MobileNavigation } from "@/components/mobile-navigation";
 import { plans, properties } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
 
@@ -44,9 +44,26 @@ export default function LandingPage() {
               <ArrowRight size={16} aria-hidden="true" />
             </a>
           </div>
-          <button className="grid size-11 place-items-center border border-ink/20 sm:hidden" aria-label="Mở menu">
-            <Menu size={20} />
-          </button>
+          <MobileNavigation
+            label="Mở menu"
+            title="Đất Của Tôi"
+            triggerClassName="grid size-11 place-items-center border border-ink/20 sm:hidden"
+          >
+            <nav className="flex flex-col p-4 text-base font-semibold" aria-label="Điều hướng chính trên di động">
+              <a href="#features" className="border-b border-white/10 px-3 py-4">Tính năng</a>
+              <a href="#process" className="border-b border-white/10 px-3 py-4">Cách hoạt động</a>
+              <a href="#pricing" className="border-b border-white/10 px-3 py-4">Bảng giá</a>
+              <a href="#faq" className="border-b border-white/10 px-3 py-4">Hỏi đáp</a>
+            </nav>
+            <div className="mt-auto space-y-3 border-t border-white/10 p-4">
+              <Link href="/superadmin" className="flex min-h-12 items-center justify-center border border-white/20 px-5 text-sm font-bold">
+                Đăng nhập
+              </Link>
+              <a href="#contact" className="flex min-h-12 items-center justify-center bg-white px-5 text-sm font-bold text-ink">
+                Tạo website
+              </a>
+            </div>
+          </MobileNavigation>
         </div>
       </header>
 
@@ -65,7 +82,7 @@ export default function LandingPage() {
             </h1>
             <p className="mt-7 max-w-xl text-base leading-7 text-ink/65 sm:text-lg sm:leading-8">
               Xây thương hiệu riêng, quản lý tin đăng gọn gàng và biến mỗi lượt xem thành một cơ hội
-              kết nối — không cần biết lập trình.
+              kết nối.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a href="#contact" className="button-primary">
@@ -243,9 +260,8 @@ export default function LandingPage() {
             {plans.map((plan) => (
               <article
                 key={plan.name}
-                className={`motion-card relative flex flex-col border p-7 sm:p-9 ${
-                  plan.popular ? "border-moss bg-moss text-white" : "border-ink/15 bg-white"
-                }`}
+                className={`motion-card relative flex flex-col border p-7 sm:p-9 ${plan.popular ? "border-moss bg-moss text-white" : "border-ink/15 bg-white"
+                  }`}
               >
                 {plan.popular && (
                   <span className="absolute right-0 top-0 bg-gold px-4 py-2 text-xs font-bold uppercase tracking-wider text-ink">
@@ -273,9 +289,8 @@ export default function LandingPage() {
                 </ul>
                 <a
                   href="#contact"
-                  className={`mt-9 inline-flex min-h-12 items-center justify-center gap-2 px-6 text-sm font-bold ${
-                    plan.popular ? "bg-white text-ink hover:bg-gold" : "border border-ink/20 hover:bg-cream"
-                  }`}
+                  className={`mt-9 inline-flex min-h-12 items-center justify-center gap-2 px-6 text-sm font-bold ${plan.popular ? "bg-white text-ink hover:bg-gold" : "border border-ink/20 hover:bg-cream"
+                    }`}
                 >
                   Chọn gói {plan.name}
                   <ArrowRight size={16} />

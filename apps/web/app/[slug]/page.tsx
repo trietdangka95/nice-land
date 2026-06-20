@@ -5,7 +5,7 @@ import { ArrowRight, Award, CheckCircle2, MapPin, Phone, ShieldCheck } from "luc
 import { notFound } from "next/navigation";
 import { TenantHeader } from "@/components/tenant-header";
 import { PropertyBrowser } from "@/components/property-browser";
-import { getPublicPosts, getSiteBySlug } from "@/lib/data";
+import { getTenantPosts, getTenantSite } from "@/lib/server-api";
 
 export async function generateMetadata({
   params,
@@ -13,16 +13,25 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const site = getSiteBySlug(slug);
+  const site = await getTenantSite(slug);
   return {
     title: site?.name ?? "Website bất động sản",
     description: site?.tagline,
+    alternates: { canonical: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3002"}/${slug}` },
+    openGraph: site ? { title: site.name, description: site.tagline, url: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3002"}/${slug}`, images: site.banner ? [site.banner] : undefined } : undefined,
   };
 }
 
-export default async function TenantHomePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function TenantHomePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const { slug } = await params;
-  const site = getSiteBySlug(slug);
+  const queryParams = await searchParams;
+  const site = await getTenantSite(slug);
   if (!site) notFound();
 
   if (!site.isActive || site.subscriptionStatus === "EXPIRED") {
@@ -42,8 +51,32 @@ export default async function TenantHomePage({ params }: { params: Promise<{ slu
     );
   }
 
-  const posts = getPublicPosts(site.id);
-  const featured = posts.find((post) => post.featured) ?? posts[0];
+  const rawPage = Number(Array.isArray(queryParams.page) ? queryParams.page[0] : queryParams.page);
+  const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
+  const q = String(Array.isArray(queryParams.q) ? queryParams.q[0] ?? "" : queryParams.q ?? "").slice(0, 120);
+  const typeValue = Array.isArray(queryParams.type) ? queryParams.type[0] : queryParams.type;
+  const type = ["LAND", "HOUSE", "APARTMENT", "RENTAL"].includes(typeValue ?? "")
+    ? typeValue as "LAND" | "HOUSE" | "APARTMENT" | "RENTAL"
+    : undefined;
+  const categoryIdValue = Array.isArray(queryParams.categoryId)
+    ? queryParams.categoryId[0]
+    : queryParams.categoryId;
+  const categoryId =
+    typeof categoryIdValue === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(categoryIdValue)
+      ? categoryIdValue
+      : undefined;
+  const sortValue = Array.isArray(queryParams.sort) ? queryParams.sort[0] : queryParams.sort;
+  const sort = ["newest", "price_asc", "price_desc"].includes(sortValue ?? "")
+    ? sortValue as "newest" | "price_asc" | "price_desc"
+    : "newest";
+
+  const [listing, featuredListing] = await Promise.all([
+    getTenantPosts(slug, site.id, { page, limit: 9, q: q || undefined, type, categoryId, sort }),
+    getTenantPosts(slug, site.id, { page: 1, limit: 1 }),
+  ]);
+  const featured = featuredListing.items[0];
+  if (!featured) notFound();
 
   return (
     <main>
@@ -76,7 +109,7 @@ export default async function TenantHomePage({ params }: { params: Promise<{ slu
           <div className="relative min-h-[430px] lg:min-h-[540px]" data-reveal="right">
             <div className="absolute inset-y-0 right-0 w-[90%] overflow-hidden">
               <Image
-                src={featured.images[0]}
+                src={site.banner ?? featured.images[0]}
                 alt={featured.title}
                 fill
                 priority
@@ -85,7 +118,7 @@ export default async function TenantHomePage({ params }: { params: Promise<{ slu
               />
             </div>
             <Link
-              href={`/${site.slug}/posts/${featured.id}`}
+              href={`/${site.slug}/posts/${featured.slug ?? featured.id}`}
               className="absolute bottom-5 left-0 max-w-sm bg-white p-5 shadow-soft sm:p-6"
             >
               <span className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--tenant-color)]">
@@ -117,7 +150,17 @@ export default async function TenantHomePage({ params }: { params: Promise<{ slu
             </p>
           </div>
           <div className="mt-10">
-            <PropertyBrowser posts={posts} slug={site.slug} />
+            <PropertyBrowser
+              posts={listing.items}
+              slug={site.slug}
+              total={listing.total}
+              page={listing.page}
+              totalPages={listing.totalPages}
+              initialQuery={q}
+              initialType={type ?? "ALL"}
+              initialCategoryId={categoryId ?? ""}
+              initialSort={sort}
+            />
           </div>
         </div>
       </section>
