@@ -46,7 +46,7 @@
 
 - [ ] Create `Site` model.
 - [ ] Create `User` model.
-- [ ] Create `PropertyCategory` model.
+- [x] Create `PropertyCategory` model.
 - [ ] Create `PropertyPost` model.
 - [ ] Create `PropertyImage` model.
 - [ ] Create `SubscriptionPlan` model.
@@ -62,7 +62,7 @@
 - [ ] Seed default subscription plans.
 - [ ] Seed demo tenant site.
 - [ ] Seed demo admin account.
-- [ ] Seed demo categories.
+- [x] Seed demo categories.
 - [ ] Seed demo property posts.
 
 ---
@@ -316,28 +316,28 @@
 
 ### Site Branding
 
-- [ ] Create `GET /api/admin/site-config`.
-- [ ] Create `PUT /api/admin/site-config`.
-- [ ] Update site name.
-- [ ] Update logo.
-- [ ] Update banner.
-- [ ] Update theme color.
-- [ ] Update phone.
-- [ ] Update email.
-- [ ] Update address.
-- [ ] Update Zalo phone.
-- [ ] Update Facebook URL.
-- [ ] Add audit log.
+- [x] Create `GET /api/admin/site-config`.
+- [x] Create `PUT /api/admin/site-config`.
+- [x] Update site name.
+- [x] Update logo.
+- [x] Update banner.
+- [x] Update theme color.
+- [x] Update phone.
+- [x] Update email.
+- [x] Update address.
+- [x] Update Zalo phone.
+- [x] Update Facebook URL.
+- [x] Add audit log.
 
 ### Subscription View
 
-- [ ] Create `GET /api/admin/subscription`.
-- [ ] Show current plan.
-- [ ] Show plan limit.
-- [ ] Show subscription status.
-- [ ] Show subscription end date.
-- [ ] Create renewal request form.
-- [ ] Save renewal request if implemented.
+- [x] Create `GET /api/admin/subscription`.
+- [x] Show current plan.
+- [x] Show plan limit.
+- [x] Show subscription status.
+- [x] Show subscription end date.
+- [x] Create renewal request form.
+- [x] Save renewal request if implemented.
 
 ---
 
@@ -345,62 +345,62 @@
 
 ### Super Admin Layout
 
-- [ ] Build super admin layout.
-- [ ] Build sidebar.
-- [ ] Build top bar.
-- [ ] Add auth guard.
-- [ ] Add logout action.
+- [x] Build super admin layout.
+- [x] Build sidebar.
+- [x] Build top bar.
+- [x] Add auth guard.
+- [x] Add logout action.
 
 ### Manage Sites
 
-- [ ] Create `GET /api/superadmin/sites`.
-- [ ] Create sites table.
-- [ ] Add search by name.
-- [ ] Add search by slug.
-- [ ] Add status filter.
-- [ ] Show subscription status.
-- [ ] Show number of posts.
-- [ ] Show created date.
+- [x] Create `GET /api/superadmin/sites`.
+- [x] Create sites table.
+- [x] Add search by name.
+- [x] Add search by slug.
+- [x] Add status filter.
+- [x] Show subscription status.
+- [x] Show number of posts.
+- [x] Show created date.
 
 ### Create Site
 
-- [ ] Create `POST /api/superadmin/sites`.
-- [ ] Validate site name.
-- [ ] Validate slug format.
-- [ ] Ensure slug is unique.
-- [ ] Create site.
-- [ ] Create admin user.
-- [ ] Assign subscription plan.
-- [ ] Add audit log.
-- [ ] Show generated subdomain.
+- [x] Create `POST /api/superadmin/sites`.
+- [x] Validate site name.
+- [x] Validate slug format.
+- [x] Ensure slug is unique.
+- [x] Create site.
+- [x] Create admin user.
+- [x] Assign subscription plan.
+- [x] Add audit log.
+- [x] Show generated subdomain.
 
 ### Edit Site
 
-- [ ] Create `GET /api/superadmin/sites/:id`.
-- [ ] Create `PUT /api/superadmin/sites/:id`.
-- [ ] Edit site name.
-- [ ] Edit slug.
-- [ ] Edit contact info.
-- [ ] Edit subscription plan.
-- [ ] Edit subscription status.
-- [ ] Edit subscription end date.
-- [ ] Add audit log.
+- [x] Create `GET /api/superadmin/sites/:id`.
+- [x] Create `PUT /api/superadmin/sites/:id`.
+- [x] Edit site name.
+- [x] Edit slug.
+- [x] Edit contact info.
+- [x] Edit subscription plan.
+- [x] Edit subscription status.
+- [x] Edit subscription end date.
+- [x] Add audit log.
 
 ### Activate/Deactivate Site
 
-- [ ] Create `PATCH /api/superadmin/sites/:id/active`.
-- [ ] Toggle active state.
-- [ ] Block inactive sites from guest access.
-- [ ] Add audit log.
+- [x] Create `PATCH /api/superadmin/sites/:id/active`.
+- [x] Toggle active state.
+- [x] Block inactive sites from guest access.
+- [x] Add audit log.
 
 ### Reset Admin Password
 
-- [ ] Create `POST /api/superadmin/sites/:id/reset-password`.
-- [ ] Generate new password.
-- [ ] Hash password.
-- [ ] Update admin user.
-- [ ] Add audit log.
-- [ ] Display new password once.
+- [x] Create `POST /api/superadmin/sites/:id/reset-password`.
+- [x] Generate new password.
+- [x] Hash password.
+- [x] Update admin user.
+- [x] Add audit log.
+- [x] Display new password once.
 
 ---
 
@@ -408,16 +408,16 @@
 
 ### Plan Management
 
-- [ ] Create `GET /api/superadmin/plans`.
-- [ ] Create `POST /api/superadmin/plans`.
-- [ ] Create `PUT /api/superadmin/plans/:id`.
-- [ ] Create `DELETE /api/superadmin/plans/:id`.
-- [ ] Validate plan name.
-- [ ] Validate max posts.
-- [ ] Validate max images per post.
-- [ ] Validate price.
-- [ ] Validate duration days.
-- [ ] Prevent deleting plan currently used by active sites.
+- [x] Create `GET /api/superadmin/plans`.
+- [x] Create `POST /api/superadmin/plans`.
+- [x] Create `PUT /api/superadmin/plans/:id`.
+- [x] Create `DELETE /api/superadmin/plans/:id`.
+- [x] Validate plan name.
+- [x] Validate max posts.
+- [x] Validate max images per post.
+- [x] Validate price.
+- [x] Validate duration days.
+- [x] Prevent deleting plan currently used by active sites.
 
 ### Plan Enforcement
 
@@ -446,12 +446,12 @@
 
 ### Audit Log UI
 
-- [ ] Create `GET /api/superadmin/audit-logs`.
-- [ ] Build audit log table.
-- [ ] Filter by site.
-- [ ] Filter by user.
-- [ ] Filter by action.
-- [ ] Filter by date range.
+- [x] Create `GET /api/superadmin/audit-logs`.
+- [x] Build audit log table.
+- [x] Filter by site.
+- [x] Filter by user.
+- [x] Filter by action.
+- [x] Filter by date.
 
 ---
 
@@ -459,13 +459,13 @@
 
 ### Guest SEO
 
-- [ ] Add dynamic metadata for tenant homepage.
-- [ ] Add dynamic metadata for property detail.
-- [ ] Add Open Graph image.
-- [ ] Add canonical URL.
-- [ ] Add structured data for real estate listing if possible.
-- [ ] Generate sitemap per tenant.
-- [ ] Generate robots.txt.
+- [x] Add dynamic metadata for tenant homepage.
+- [x] Add dynamic metadata for property detail.
+- [x] Add Open Graph image.
+- [x] Add canonical URL.
+- [x] Add structured data for real estate listing if possible.
+- [x] Generate sitemap per tenant.
+- [x] Generate robots.txt.
 
 ### Performance
 

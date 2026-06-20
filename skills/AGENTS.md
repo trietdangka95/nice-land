@@ -7,8 +7,8 @@ Before performing any task, read the following skills in order:
 1. ./skills/spec-driven-development/SKILL.md
 2. ./skills/planning-and-task-breakdown/SKILL.md
 3. ./skills/frontend-ui-engineering/SKILL.md
-4. ./skills/multitenancy/SKILL.md
-5. ./skills/code-review/SKILL.md
+4. ./skills/test-driven-development/SKILL.md
+5. ./skills/interview-me/SKILL.md
 
 Rules:
 

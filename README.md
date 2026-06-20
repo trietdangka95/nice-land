@@ -81,6 +81,27 @@ CORS_ORIGINS=https://datcuatoi.vn,https://*.datcuatoi.vn
 DATABASE_URL=postgresql://...
 ```
 
+API tự nạp biến môi trường từ root `.env`, sau đó
+`packages/database/.env` và `apps/api/.env`. Biến do Vercel/Lightsail cung cấp
+vẫn được giữ nguyên.
+
+Nếu máy chưa có PostgreSQL, có thể chạy Prisma Postgres local bằng Node 22+:
+
+```bash
+corepack pnpm --filter @datcuatoi/database exec prisma dev --name nice-land --detach
+```
+
+Copy URL được in ra vào `DATABASE_URL` trong `.env`, rồi chạy migration và seed.
+
+Email thông báo lead dùng Resend và là cấu hình tùy chọn:
+
+```env
+RESEND_API_KEY=re_...
+EMAIL_FROM=notifications@your-domain.com
+```
+
+Nếu chưa cấu hình, lead vẫn được lưu và hiển thị trong Tenant Admin.
+
 ## Trạng thái
 
 Phase 1 monorepo foundation đã hoàn thành. Giao diện vẫn dùng một phần dữ liệu
@@ -119,3 +140,31 @@ corepack pnpm dlx @prisma/cli@latest project link proj_cmqllfy7j0qm2w0fathh7y2kb
 # Dùng connection URL một lần của Primary database để chạy migration.
 DATABASE_URL="postgresql://..." corepack pnpm --filter @datcuatoi/database db:deploy
 ```
+
+AWS S3 bucket cần CORS cho frontend Vercel:
+
+```json
+[
+  {
+    "AllowedOrigins": ["https://datcuatoi.vn", "http://localhost:3002"],
+    "AllowedMethods": ["PUT", "GET", "HEAD"],
+    "AllowedHeaders": ["*"],
+    "ExposeHeaders": ["ETag"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+Cleanup ảnh S3 không còn được database tham chiếu:
+
+```bash
+# Dry-run, chỉ in danh sách object cũ hơn 24 giờ
+corepack pnpm --filter @datcuatoi/api cleanup:images
+
+# Xóa thật sau khi đã kiểm tra dry-run
+corepack pnpm --filter @datcuatoi/api cleanup:images:apply
+```
+
+Production nên chạy dry-run/cleanup mỗi đêm bằng cron hoặc systemd timer. IAM
+role của API chỉ cần quyền trên prefix `sites/*`: `s3:PutObject`,
+`s3:GetObject`, `s3:HeadObject`, `s3:DeleteObject` và `s3:ListBucket`.

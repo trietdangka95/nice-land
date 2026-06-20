@@ -519,6 +519,9 @@ smoke test với user thật.**
 
 ## Phase 5 — Tenant Admin post management
 
+**Trạng thái hiện tại: CRUD tin đăng tenant-safe đã hoàn thành ở mức code; chờ
+smoke test với Prisma Postgres và tài khoản seed thật.**
+
 ### Vertical slice 5.1: Dashboard
 
 - Counts thật.
@@ -528,30 +531,32 @@ smoke test với user thật.**
 
 ### Vertical slice 5.2: Create post
 
-- React Hook Form + shared Zod schema.
-- Plan limit.
-- Draft/publish.
-- Audit log.
+- [x] Shared Zod schema và form nối API thật.
+- [x] Plan limit.
+- [x] Draft/publish.
+- [x] Audit log.
 
 ### Vertical slice 5.3: Edit post
 
-- Load detail.
-- Optimistic concurrency bằng `updatedAt` hoặc version.
-- Status transitions.
-- Audit diff.
+- [x] Load detail.
+- [x] Optimistic concurrency bằng version.
+- [x] Status transitions.
+- [x] Audit fields/status.
 
 ### Vertical slice 5.4: Delete/archive post
 
-- Confirm dialog.
-- Archive hoặc delete policy.
-- Cleanup ảnh theo policy.
-- Audit log.
+- [x] Confirm dialog.
+- [x] Archive/soft-delete policy.
+- [ ] Cleanup ảnh theo orphan cleanup job.
+- [x] Audit log.
 
 ### Vertical slice 5.5: Categories
 
-- CRUD categories.
-- Tenant-scoped slug.
-- Không xóa category đang được sử dụng hoặc có migration strategy.
+- [x] CRUD categories theo tenant, có audit log.
+- [x] Tenant-scoped slug.
+- [x] Không xóa category đang được sử dụng.
+- [x] Form tin đăng và public filter dùng category từ API thật.
+- [x] Chặn gán category thuộc tenant khác vào tin đăng.
 
 ### Checkpoint Phase 5
 
@@ -563,26 +568,29 @@ smoke test với user thật.**
 
 ## Phase 6 — Image upload
 
+**Trạng thái hiện tại: presign + direct PUT + complete metadata đã hoàn thành ở
+mức code; còn reorder, delete và orphan cleanup.**
+
 ### Task 6.1: Presigned upload
 
-- API tạo presigned URL.
-- FE upload trực tiếp lên AWS S3.
-- API complete upload và lưu metadata.
+- [x] API tạo presigned URL.
+- [x] FE upload trực tiếp lên AWS S3.
+- [x] API complete upload và lưu metadata.
 
 ### Task 6.2: Validation
 
-- MIME allowlist.
-- File size.
+- [x] MIME allowlist.
+- [x] File size tối đa 8 MB.
 - Image dimensions.
-- Max images theo plan.
-- Tenant-scoped object key.
+- [x] Max images theo plan.
+- [x] Tenant-scoped object key.
 
 ### Task 6.3: Image management
 
-- Reorder drag-and-drop.
-- Set cover image.
-- Delete.
-- Orphan cleanup job.
+- [x] Reorder bằng thao tác trái/phải; có thể nâng cấp drag-and-drop sau.
+- [x] Set cover image bằng `sortOrder = 0`.
+- [x] Delete metadata và cleanup S3.
+- [x] Orphan cleanup job dry-run mặc định, grace period 24 giờ.
 
 ### Task 6.4: Image optimization
 
@@ -592,9 +600,10 @@ smoke test với user thật.**
 
 ### Checkpoint Phase 6
 
-- Upload nhiều ảnh ổn định.
-- Tenant A không đọc/xóa private object tenant B.
-- Không còn orphan file sau failure/retry.
+- [x] Upload nhiều ảnh tuần tự ổn định ở mức code.
+- [x] Tenant A không reorder/xóa object tenant B.
+- [x] Có job xử lý orphan file sau failure/retry.
+- [ ] Smoke test với AWS bucket thật và CORS production.
 
 ---
 
@@ -602,29 +611,29 @@ smoke test với user thật.**
 
 ### Vertical slice 7.1: Branding
 
-- Logo, banner, theme color.
-- Contact info.
-- Social links.
-- Preview trước khi lưu.
+- [x] Logo, banner, theme color.
+- [x] Contact info.
+- [x] Social links.
+- [x] Preview trước khi lưu.
 
 ### Vertical slice 7.2: Subscription usage
 
-- Current plan.
-- Limits.
-- End date.
-- Grace period/expired behavior.
+- [x] Current plan.
+- [x] Limits.
+- [x] End date.
+- [x] Grace period/expired behavior.
 
 ### Vertical slice 7.3: Renewal request
 
-- Admin gửi request.
+- [x] Admin gửi request.
 - Super Admin duyệt/từ chối.
-- Ghi subscription history.
-- Audit log.
+- Ghi subscription history khi Super Admin duyệt.
+- [x] Audit log khi tenant gửi yêu cầu.
 
 ### Checkpoint Phase 7
 
-- Branding cập nhật lên guest site.
-- Limit post và image được enforce ở API, không chỉ FE.
+- [x] Branding cập nhật lên guest site.
+- [x] Limit post và image được enforce ở API, không chỉ FE.
 
 ---
 
@@ -632,38 +641,38 @@ smoke test với user thật.**
 
 ### Vertical slice 8.1: Manage sites
 
-- Search/filter/pagination.
-- Create site transaction.
-- Edit site.
-- Activate/deactivate.
-- View usage.
+- [x] Search/filter/pagination.
+- [x] Create site transaction.
+- [x] Edit site.
+- [x] Activate/deactivate.
+- [x] View usage.
 
 ### Vertical slice 8.2: Manage plans
 
-- CRUD plans.
-- Không xóa plan đang được sử dụng.
-- Version/change policy cho tenant hiện tại.
+- [x] CRUD plans.
+- [x] Không xóa plan đang được sử dụng.
+- [x] Thay đổi plan chỉ áp dụng khi gán/gia hạn tenant.
 
 ### Vertical slice 8.3: Admin account management
 
-- Reset password.
-- Disable account.
-- View last login/session.
+- [x] Reset password.
+- [x] Disable account và revoke session.
+- [x] View last login.
 
 ### Vertical slice 8.4: Contacts and renewals
 
-- Status workflow: NEW, IN_PROGRESS, DONE, REJECTED.
+- [x] Status workflow: NEW, IN_PROGRESS, DONE, REJECTED.
 - Notes và assignee nếu cần.
 
 ### Vertical slice 8.5: Audit logs
 
-- Filter theo site/user/action/date.
-- Detail JSON.
+- [x] Filter theo site/user/action/date.
+- [x] Detail JSON.
 - Export CSV nếu cần.
 
 ### Checkpoint Phase 8
 
-- Super Admin có thể vận hành toàn bộ tenant mà không cần thao tác database thủ công.
+- [x] Super Admin có thể vận hành toàn bộ tenant mà không cần thao tác database thủ công.
 
 ---
 
@@ -671,33 +680,33 @@ smoke test với user thật.**
 
 ### SEO
 
-- Dynamic metadata.
-- Canonical URL.
-- Open Graph.
-- JSON-LD.
-- Tenant sitemap.
-- robots.txt.
-- Property slug thân thiện.
+- [x] Dynamic metadata.
+- [x] Canonical URL.
+- [x] Open Graph.
+- [x] JSON-LD.
+- [x] Tenant sitemap.
+- [x] robots.txt.
+- [x] Property slug thân thiện.
 
 ### Analytics
 
-- Property view tracking.
-- Deduplicate bot/repeated events.
-- Dashboard theo ngày/tháng.
-- Top posts.
+- [x] Property view tracking.
+- [x] Deduplicate bot/repeated events.
+- [x] Dashboard 30 ngày.
+- [x] Top posts.
 
 ### Lead
 
-- Contact form theo property.
-- Click phone/Zalo tracking.
-- Lead inbox cho Tenant Admin.
-- Lead status và notes.
-- Email notification.
+- [x] Contact form theo property.
+- [x] Click phone/Zalo tracking.
+- [x] Lead inbox cho Tenant Admin.
+- [x] Lead status và notes.
+- [x] Email notification qua provider cấu hình (Resend).
 
 ### Checkpoint Phase 9
 
-- Property được index đúng.
-- Tenant xem được nguồn lead và tin hiệu quả.
+- [x] Property được index đúng.
+- [x] Tenant xem được nguồn lead và tin hiệu quả.
 
 ---
 
