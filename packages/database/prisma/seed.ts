@@ -87,7 +87,7 @@ async function main() {
       username: "superadmin",
       email: "admin@nice-land.vn",
       passwordHash,
-      fullName: "Quản trị Đất Của Tôi",
+      fullName: "Quản trị Nice Land",
       role: UserRole.SUPER_ADMIN,
     },
   });
@@ -141,7 +141,7 @@ async function main() {
 
   for (const site of [minhPhat, anLand]) {
     await prisma.siteDomain.upsert({
-      where: { hostname: `${site.slug}.datcuatoi.vn` },
+      where: { hostname: `${site.slug}.nice-land.vn` },
       update: {
         siteId: site.id,
         status: "VERIFIED",
@@ -151,7 +151,7 @@ async function main() {
       },
       create: {
         siteId: site.id,
-        hostname: `${site.slug}.datcuatoi.vn`,
+        hostname: `${site.slug}.nice-land.vn`,
         status: "VERIFIED",
         isPrimary: true,
         isPlatform: true,

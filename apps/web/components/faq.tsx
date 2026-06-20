@@ -12,7 +12,7 @@ const questions = [
   {
     question: "Website có dùng được tên miền riêng không?",
     answer:
-      "Gói Doanh nghiệp hỗ trợ kết nối tên miền riêng. Các gói còn lại sử dụng subdomain thương hiệu trên datcuatoi.vn.",
+      "Gói Doanh nghiệp hỗ trợ kết nối tên miền riêng. Các gói còn lại sử dụng subdomain thương hiệu trên nice-land.vn.",
   },
   {
     question: "Tôi có thể chuyển dữ liệu tin đăng cũ sang không?",

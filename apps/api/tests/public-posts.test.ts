@@ -54,7 +54,7 @@ describe("public property APIs", () => {
       loadConfig({
         NODE_ENV: "test",
         LOG_LEVEL: "silent",
-        ROOT_DOMAIN: "datcuatoi.vn",
+        ROOT_DOMAIN: "nice-land.vn",
       }),
       { tenantRepository, publicPostRepository },
     );
@@ -63,7 +63,7 @@ describe("public property APIs", () => {
     const response = await app.inject({
       method: "GET",
       url: "/v1/public/posts?siteId=site-b&type=HOUSE&page=2&limit=12",
-      headers: { "x-tenant-host": "minhphat.datcuatoi.vn" },
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
     });
 
     expect(response.statusCode).toBe(200);
@@ -92,7 +92,7 @@ describe("public property APIs", () => {
       loadConfig({
         NODE_ENV: "test",
         LOG_LEVEL: "silent",
-        ROOT_DOMAIN: "datcuatoi.vn",
+        ROOT_DOMAIN: "nice-land.vn",
       }),
       { tenantRepository, publicPostRepository },
     );
@@ -101,7 +101,7 @@ describe("public property APIs", () => {
     const response = await app.inject({
       method: "GET",
       url: "/v1/public/posts/post-from-site-b",
-      headers: { "x-tenant-host": "minhphat.datcuatoi.vn" },
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
     });
 
     expect(response.statusCode).toBe(404);
@@ -120,7 +120,7 @@ describe("public property APIs", () => {
       loadConfig({
         NODE_ENV: "test",
         LOG_LEVEL: "silent",
-        ROOT_DOMAIN: "datcuatoi.vn",
+        ROOT_DOMAIN: "nice-land.vn",
       }),
       { tenantRepository, publicPostRepository },
     );
@@ -129,7 +129,7 @@ describe("public property APIs", () => {
     const response = await app.inject({
       method: "GET",
       url: "/v1/public/posts?limit=500",
-      headers: { "x-tenant-host": "minhphat.datcuatoi.vn" },
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
     });
 
     expect(response.statusCode).toBe(400);

@@ -493,6 +493,6 @@ export interface ApiError {
 
 export interface HealthResponse {
   status: "ok" | "unavailable";
-  service: "datcuatoi-api";
+  service: "nice-land-api";
   timestamp: string;
 }

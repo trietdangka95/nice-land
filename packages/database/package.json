@@ -11,8 +11,8 @@
   },
   "scripts": {
     "build": "prisma generate && tsc -p tsconfig.build.json",
-    "lint": "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/datcuatoi prisma validate",
-    "typecheck": "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/datcuatoi prisma validate",
+    "lint": "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/nice_land prisma validate",
+    "typecheck": "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/nice_land prisma validate",
     "test": "vitest run --passWithNoTests",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",

@@ -105,7 +105,7 @@ async function createAuthApp() {
   const config = loadConfig({
     NODE_ENV: "test",
     LOG_LEVEL: "silent",
-    ROOT_DOMAIN: "datcuatoi.vn",
+    ROOT_DOMAIN: "nice-land.vn",
     JWT_ACCESS_SECRET: "test-access-secret-at-least-32-characters",
   });
   const accessTokens = new AccessTokenService(
@@ -131,7 +131,7 @@ describe("auth routes", () => {
     const response = await app.inject({
       method: "POST",
       url: "/v1/auth/login",
-      headers: { "x-tenant-host": "minhphat.datcuatoi.vn" },
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
       payload: {
         username: "admin",
         password: "ValidPassword123!",
@@ -152,7 +152,7 @@ describe("auth routes", () => {
     const response = await app.inject({
       method: "POST",
       url: "/v1/auth/login",
-      headers: { "x-tenant-host": "anland.datcuatoi.vn" },
+      headers: { "x-tenant-host": "anland.nice-land.vn" },
       payload: {
         username: "admin",
         password: "ValidPassword123!",
@@ -168,7 +168,7 @@ describe("auth routes", () => {
     const login = await app.inject({
       method: "POST",
       url: "/v1/auth/login",
-      headers: { "x-tenant-host": "minhphat.datcuatoi.vn" },
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
       payload: {
         username: "admin",
         password: "ValidPassword123!",
@@ -181,7 +181,7 @@ describe("auth routes", () => {
       url: "/v1/auth/tenant-check",
       headers: {
         authorization: `Bearer ${accessToken}`,
-        "x-tenant-host": "anland.datcuatoi.vn",
+        "x-tenant-host": "anland.nice-land.vn",
       },
     });
 

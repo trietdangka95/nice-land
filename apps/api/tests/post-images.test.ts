@@ -12,13 +12,13 @@ const config: AppConfig = {
   NODE_ENV: "test",
   HOST: "127.0.0.1",
   PORT: 4000,
-  ROOT_DOMAIN: "datcuatoi.vn",
+  ROOT_DOMAIN: "nice-land.vn",
   CORS_ORIGINS: "http://localhost:3002",
   LOG_LEVEL: "silent",
   JWT_ACCESS_SECRET: "test-secret-with-at-least-thirty-two-characters",
   ACCESS_TOKEN_TTL_SECONDS: 900,
   REFRESH_TOKEN_TTL_DAYS: 30,
-  REFRESH_COOKIE_NAME: "datcuatoi_refresh",
+  REFRESH_COOKIE_NAME: "nice_land_refresh",
   AWS_REGION: "ap-southeast-1",
   AWS_S3_BUCKET: "nice-land-media",
   AWS_S3_PUBLIC_URL: "https://cdn.example.com",
@@ -91,7 +91,7 @@ describe("post image upload routes", () => {
       url: "/v1/admin/posts/post-a/images/presign",
       headers: {
         authorization: "Bearer token",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
       payload: {
         fileName: "mat-tien.jpg",
@@ -112,7 +112,7 @@ describe("post image upload routes", () => {
       url: "/v1/admin/posts/post-a/images/presign",
       headers: {
         authorization: "Bearer token",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
       payload: {
         fileName: "payload.svg",
@@ -129,7 +129,7 @@ describe("post image upload routes", () => {
       url: "/v1/admin/posts/post-a/images/complete",
       headers: {
         authorization: "Bearer token",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
       payload: {
         objectKey: "sites/site-b/posts/post-b/stolen.jpg",
@@ -153,7 +153,7 @@ describe("post image upload routes", () => {
       url: "/v1/admin/posts/post-a/images/reorder",
       headers: {
         authorization: "Bearer token",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
       payload: {
         imageIds: [secondImageId, firstImageId],
@@ -171,7 +171,7 @@ describe("post image upload routes", () => {
       url: "/v1/admin/posts/post-a/images/reorder",
       headers: {
         authorization: "Bearer token",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
       payload: {
         imageIds: [current.firstImageId],
@@ -188,7 +188,7 @@ describe("post image upload routes", () => {
       url: `/v1/admin/posts/post-a/images/${current.firstImageId}`,
       headers: {
         authorization: "Bearer token",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
     });
 
@@ -202,7 +202,7 @@ describe("post image upload routes", () => {
       url: `/v1/admin/posts/post-a/images/${current.secondImageId}`,
       headers: {
         authorization: "Bearer token",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
     });
 

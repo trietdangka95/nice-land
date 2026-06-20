@@ -28,15 +28,15 @@ export class AccessTokenService {
       .setSubject(claims.sub)
       .setIssuedAt()
       .setExpirationTime(`${this.ttlSeconds}s`)
-      .setIssuer("datcuatoi-api")
-      .setAudience("datcuatoi-web")
+      .setIssuer("nice-land-api")
+      .setAudience("nice-land-web")
       .sign(this.secret);
   }
 
   async verify(token: string): Promise<AccessTokenClaims> {
     const { payload } = await jwtVerify(token, this.secret, {
-      issuer: "datcuatoi-api",
-      audience: "datcuatoi-web",
+      issuer: "nice-land-api",
+      audience: "nice-land-web",
     });
 
     if (

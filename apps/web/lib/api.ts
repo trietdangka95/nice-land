@@ -7,7 +7,7 @@ export const api = createApiClient({
   getAccessToken: () =>
     typeof window === "undefined"
       ? undefined
-      : window.sessionStorage.getItem("datcuatoi_access_token") ?? undefined,
+      : window.sessionStorage.getItem("nice_land_access_token") ?? undefined,
 });
 
 export function createTenantApi(slug: string) {
@@ -22,6 +22,6 @@ export function createTenantApi(slug: string) {
     getAccessToken: () =>
       typeof window === "undefined"
         ? undefined
-        : window.sessionStorage.getItem("datcuatoi_access_token") ?? undefined,
+        : window.sessionStorage.getItem("nice_land_access_token") ?? undefined,
   });
 }

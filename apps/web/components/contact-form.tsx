@@ -37,7 +37,7 @@ export function ContactForm() {
         <CheckCircle2 className="text-gold" size={44} aria-hidden="true" />
         <h3 className="mt-5 font-display text-3xl">Chúng tôi đã nhận thông tin</h3>
         <p className="mt-3 max-w-sm text-sm leading-6 text-white/65">
-          Đội ngũ Đất Của Tôi sẽ liên hệ và tư vấn mô hình website phù hợp trong giờ làm việc.
+          Đội ngũ Nice Land sẽ liên hệ và tư vấn mô hình website phù hợp trong giờ làm việc.
         </p>
         <button className="mt-6 text-sm font-bold text-gold" onClick={() => setSubmitted(false)}>
           Gửi một yêu cầu khác

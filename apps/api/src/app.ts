@@ -111,7 +111,7 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
 
   app.get("/health/live", async (): Promise<HealthResponse> => ({
     status: "ok",
-    service: "datcuatoi-api",
+    service: "nice-land-api",
     timestamp: new Date().toISOString(),
   }));
 
@@ -120,13 +120,13 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
       await options.readinessCheck?.();
       return {
         status: "ok",
-        service: "datcuatoi-api",
+        service: "nice-land-api",
         timestamp: new Date().toISOString(),
       };
     } catch {
       return reply.status(503).send({
         status: "unavailable",
-        service: "datcuatoi-api",
+        service: "nice-land-api",
         timestamp: new Date().toISOString(),
       });
     }

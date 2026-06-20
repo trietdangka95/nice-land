@@ -1,17 +1,17 @@
-# DatCuaToi Platform - Product & Technical Plan
+# Nice Land Platform - Product & Technical Plan
 
 ## 1. Product Overview
 
-**DatCuaToi Platform** is a multi-tenant real estate listing SaaS platform.
+**Nice Land Platform** is a multi-tenant real estate listing SaaS platform.
 
 The platform allows the Super Admin to create multiple subdomains. Each subdomain represents a separate real estate website for a client.
 
 Example:
 
 ```txt
-abc.datcuatoi.vn
-nguyenvana.datcuatoi.vn
-batdongsanabc.datcuatoi.vn
+abc.nice-land.vn
+nguyenvana.nice-land.vn
+batdongsanabc.nice-land.vn
 ```
 
 Each client owns one subdomain and can manage their own property posts, images, descriptions, locations, branding, and contact information.
@@ -72,7 +72,7 @@ Responsibilities:
 URL:
 
 ```txt
-datcuatoi.vn
+nice-land.vn
 ```
 
 Purpose:
@@ -106,7 +106,7 @@ Register your subdomain
 URL example:
 
 ```txt
-abc.datcuatoi.vn
+abc.nice-land.vn
 ```
 
 Purpose:
@@ -135,7 +135,7 @@ Guest does not need to login.
 URL example:
 
 ```txt
-abc.datcuatoi.vn/admin
+abc.nice-land.vn/admin
 ```
 
 Purpose:
@@ -166,7 +166,7 @@ Features:
 URL example:
 
 ```txt
-datcuatoi.vn/superadmin
+nice-land.vn/superadmin
 ```
 
 Purpose:
@@ -293,7 +293,7 @@ Example:
 
 ```txt
 slug = abc
-domain = abc.datcuatoi.vn
+domain = abc.nice-land.vn
 ```
 
 ## 6.2 Tenant Resolution Flow
@@ -301,7 +301,7 @@ domain = abc.datcuatoi.vn
 When a request comes to the backend:
 
 ```txt
-abc.datcuatoi.vn
+abc.nice-land.vn
 ```
 
 The system should:

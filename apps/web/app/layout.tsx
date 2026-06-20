@@ -4,8 +4,8 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 
 export const metadata: Metadata = {
   title: {
-    default: "Đất Của Tôi — Website bất động sản mang tên bạn",
-    template: "%s | Đất Của Tôi",
+    default: "Nice Land — Website bất động sản mang tên bạn",
+    template: "%s | Nice Land",
   },
   description:
     "Nền tảng giúp môi giới và doanh nghiệp tạo website bất động sản riêng, quản lý tin đăng và xây dựng thương hiệu.",

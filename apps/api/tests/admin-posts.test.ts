@@ -12,13 +12,13 @@ const config: AppConfig = {
   NODE_ENV: "test",
   HOST: "127.0.0.1",
   PORT: 4000,
-  ROOT_DOMAIN: "datcuatoi.vn",
+  ROOT_DOMAIN: "nice-land.vn",
   CORS_ORIGINS: "http://localhost:3002",
   LOG_LEVEL: "silent",
   JWT_ACCESS_SECRET: "test-secret-with-at-least-thirty-two-characters",
   ACCESS_TOKEN_TTL_SECONDS: 900,
   REFRESH_TOKEN_TTL_DAYS: 30,
-  REFRESH_COOKIE_NAME: "datcuatoi_refresh",
+  REFRESH_COOKIE_NAME: "nice_land_refresh",
 };
 
 const tenantRepository: TenantSiteRepository = {
@@ -109,7 +109,7 @@ describe("tenant admin post routes", () => {
       url: "/v1/admin/posts",
       headers: {
         authorization: "Bearer tenant-a",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
     });
 
@@ -123,7 +123,7 @@ describe("tenant admin post routes", () => {
       url: "/v1/admin/posts",
       headers: {
         authorization: "Bearer tenant-b",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
     });
 
@@ -143,7 +143,7 @@ describe("tenant admin post routes", () => {
       url: "/v1/admin/posts",
       headers: {
         authorization: "Bearer tenant-a",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
       payload: {
         siteId: "site-b",
@@ -165,7 +165,7 @@ describe("tenant admin post routes", () => {
       url: "/v1/admin/posts/post-a",
       headers: {
         authorization: "Bearer tenant-a",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
       payload: {
         title: "Tiêu đề đã thay đổi",
@@ -182,7 +182,7 @@ describe("tenant admin post routes", () => {
       url: "/v1/admin/posts/post-a?version=1",
       headers: {
         authorization: "Bearer tenant-a",
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
     });
 

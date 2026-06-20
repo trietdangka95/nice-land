@@ -64,7 +64,7 @@ export function AdminShell({
     try {
       await client.logout();
     } finally {
-      window.sessionStorage.removeItem("datcuatoi_access_token");
+      window.sessionStorage.removeItem("nice_land_access_token");
       router.replace(
         superAdmin ? "/superadmin/login" : `/${site?.slug}/admin/login`,
       );
@@ -82,9 +82,9 @@ export function AdminShell({
           <div className="min-w-0">
             <strong
               className="block truncate font-display text-base font-semibold leading-5"
-              title={superAdmin ? "Đất Của Tôi" : site?.name}
+              title={superAdmin ? "Nice Land" : site?.name}
             >
-              {superAdmin ? "Đất Của Tôi" : site?.name}
+              {superAdmin ? "Nice Land" : site?.name}
             </strong>
             <span className="mt-1 block whitespace-nowrap text-[8px] font-bold uppercase tracking-[0.14em] text-white/45">
               {superAdmin ? "Quản trị hệ thống" : "Trang quản trị"}
@@ -133,7 +133,7 @@ export function AdminShell({
           <div className="flex items-center gap-3">
             <MobileNavigation
               label="Mở menu quản trị"
-              title={superAdmin ? "Đất Của Tôi" : site?.name ?? "Trang quản trị"}
+              title={superAdmin ? "Nice Land" : site?.name ?? "Trang quản trị"}
               triggerClassName="grid size-10 place-items-center border border-ink/10 min-[901px]:hidden"
             >
               <nav className="flex-1 space-y-1 p-4" aria-label="Điều hướng quản trị trên di động">

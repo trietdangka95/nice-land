@@ -43,9 +43,9 @@ export default async function TenantHomePage({
           </span>
           <h1 className="mt-6 font-display text-4xl">Website đang tạm ngưng hoạt động</h1>
           <p className="mt-4 leading-7 text-ink/60">
-            Vui lòng liên hệ chủ website hoặc Đất Của Tôi để biết thêm thông tin.
+            Vui lòng liên hệ chủ website hoặc Nice Land để biết thêm thông tin.
           </p>
-          <Link href="/" className="button-primary mt-7">Về trang Đất Của Tôi</Link>
+          <Link href="/" className="button-primary mt-7">Về trang Nice Land</Link>
         </div>
       </main>
     );
@@ -228,7 +228,7 @@ export default async function TenantHomePage({
           </div>
           <div className="text-white/45 md:text-right">
             <p>{site.email} · {site.phone}</p>
-            <p className="mt-2">Website vận hành trên nền tảng Đất Của Tôi</p>
+            <p className="mt-2">Website vận hành trên nền tảng Nice Land</p>
           </div>
         </div>
       </footer>

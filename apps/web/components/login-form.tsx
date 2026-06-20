@@ -30,7 +30,7 @@ export function LoginForm({
         password: String(form.get("password") ?? ""),
       });
       window.sessionStorage.setItem(
-        "datcuatoi_access_token",
+        "nice_land_access_token",
         result.accessToken,
       );
       router.replace(superAdmin ? "/superadmin" : `/${slug}/admin`);

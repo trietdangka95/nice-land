@@ -24,11 +24,11 @@ export function AuthGuard({
 
     async function authenticate() {
       try {
-        let token = window.sessionStorage.getItem("datcuatoi_access_token");
+        let token = window.sessionStorage.getItem("nice_land_access_token");
         if (!token) {
           const refreshed = await client.refresh();
           token = refreshed.accessToken;
-          window.sessionStorage.setItem("datcuatoi_access_token", token);
+          window.sessionStorage.setItem("nice_land_access_token", token);
         }
 
         const user = await client.me();
@@ -38,7 +38,7 @@ export function AuthGuard({
         if (!validRole) throw new Error("Invalid role");
         if (active) setReady(true);
       } catch {
-        window.sessionStorage.removeItem("datcuatoi_access_token");
+        window.sessionStorage.removeItem("nice_land_access_token");
         router.replace(
           superAdmin ? "/superadmin/login" : `/${slug}/admin/login`,
         );

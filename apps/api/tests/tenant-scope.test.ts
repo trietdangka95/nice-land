@@ -4,7 +4,7 @@ import { tenantWhere } from "../src/modules/tenancy/tenant-scope.js";
 const tenant = {
   siteId: "site-a",
   slug: "minhphat",
-  hostname: "minhphat.datcuatoi.vn",
+  hostname: "minhphat.nice-land.vn",
   subscriptionStatus: "ACTIVE" as const,
 };
 

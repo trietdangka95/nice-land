@@ -180,7 +180,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
         await tx.siteDomain.create({
           data: {
             siteId: site.id,
-            hostname: `${input.slug}.datcuatoi.vn`,
+            hostname: `${input.slug}.nice-land.vn`,
             isPrimary: true,
             isPlatform: true,
             status: "VERIFIED",
@@ -250,7 +250,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
         if (exists.slug !== input.slug) {
           await tx.siteDomain.updateMany({
             where: { siteId: id, isPlatform: true },
-            data: { hostname: `${input.slug}.datcuatoi.vn` },
+            data: { hostname: `${input.slug}.nice-land.vn` },
           });
         }
         await tx.auditLog.create({

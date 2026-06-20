@@ -10,7 +10,7 @@ import { loadConfig } from "../src/config.js";
 const activeSite = {
   id: "site-a",
   slug: "minhphat",
-  hostname: "minhphat.datcuatoi.vn",
+  hostname: "minhphat.nice-land.vn",
   isActive: true,
   subscriptionStatus: "ACTIVE" as const,
   subscriptionEnd: new Date("2027-06-30T00:00:00.000Z"),
@@ -27,8 +27,8 @@ function createRepository(): TenantSiteRepository {
 describe("resolveTenant", () => {
   it("resolves a tenant from a platform subdomain", async () => {
     const tenant = await resolveTenant({
-      host: "minhphat.datcuatoi.vn",
-      rootDomain: "datcuatoi.vn",
+      host: "minhphat.nice-land.vn",
+      rootDomain: "nice-land.vn",
       repository: createRepository(),
       now: new Date("2026-06-19T00:00:00.000Z"),
     });
@@ -39,7 +39,7 @@ describe("resolveTenant", () => {
   it("resolves a verified custom domain through the repository", async () => {
     const tenant = await resolveTenant({
       host: "nhadatminhphat.vn",
-      rootDomain: "datcuatoi.vn",
+      rootDomain: "nice-land.vn",
       repository: createRepository(),
       now: new Date("2026-06-19T00:00:00.000Z"),
     });
@@ -66,8 +66,8 @@ describe("resolveTenant", () => {
 
     await expect(
       resolveTenant({
-        host: "minhphat.datcuatoi.vn",
-        rootDomain: "datcuatoi.vn",
+        host: "minhphat.nice-land.vn",
+        rootDomain: "nice-land.vn",
         repository,
       }),
     ).rejects.toMatchObject({ code: "TENANT_INACTIVE" } satisfies Partial<TenantResolutionError>);
@@ -85,8 +85,8 @@ describe("resolveTenant", () => {
 
     await expect(
       resolveTenant({
-        host: "minhphat.datcuatoi.vn",
-        rootDomain: "datcuatoi.vn",
+        host: "minhphat.nice-land.vn",
+        rootDomain: "nice-land.vn",
         repository,
         now: new Date("2026-06-19T00:00:00.000Z"),
       }),
@@ -104,8 +104,8 @@ describe("resolveTenant", () => {
     };
 
     const tenant = await resolveTenant({
-      host: "minhphat.datcuatoi.vn",
-      rootDomain: "datcuatoi.vn",
+      host: "minhphat.nice-land.vn",
+      rootDomain: "nice-land.vn",
       repository,
       now: new Date("2026-06-19T00:00:00.000Z"),
       allowExpired: true,
@@ -120,8 +120,8 @@ describe("resolveTenant", () => {
   it("rejects unknown or root hosts", async () => {
     await expect(
       resolveTenant({
-        host: "datcuatoi.vn",
-        rootDomain: "datcuatoi.vn",
+        host: "nice-land.vn",
+        rootDomain: "nice-land.vn",
         repository: createRepository(),
       }),
     ).rejects.toMatchObject({ code: "TENANT_NOT_FOUND" } satisfies Partial<TenantResolutionError>);
@@ -151,7 +151,7 @@ describe("tenant request context", () => {
       loadConfig({
         NODE_ENV: "test",
         LOG_LEVEL: "silent",
-        ROOT_DOMAIN: "datcuatoi.vn",
+        ROOT_DOMAIN: "nice-land.vn",
       }),
       { tenantRepository: createRepository(), publicSiteRepository },
     );
@@ -160,7 +160,7 @@ describe("tenant request context", () => {
       method: "GET",
       url: "/v1/public/site",
       headers: {
-        "x-tenant-host": "minhphat.datcuatoi.vn",
+        "x-tenant-host": "minhphat.nice-land.vn",
       },
     });
 
@@ -178,7 +178,7 @@ describe("tenant request context", () => {
       loadConfig({
         NODE_ENV: "test",
         LOG_LEVEL: "silent",
-        ROOT_DOMAIN: "datcuatoi.vn",
+        ROOT_DOMAIN: "nice-land.vn",
       }),
       { tenantRepository: createRepository(), publicSiteRepository },
     );
@@ -187,7 +187,7 @@ describe("tenant request context", () => {
       method: "GET",
       url: "/v1/public/site",
       headers: {
-        "x-tenant-host": "unknown.datcuatoi.vn",
+        "x-tenant-host": "unknown.nice-land.vn",
       },
     });
 

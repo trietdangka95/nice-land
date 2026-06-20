@@ -8,7 +8,7 @@ import {
 } from "../src/modules/superadmin/superadmin-repository.js";
 
 const config: AppConfig = {
-  NODE_ENV: "test", HOST: "127.0.0.1", PORT: 4000, ROOT_DOMAIN: "datcuatoi.vn",
+  NODE_ENV: "test", HOST: "127.0.0.1", PORT: 4000, ROOT_DOMAIN: "nice-land.vn",
   CORS_ORIGINS: "http://localhost:3002", LOG_LEVEL: "silent",
   JWT_ACCESS_SECRET: "test-secret-with-at-least-thirty-two-characters",
   ACCESS_TOKEN_TTL_SECONDS: 900, REFRESH_TOKEN_TTL_DAYS: 30, REFRESH_COOKIE_NAME: "refresh",

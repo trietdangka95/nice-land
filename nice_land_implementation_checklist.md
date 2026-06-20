@@ -1,4 +1,4 @@
-# DatCuaToi Platform - Implementation Checklist
+# Nice Land Platform - Implementation Checklist
 
 ## Phase 0 - Project Setup
 
@@ -536,7 +536,7 @@
 - [ ] Configure wildcard DNS:
 
 ```txt
-*.datcuatoi.vn
+*.nice-land.vn
 ```
 
 - [ ] Point wildcard to deployment platform.

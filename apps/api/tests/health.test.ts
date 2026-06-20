@@ -18,7 +18,7 @@ describe("health endpoints", () => {
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({
       status: "ok",
-      service: "datcuatoi-api",
+      service: "nice-land-api",
     });
   });
 
@@ -38,7 +38,7 @@ describe("health endpoints", () => {
     expect(response.statusCode).toBe(503);
     expect(response.json()).toMatchObject({
       status: "unavailable",
-      service: "datcuatoi-api",
+      service: "nice-land-api",
     });
   });
 });

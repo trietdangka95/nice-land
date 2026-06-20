@@ -50,7 +50,7 @@ describe("GET /v1/public/site", () => {
       loadConfig({
         NODE_ENV: "test",
         LOG_LEVEL: "silent",
-        ROOT_DOMAIN: "datcuatoi.vn",
+        ROOT_DOMAIN: "nice-land.vn",
       }),
       { tenantRepository, publicSiteRepository },
     );
@@ -59,7 +59,7 @@ describe("GET /v1/public/site", () => {
     const response = await app.inject({
       method: "GET",
       url: "/v1/public/site",
-      headers: { "x-tenant-host": "minhphat.datcuatoi.vn" },
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
     });
 
     expect(response.statusCode).toBe(200);
@@ -97,7 +97,7 @@ describe("GET /v1/public/site", () => {
       loadConfig({
         NODE_ENV: "test",
         LOG_LEVEL: "silent",
-        ROOT_DOMAIN: "datcuatoi.vn",
+        ROOT_DOMAIN: "nice-land.vn",
       }),
       { tenantRepository, publicSiteRepository },
     );
@@ -106,7 +106,7 @@ describe("GET /v1/public/site", () => {
     await app.inject({
       method: "GET",
       url: "/v1/public/site?siteId=site-b",
-      headers: { "x-tenant-host": "minhphat.datcuatoi.vn" },
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
     });
 
     expect(requestedSiteIds).toEqual(["site-a"]);

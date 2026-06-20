@@ -1,4 +1,4 @@
-# DatCuaToi — Monorepo Migration & Full Product Plan
+# Nice Land — Monorepo Migration & Full Product Plan
 
 ## 1. Mục tiêu
 
@@ -20,8 +20,8 @@ Chuyển codebase hiện tại từ một Next.js full-stack demo thành monorep
 4. Backend dùng Fastify, TypeScript, Zod/JSON Schema và Prisma.
 5. Database là PostgreSQL.
 6. File storage dùng **AWS S3**. ✅ Đã chốt
-7. FE public chạy tại `datcuatoi.vn` và `*.datcuatoi.vn`.
-8. API chạy tại `api.datcuatoi.vn`.
+7. FE public chạy tại `nice-land.vn` và `*.nice-land.vn`.
+8. API chạy tại `api.nice-land.vn`.
 9. Auth dùng access token ngắn hạn và refresh token trong cookie `HttpOnly`.
 10. Giai đoạn đầu chưa tự động thanh toán; Super Admin quản lý gói và gia hạn thủ công.
 
@@ -58,7 +58,7 @@ Các giả định này phải được xác nhận trước Phase 2.
 ## 4. Kiến trúc đích
 
 ```text
-dat-cua-toi/
+nice-land/
 ├── apps/
 │   ├── web/                       # Next.js frontend
 │   │   ├── app/
@@ -114,10 +114,10 @@ apps/api ──────► packages/contracts   │
 
 ### Public request
 
-1. Người dùng mở `minhphat.datcuatoi.vn`.
+1. Người dùng mở `minhphat.nice-land.vn`.
 2. Next.js đọc hostname để render đúng tenant.
-3. FE gọi `https://api.datcuatoi.vn/public/...`.
-4. FE gửi `X-Tenant-Host: minhphat.datcuatoi.vn`.
+3. FE gọi `https://api.nice-land.vn/public/...`.
+4. FE gửi `X-Tenant-Host: minhphat.nice-land.vn`.
 5. API kiểm tra host có đúng root domain hoặc custom domain đã xác minh.
 6. API resolve `Site` từ host, kiểm tra active/subscription và tạo `TenantContext`.
 7. Repository bắt buộc dùng `tenantContext.siteId`.
@@ -801,7 +801,7 @@ Thêm:
   - `NEXT_PUBLIC_API_URL`
   - `NEXT_PUBLIC_ROOT_DOMAIN`
   - `NEXT_PUBLIC_APP_URL`
-- Wildcard domain: `*.datcuatoi.vn`.
+- Wildcard domain: `*.nice-land.vn`.
 
 ### API deployment
 
@@ -925,13 +925,13 @@ Complete SaaS thường cần thêm 4–8 tuần.
 ### Frontend — Vercel
 
 - Deploy `apps/web`.
-- Root domain: `datcuatoi.vn`.
-- Wildcard domain: `*.datcuatoi.vn`.
+- Root domain: `nice-land.vn`.
+- Wildcard domain: `*.nice-land.vn`.
 - Preview deployment cho pull request.
 - Environment production:
-  - `NEXT_PUBLIC_API_URL=https://api.datcuatoi.vn`
-  - `NEXT_PUBLIC_APP_URL=https://datcuatoi.vn`
-  - `NEXT_PUBLIC_ROOT_DOMAIN=datcuatoi.vn`
+  - `NEXT_PUBLIC_API_URL=https://api.nice-land.vn`
+  - `NEXT_PUBLIC_APP_URL=https://nice-land.vn`
+  - `NEXT_PUBLIC_ROOT_DOMAIN=nice-land.vn`
 
 ### Backend — AWS Lightsail
 
@@ -942,7 +942,7 @@ Complete SaaS thường cần thêm 4–8 tuần.
 - Config, database, storage, email và domain đều được inject qua environment variables.
 - File upload không lưu lâu dài trên disk của instance; dùng AWS S3.
 - Health check, graceful shutdown và stateless API là yêu cầu bắt buộc để chuyển host không đổi code.
-- Public domain: `api.datcuatoi.vn`.
+- Public domain: `api.nice-land.vn`.
 - Reverse proxy bằng Caddy hoặc Nginx; HTTPS bằng Let's Encrypt.
 - Fastify listen trên `0.0.0.0` và port do environment/runtime cung cấp.
 - Health checks:
@@ -966,7 +966,7 @@ GitHub push/merge
 
 ### Các quyết định deployment còn thiếu
 
-- Custom domain `api.datcuatoi.vn` và DNS.
+- Custom domain `api.nice-land.vn` và DNS.
 - Container registry: GitHub Container Registry hay AWS ECR.
 - AWS S3 bucket đặt cùng `ap-southeast-1` hoặc region gần người dùng.
 
@@ -1017,8 +1017,8 @@ Không nhận object key tùy ý từ client. API tự tạo key chứa `siteId`
 
 ```env
 AWS_REGION=ap-southeast-1
-AWS_S3_BUCKET=datcuatoi-media
-AWS_S3_PUBLIC_URL=https://cdn.datcuatoi.vn
+AWS_S3_BUCKET=nice-land-media
+AWS_S3_PUBLIC_URL=https://cdn.nice-land.vn
 AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
 ```

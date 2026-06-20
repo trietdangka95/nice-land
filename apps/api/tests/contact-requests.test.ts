@@ -38,7 +38,7 @@ describe("POST /v1/public/contact-requests", () => {
       loadConfig({
         NODE_ENV: "test",
         LOG_LEVEL: "silent",
-        ROOT_DOMAIN: "datcuatoi.vn",
+        ROOT_DOMAIN: "nice-land.vn",
       }),
       { tenantRepository, contactRequestRepository },
     );
@@ -47,7 +47,7 @@ describe("POST /v1/public/contact-requests", () => {
     const response = await app.inject({
       method: "POST",
       url: "/v1/public/contact-requests",
-      headers: { "x-tenant-host": "minhphat.datcuatoi.vn" },
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
       payload: {
         name: "Nguyễn Minh Anh",
         phone: "0905123456",
@@ -85,7 +85,7 @@ describe("POST /v1/public/contact-requests", () => {
       loadConfig({
         NODE_ENV: "test",
         LOG_LEVEL: "silent",
-        ROOT_DOMAIN: "datcuatoi.vn",
+        ROOT_DOMAIN: "nice-land.vn",
       }),
       { tenantRepository, contactRequestRepository },
     );
@@ -94,7 +94,7 @@ describe("POST /v1/public/contact-requests", () => {
     const response = await app.inject({
       method: "POST",
       url: "/v1/public/contact-requests",
-      headers: { "x-tenant-host": "datcuatoi.vn" },
+      headers: { "x-tenant-host": "nice-land.vn" },
       payload: {
         name: "Khách nền tảng",
         phone: "0905123456",
@@ -128,7 +128,7 @@ describe("POST /v1/public/contact-requests", () => {
       loadConfig({
         NODE_ENV: "test",
         LOG_LEVEL: "silent",
-        ROOT_DOMAIN: "datcuatoi.vn",
+        ROOT_DOMAIN: "nice-land.vn",
       }),
       { tenantRepository, contactRequestRepository },
     );
@@ -137,7 +137,7 @@ describe("POST /v1/public/contact-requests", () => {
     const response = await app.inject({
       method: "POST",
       url: "/v1/public/contact-requests",
-      headers: { "x-tenant-host": "minhphat.datcuatoi.vn" },
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
       payload: { name: "A", phone: "123" },
     });
 

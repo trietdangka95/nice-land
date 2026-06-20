@@ -1,4 +1,4 @@
-# Đất Của Tôi
+# Nice Land
 
 Monorepo cho nền tảng SaaS bất động sản đa tenant.
 
@@ -71,13 +71,13 @@ Production dự kiến:
 
 ```env
 # Vercel
-NEXT_PUBLIC_API_URL=https://api.datcuatoi.vn
-NEXT_PUBLIC_APP_URL=https://datcuatoi.vn
-NEXT_PUBLIC_ROOT_DOMAIN=datcuatoi.vn
+NEXT_PUBLIC_API_URL=https://api.nice-land.vn
+NEXT_PUBLIC_APP_URL=https://nice-land.vn
+NEXT_PUBLIC_ROOT_DOMAIN=nice-land.vn
 
 # AWS Lightsail API
-ROOT_DOMAIN=datcuatoi.vn
-CORS_ORIGINS=https://datcuatoi.vn,https://*.datcuatoi.vn
+ROOT_DOMAIN=nice-land.vn
+CORS_ORIGINS=https://nice-land.vn,https://*.nice-land.vn
 DATABASE_URL=postgresql://...
 ```
 
@@ -146,7 +146,7 @@ AWS S3 bucket cần CORS cho frontend Vercel:
 ```json
 [
   {
-    "AllowedOrigins": ["https://datcuatoi.vn", "http://localhost:3002"],
+    "AllowedOrigins": ["https://nice-land.vn", "http://localhost:3002"],
     "AllowedMethods": ["PUT", "GET", "HEAD"],
     "AllowedHeaders": ["*"],
     "ExposeHeaders": ["ETag"],

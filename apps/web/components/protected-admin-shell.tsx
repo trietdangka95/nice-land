@@ -30,7 +30,7 @@ function TenantAdminShell({
       setSite(siteSettingsToAdminIdentity(settings));
     } catch (loadError) {
       if (loadError instanceof ApiClientError && loadError.status === 401) {
-        window.sessionStorage.removeItem("datcuatoi_access_token");
+        window.sessionStorage.removeItem("nice_land_access_token");
         router.replace(`/${slug}/admin/login`);
         return;
       }

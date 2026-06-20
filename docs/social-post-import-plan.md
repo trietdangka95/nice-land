@@ -98,7 +98,7 @@ Nút đồng bộ có thể hỗ trợ:
 - `Thử lại`: chạy lại bài lỗi.
 - Lọc bằng hashtag như `#dangtin` để tránh nhập nhầm nội dung cá nhân của Page.
 
-### Luồng C — Share to DatCuaToi
+### Luồng C — Share to Nice Land
 
 Giai đoạn sau có thể làm:
 
@@ -106,7 +106,7 @@ Giai đoạn sau có thể làm:
 - Mobile app share extension.
 - Browser extension/bookmarklet do chính người dùng kích hoạt trên bài của họ.
 
-Người dùng đang xem bài social chọn `Chia sẻ → Đất Của Tôi`; app nhận text,
+Người dùng đang xem bài social chọn `Chia sẻ → Nice Land`; app nhận text,
 link và ảnh được hệ điều hành cung cấp rồi tạo draft.
 
 Không để extension tự động quét timeline hoặc thu thập bài của người khác.

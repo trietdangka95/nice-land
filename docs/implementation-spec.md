@@ -1,4 +1,4 @@
-# Spec: DatCuaToi MVP
+# Spec: Nice Land MVP
 
 ## Objective
 

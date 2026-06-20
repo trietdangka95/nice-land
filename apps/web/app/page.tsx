@@ -46,7 +46,7 @@ export default function LandingPage() {
           </div>
           <MobileNavigation
             label="Mở menu"
-            title="Đất Của Tôi"
+            title="Nice Land"
             triggerClassName="grid size-11 place-items-center border border-ink/20 sm:hidden"
           >
             <nav className="flex flex-col p-4 text-base font-semibold" aria-label="Điều hướng chính trên di động">
@@ -203,7 +203,7 @@ export default function LandingPage() {
           />
           <div className="mt-16 grid gap-px bg-white/15 lg:grid-cols-3" data-reveal-group>
             {[
-              ["01", "Chọn tên của bạn", "Đăng ký địa chỉ dễ nhớ như tenban.datcuatoi.vn và chọn gói phù hợp."],
+              ["01", "Chọn tên của bạn", "Đăng ký địa chỉ dễ nhớ như tenban.nice-land.vn và chọn gói phù hợp."],
               ["02", "Tạo dấu ấn riêng", "Cập nhật logo, màu sắc, câu chuyện thương hiệu và thông tin liên hệ."],
               ["03", "Đăng tin, bắt đầu bán", "Đưa bất động sản lên website, chia sẻ đường dẫn và kết nối khách hàng."],
             ].map(([number, title, description]) => (
@@ -374,7 +374,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="flex flex-col justify-between gap-3 pt-7 text-xs text-white/35 sm:flex-row">
-            <p>© 2026 Đất Của Tôi. Kiến tạo không gian số cho người làm địa ốc.</p>
+            <p>© 2026 Nice Land. Kiến tạo không gian số cho người làm địa ốc.</p>
             <p>Điều khoản · Quyền riêng tư</p>
           </div>
         </div>

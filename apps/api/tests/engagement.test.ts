@@ -5,7 +5,7 @@ import type { AccessTokenService } from "../src/modules/auth/token-service.js";
 import type { EngagementRepository } from "../src/modules/engagement/engagement-repository.js";
 
 const config: AppConfig = {
-  NODE_ENV: "test", HOST: "127.0.0.1", PORT: 4000, ROOT_DOMAIN: "datcuatoi.vn",
+  NODE_ENV: "test", HOST: "127.0.0.1", PORT: 4000, ROOT_DOMAIN: "nice-land.vn",
   CORS_ORIGINS: "http://localhost:3002", LOG_LEVEL: "silent",
   JWT_ACCESS_SECRET: "test-secret-with-at-least-thirty-two-characters",
   ACCESS_TOKEN_TTL_SECONDS: 900, REFRESH_TOKEN_TTL_DAYS: 30, REFRESH_COOKIE_NAME: "refresh",
@@ -38,7 +38,7 @@ function repository(): EngagementRepository {
 function app(repo = repository()) {
   return buildApp(config, { tenantRepository, accessTokens, engagementRepository: repo });
 }
-const tenantHeaders = { "x-tenant-host": "minhphat.datcuatoi.vn" };
+const tenantHeaders = { "x-tenant-host": "minhphat.nice-land.vn" };
 
 describe("engagement routes", () => {
   it("records a human view", async () => {

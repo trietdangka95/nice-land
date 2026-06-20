@@ -40,7 +40,7 @@ export function SitesTable({ sites }: { sites: Site[] }) {
             <tbody className="divide-y divide-ink/10">
               {visible.map((site) => (
                 <tr key={site.id} className="hover:bg-[#fafaf7]">
-                  <td className="px-5 py-4"><div className="flex items-center gap-3"><span className="grid size-11 place-items-center text-xs font-bold text-white" style={{ backgroundColor: site.themeColor }}>{site.logoMark}</span><div><strong className="block text-sm">{site.name}</strong><a href={`/${site.slug}`} className="mt-1 flex items-center gap-1 text-xs text-moss">{site.slug}.datcuatoi.vn <ExternalLink size={11} /></a></div></div></td>
+                  <td className="px-5 py-4"><div className="flex items-center gap-3"><span className="grid size-11 place-items-center text-xs font-bold text-white" style={{ backgroundColor: site.themeColor }}>{site.logoMark}</span><div><strong className="block text-sm">{site.name}</strong><a href={`/${site.slug}`} className="mt-1 flex items-center gap-1 text-xs text-moss">{site.slug}.nice-land.vn <ExternalLink size={11} /></a></div></div></td>
                   <td className="px-5 py-4"><p className="text-sm">{site.phone}</p><p className="mt-1 text-xs text-ink/40">{site.email}</p></td>
                   <td className="px-5 py-4 text-sm font-semibold">{site.plan}</td>
                   <td className="px-5 py-4"><StatusPill tone={site.isActive ? "green" : "red"}>{site.isActive ? "Hoạt động" : "Tạm ngưng"}</StatusPill></td>

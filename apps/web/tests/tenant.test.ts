@@ -6,7 +6,7 @@ import { buildPublicPostsHref } from "@/lib/pagination";
 
 describe("parseTenantSlug", () => {
   it("extracts a production tenant subdomain", () => {
-    expect(parseTenantSlug("minhphat.datcuatoi.vn", "datcuatoi.vn")).toBe("minhphat");
+    expect(parseTenantSlug("minhphat.nice-land.vn", "nice-land.vn")).toBe("minhphat");
   });
 
   it("supports local development subdomains", () => {
@@ -14,7 +14,7 @@ describe("parseTenantSlug", () => {
   });
 
   it("does not treat the root domain as a tenant", () => {
-    expect(parseTenantSlug("datcuatoi.vn", "datcuatoi.vn")).toBeNull();
+    expect(parseTenantSlug("nice-land.vn", "nice-land.vn")).toBeNull();
   });
 });
 
