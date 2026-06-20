@@ -4,27 +4,27 @@
 
 ### Repository Setup
 
-- [ ] Create project repository.
-- [ ] Choose monorepo or single Next.js app structure.
-- [ ] Setup TypeScript.
-- [ ] Setup ESLint.
+- [x] Create project repository.
+- [x] Choose monorepo structure.
+- [x] Setup TypeScript.
+- [ ] Setup ESLint (current `lint` scripts run TypeScript checks only).
 - [ ] Setup Prettier.
-- [ ] Setup Tailwind CSS.
-- [ ] Setup environment variables.
-- [ ] Add `.env.example`.
-- [ ] Add README with local setup instructions.
+- [x] Setup Tailwind CSS.
+- [x] Setup environment variables.
+- [x] Add `.env.example`.
+- [x] Add README with local setup instructions.
 
 ### Recommended Environment Variables
 
-- [ ] `DATABASE_URL`
-- [ ] `JWT_SECRET`
-- [ ] `NEXT_PUBLIC_APP_URL`
-- [ ] `NEXT_PUBLIC_ROOT_DOMAIN`
-- [ ] `STORAGE_PROVIDER`
-- [ ] `STORAGE_ACCESS_KEY`
-- [ ] `STORAGE_SECRET_KEY`
-- [ ] `STORAGE_BUCKET`
-- [ ] `STORAGE_PUBLIC_URL`
+- [x] `DATABASE_URL`
+- [x] `JWT_ACCESS_SECRET`
+- [x] `NEXT_PUBLIC_APP_URL`
+- [x] `NEXT_PUBLIC_ROOT_DOMAIN`
+- [x] Storage provider configured as AWS S3.
+- [x] `AWS_ACCESS_KEY_ID`
+- [x] `AWS_SECRET_ACCESS_KEY`
+- [x] `AWS_S3_BUCKET`
+- [x] `AWS_S3_PUBLIC_URL`
 
 ---
 
@@ -32,38 +32,38 @@
 
 ### Prisma Setup
 
-- [ ] Install Prisma.
-- [ ] Initialize Prisma.
-- [ ] Connect PostgreSQL database.
-- [ ] Create initial Prisma schema.
-- [ ] Add database enums.
-- [ ] Add database indexes.
-- [ ] Run first migration.
-- [ ] Generate Prisma client.
-- [ ] Create seed script.
+- [x] Install Prisma.
+- [x] Initialize Prisma.
+- [x] Connect PostgreSQL database.
+- [x] Create initial Prisma schema.
+- [x] Add database enums.
+- [x] Add database indexes.
+- [x] Run first migration.
+- [x] Generate Prisma client.
+- [x] Create seed script.
 
 ### Database Models
 
-- [ ] Create `Site` model.
-- [ ] Create `User` model.
+- [x] Create `Site` model.
+- [x] Create `User` model.
 - [x] Create `PropertyCategory` model.
-- [ ] Create `PropertyPost` model.
-- [ ] Create `PropertyImage` model.
-- [ ] Create `SubscriptionPlan` model.
-- [ ] Create `AuditLog` model.
-- [ ] Create `ContactRequest` model.
-- [ ] Add `UserRole` enum.
-- [ ] Add `PropertyType` enum.
-- [ ] Add `PostStatus` enum.
+- [x] Create `PropertyPost` model.
+- [x] Create `PropertyImage` model.
+- [x] Create `SubscriptionPlan` model.
+- [x] Create `AuditLog` model.
+- [x] Create `ContactRequest` model.
+- [x] Add `UserRole` enum.
+- [x] Add `PropertyType` enum.
+- [x] Add `PostStatus` enum.
 
 ### Seed Data
 
-- [ ] Seed default super admin account.
-- [ ] Seed default subscription plans.
-- [ ] Seed demo tenant site.
-- [ ] Seed demo admin account.
+- [x] Seed default super admin account.
+- [x] Seed default subscription plans.
+- [x] Seed demo tenant site.
+- [x] Seed demo admin account.
 - [x] Seed demo categories.
-- [ ] Seed demo property posts.
+- [x] Seed demo property posts.
 
 ---
 
@@ -71,31 +71,31 @@
 
 ### Hostname/Subdomain Detection
 
-- [ ] Create utility to parse hostname.
-- [ ] Detect root domain.
-- [ ] Detect tenant subdomain.
-- [ ] Support local development subdomains.
+- [x] Create utility to parse hostname.
+- [x] Detect root domain.
+- [x] Detect tenant subdomain.
+- [x] Support local development subdomains.
 - [ ] Support fallback query param for local dev if needed.
 
 ### Backend Tenant Context
 
-- [ ] Create `resolveSiteFromRequest` function.
-- [ ] Find `Site` by slug.
-- [ ] Check `Site.isActive`.
-- [ ] Check `subscriptionStatus`.
-- [ ] Check `subscriptionEnd`.
-- [ ] Attach `siteId` to request context.
-- [ ] Return clear error if site does not exist.
-- [ ] Return clear error if site is inactive.
-- [ ] Return clear error if subscription expired.
+- [x] Create tenant resolver/pre-handler.
+- [x] Find `Site` by slug or verified hostname.
+- [x] Check `Site.isActive`.
+- [x] Check `subscriptionStatus`.
+- [x] Check `subscriptionEnd`.
+- [x] Attach `siteId` to request context.
+- [x] Return clear error if site does not exist.
+- [x] Return clear error if site is inactive.
+- [x] Return clear error if subscription expired.
 
 ### Security Validation
 
-- [ ] Ensure all public APIs resolve current site.
-- [ ] Ensure all admin APIs resolve current site.
-- [ ] Ensure all tenant database queries include `siteId`.
-- [ ] Add helper function for `where: { siteId }`.
-- [ ] Add tests for cross-tenant access blocking.
+- [x] Ensure all tenant public APIs resolve current site.
+- [x] Ensure all tenant admin APIs resolve current site.
+- [x] Ensure tenant repositories scope queries by `siteId`.
+- [x] Add tenant scope helper.
+- [x] Add tests for cross-tenant access blocking.
 
 ---
 
@@ -103,33 +103,42 @@
 
 ### Auth Core
 
-- [ ] Create password hashing utility.
-- [ ] Create JWT signing utility.
-- [ ] Create JWT verification utility.
-- [ ] Create login API.
-- [ ] Create logout flow.
-- [ ] Create current user API.
-- [ ] Store role in JWT.
-- [ ] Store `siteId` in JWT for admin users.
+- [x] Create password hashing utility.
+- [x] Create JWT signing utility.
+- [x] Create JWT verification utility.
+- [x] Create login API.
+- [x] Create logout flow.
+- [x] Create current user API.
+- [x] Store role in JWT.
+- [x] Store `siteId` in JWT for admin users.
 
 ### Role Authorization
 
-- [ ] Create `requireAuth` middleware.
-- [ ] Create `requireRole` middleware.
-- [ ] Create `requireSuperAdmin` middleware.
-- [ ] Create `requireTenantAdmin` middleware.
-- [ ] Block ADMIN when token `siteId` does not match resolved `siteId`.
-- [ ] Allow SUPER_ADMIN to access all sites.
-- [ ] Prevent GUEST from admin APIs.
+- [x] Create `requireAuth` middleware.
+- [x] Create `requireRole` middleware.
+- [x] Protect Super Admin routes.
+- [x] Protect Tenant Admin routes.
+- [x] Block ADMIN when token `siteId` does not match resolved `siteId`.
+- [x] Allow SUPER_ADMIN to operate all sites through Super Admin APIs.
+- [x] Prevent GUEST from admin APIs.
 
 ### Login Pages
 
-- [ ] Build admin login page.
-- [ ] Build super admin login page.
-- [ ] Add form validation with Zod.
-- [ ] Add error handling.
-- [ ] Add redirect after login.
-- [ ] Add logout button.
+- [x] Build admin login page.
+- [x] Build super admin login page.
+- [x] Validate login input with shared Zod contract.
+- [x] Add error handling.
+- [x] Add redirect after login.
+- [x] Add logout button.
+
+### Password Recovery
+
+- [x] Create forgot-password API.
+- [x] Create one-time reset token with expiry.
+- [x] Send password reset email through the configured Resend provider.
+- [x] Build forgot-password page.
+- [x] Build reset-password page.
+- [x] Revoke existing sessions after password reset.
 
 ---
 
@@ -137,26 +146,26 @@
 
 ### Landing UI
 
-- [ ] Build hero section.
-- [ ] Build feature section.
-- [ ] Build how-it-works section.
-- [ ] Build pricing section.
-- [ ] Build demo websites section.
-- [ ] Build FAQ section.
-- [ ] Build contact CTA section.
-- [ ] Build footer.
+- [x] Build hero section.
+- [x] Build feature section.
+- [x] Build how-it-works section.
+- [x] Build pricing section.
+- [x] Build demo websites section.
+- [x] Build FAQ section.
+- [x] Build contact CTA section.
+- [x] Build footer.
 
 ### Contact Request
 
-- [ ] Create contact request form.
-- [ ] Validate name.
-- [ ] Validate phone.
-- [ ] Validate email.
-- [ ] Validate message.
-- [ ] Create `POST /api/contact-request`.
-- [ ] Save request to database.
-- [ ] Show success message.
-- [ ] Show error message.
+- [x] Create contact request form.
+- [x] Validate name.
+- [x] Validate phone.
+- [x] Validate email.
+- [x] Validate message.
+- [x] Create `POST /v1/public/contact-requests`.
+- [x] Save request to database.
+- [x] Show success message.
+- [x] Show error message.
 
 ---
 
@@ -164,58 +173,83 @@
 
 ### Site Config
 
-- [ ] Create `GET /api/site/config`.
-- [ ] Return site name.
-- [ ] Return logo.
-- [ ] Return banner.
-- [ ] Return theme color.
-- [ ] Return contact information.
-- [ ] Inject theme color into CSS variables.
-- [ ] Display tenant branding on guest site.
+- [x] Create `GET /v1/public/site`.
+- [x] Return site name.
+- [x] Return logo.
+- [x] Return banner.
+- [x] Return theme color.
+- [x] Return contact information.
+- [x] Inject theme color into CSS variables.
+- [x] Display tenant branding on guest site.
+
+### Public Theme Foundation
+
+- [x] Add `PublicTheme` enum with four stable theme keys.
+- [x] Add `Site.themeKey` with `CLASSIC_ESTATE` as the database default.
+- [x] Create and apply Prisma migration.
+- [x] Return `themeKey` from the public site contract and API.
+- [x] Create a typed theme registry in the web app.
+- [x] Add safe fallback for unknown or retired theme keys.
+- [x] Keep public data fetching and business behavior outside theme components.
+- [x] Load only the selected theme's presentation stylesheet and font stack.
+
+### Public Theme Implementations
+
+- [x] Build `CLASSIC_ESTATE` public homepage, listing, card, detail and footer.
+- [x] Build `MODERN_GRID` public homepage, listing, card, detail and footer.
+- [x] Build `EDITORIAL` public homepage, listing, card, detail and footer.
+- [x] Build `WARM_MINIMAL` public homepage, listing, card, detail and footer.
+- [x] Apply tenant logo, banner and theme color within every theme.
+- [x] Keep name, logo, banner, color and contact branding isolated when tenants share a theme.
+- [x] Preserve search, filters, pagination, sold status and empty states in every theme.
+- [x] Preserve property gallery, contact CTA, lead form and tracking in every theme.
+- [x] Verify all themes at mobile, tablet and desktop breakpoints.
+- [x] Verify public theme selection does not affect Admin, Super Admin or landing layouts.
 
 ### Property Listing
 
-- [ ] Create `GET /api/posts`.
-- [ ] Only return posts with status `PUBLISHED`.
-- [ ] Filter by current `siteId`.
-- [ ] Add pagination.
-- [ ] Add search by keyword.
-- [ ] Add filter by property type.
-- [ ] Add filter by price range.
-- [ ] Add filter by area range.
-- [ ] Add filter by province.
-- [ ] Add filter by district.
-- [ ] Add sort by newest.
-- [ ] Add sort by price.
+- [x] Create `GET /v1/public/posts`.
+- [x] Only return posts with public statuses `PUBLISHED`/`SOLD`.
+- [x] Filter by current `siteId`.
+- [x] Add pagination.
+- [x] Add search by keyword.
+- [x] Add filter by property type.
+- [x] Add filter by category.
+- [x] Add filter by price range at API level.
+- [x] Add filter by area range at API level.
+- [x] Add filter by province at API level.
+- [x] Add filter by district at API level.
+- [x] Add sort by newest.
+- [x] Add sort by price.
 
 ### Guest UI
 
-- [ ] Build guest homepage.
-- [ ] Build property listing grid.
-- [ ] Build property card.
-- [ ] Display title.
-- [ ] Display price.
-- [ ] Display area.
-- [ ] Display address.
-- [ ] Display main image.
-- [ ] Display post status if sold.
-- [ ] Build empty state.
+- [x] Build guest homepage.
+- [x] Build property listing grid.
+- [x] Build property card.
+- [x] Display title.
+- [x] Display price.
+- [x] Display area.
+- [x] Display address.
+- [x] Display main image.
+- [x] Display post status if sold.
+- [x] Build empty state.
 - [ ] Build loading state.
 
 ### Property Detail
 
-- [ ] Create `GET /api/posts/:id`.
-- [ ] Validate post belongs to current `siteId`.
-- [ ] Validate post is `PUBLISHED`.
-- [ ] Build detail page.
-- [ ] Display image gallery.
-- [ ] Display description.
-- [ ] Display price.
-- [ ] Display area.
-- [ ] Display address.
-- [ ] Display contact CTA.
+- [x] Create `GET /v1/public/posts/:idOrSlug`.
+- [x] Validate post belongs to current `siteId`.
+- [x] Validate post has a public status.
+- [x] Build detail page.
+- [x] Display image gallery.
+- [x] Display description.
+- [x] Display price.
+- [x] Display area.
+- [x] Display address.
+- [x] Display contact CTA.
 - [ ] Display Google Map if location exists.
-- [ ] Add social sharing metadata.
+- [x] Add social sharing metadata.
 
 ---
 
@@ -223,66 +257,77 @@
 
 ### Admin Layout
 
-- [ ] Build admin layout.
-- [ ] Build sidebar.
-- [ ] Build top bar.
-- [ ] Add auth guard.
-- [ ] Add tenant branding.
-- [ ] Add logout action.
+- [x] Build admin layout.
+- [x] Build sidebar.
+- [x] Build top bar.
+- [x] Add auth guard.
+- [x] Add tenant branding from API.
+- [x] Add logout action.
 
 ### Dashboard Overview
 
 - [ ] Create dashboard API.
-- [ ] Count total posts.
-- [ ] Count published posts.
-- [ ] Count draft posts.
+- [x] Count total posts.
+- [x] Count published posts.
+- [x] Count draft posts.
 - [ ] Count sold posts.
-- [ ] Show subscription status.
-- [ ] Show plan limit.
-- [ ] Show remaining post slots.
+- [x] Show subscription status.
+- [x] Show plan limit.
+- [x] Show remaining post slots.
 
 ### Manage Posts
 
-- [ ] Create `GET /api/admin/posts`.
-- [ ] Filter by current admin `siteId`.
-- [ ] Build manage posts page.
-- [ ] Add search.
-- [ ] Add status filter.
-- [ ] Add type filter.
-- [ ] Add edit button.
-- [ ] Add delete button.
-- [ ] Add publish/hide action.
+- [x] Create `GET /v1/admin/posts`.
+- [x] Filter by current admin `siteId`.
+- [x] Build manage posts page.
+- [x] Add pagination.
+- [x] Add search.
+- [x] Add status filter.
+- [x] Add type filter.
+- [x] Add edit button.
+- [x] Add archive button.
+- [x] Add publish/hide status control in edit form.
 
 ### Create Post
 
-- [ ] Create `POST /api/admin/posts`.
-- [ ] Validate plan post limit.
-- [ ] Validate title.
-- [ ] Validate description.
-- [ ] Validate property type.
-- [ ] Validate price.
-- [ ] Validate area.
-- [ ] Validate address.
-- [ ] Validate location.
-- [ ] Save post with current `siteId`.
-- [ ] Add audit log.
+- [x] Create `POST /v1/admin/posts`.
+- [x] Validate plan post limit.
+- [x] Validate title.
+- [x] Validate description.
+- [x] Validate property type.
+- [x] Validate price.
+- [x] Validate area.
+- [x] Validate address.
+- [x] Validate location fields.
+- [x] Save post with current `siteId`.
+- [x] Add audit log.
 
 ### Edit Post
 
-- [ ] Create `GET /api/admin/posts/:id`.
-- [ ] Create `PUT /api/admin/posts/:id`.
-- [ ] Validate post belongs to current `siteId`.
-- [ ] Update post information.
-- [ ] Update post status.
-- [ ] Add audit log.
+- [x] Create `GET /v1/admin/posts/:id`.
+- [x] Create `PATCH /v1/admin/posts/:id`.
+- [x] Validate post belongs to current `siteId`.
+- [x] Update post information.
+- [x] Update post status.
+- [x] Add optimistic concurrency by version.
+- [x] Add audit log.
 
 ### Delete Post
 
-- [ ] Create `DELETE /api/admin/posts/:id`.
-- [ ] Validate post belongs to current `siteId`.
+- [x] Create `DELETE /v1/admin/posts/:id` archive endpoint.
+- [x] Validate post belongs to current `siteId`.
 - [ ] Delete post images if needed.
-- [ ] Delete post.
-- [ ] Add audit log.
+- [x] Archive/soft-delete post.
+- [x] Add audit log.
+
+### Categories
+
+- [x] Create public/admin category APIs.
+- [x] Build Tenant Admin category CRUD UI.
+- [x] Enforce tenant-scoped category slug.
+- [x] Prevent deleting a category used by posts.
+- [x] Validate category ownership when creating/updating posts.
+- [x] Add category filter to public website.
 
 ---
 
@@ -290,25 +335,26 @@
 
 ### Upload API
 
-- [ ] Choose storage provider.
-- [ ] Create upload helper.
-- [ ] Create `POST /api/admin/posts/:id/images`.
-- [ ] Validate post belongs to current `siteId`.
-- [ ] Validate file type.
-- [ ] Validate file size.
-- [ ] Validate max images per post by plan.
-- [ ] Upload image to storage.
-- [ ] Save image URL to database.
-- [ ] Add audit log.
+- [x] Choose AWS S3 as storage provider.
+- [x] Create presigned upload helper.
+- [x] Create presign/complete APIs for post images.
+- [x] Validate post belongs to current `siteId`.
+- [x] Validate file type.
+- [x] Validate file size.
+- [x] Validate max images per post by plan.
+- [x] Upload image directly to S3.
+- [x] Save image URL and metadata to database.
+- [x] Add audit log.
 
 ### Image Management
 
-- [ ] Display images in admin edit page.
-- [ ] Delete image.
-- [ ] Reorder images.
-- [ ] Set main image by sort order.
-- [ ] Create `DELETE /api/admin/images/:id`.
-- [ ] Create `PUT /api/admin/images/sort`.
+- [x] Display images in admin edit page.
+- [x] Delete image.
+- [x] Reorder images.
+- [x] Set main image by sort order.
+- [x] Create tenant-safe image delete API.
+- [x] Create tenant-safe image reorder API.
+- [x] Add orphan-image cleanup job.
 
 ---
 
@@ -328,6 +374,15 @@
 - [x] Update Zalo phone.
 - [x] Update Facebook URL.
 - [x] Add audit log.
+
+### Public Theme Selection
+
+- [x] Add four-theme gallery to Tenant Admin Site Settings.
+- [x] Show theme name, description and preview thumbnail.
+- [x] Preview a theme with the tenant's current branding and listing data.
+- [x] Update `themeKey` through the tenant site-config API.
+- [x] Require explicit save before publishing a theme change.
+- [x] Write an audit log when a tenant changes theme.
 
 ### Subscription View
 
@@ -373,6 +428,9 @@
 - [x] Assign subscription plan.
 - [x] Add audit log.
 - [x] Show generated subdomain.
+- [x] Require selecting an initial public theme.
+- [x] Show theme previews in the create-site flow.
+- [x] Persist the selected `themeKey` transactionally with the new site.
 
 ### Edit Site
 
@@ -385,6 +443,7 @@
 - [x] Edit subscription status.
 - [x] Edit subscription end date.
 - [x] Add audit log.
+- [x] Show and allow Super Admin to change the tenant public theme.
 
 ### Activate/Deactivate Site
 
@@ -421,11 +480,11 @@
 
 ### Plan Enforcement
 
-- [ ] Check max posts before creating post.
-- [ ] Check max images before uploading image.
-- [ ] Block public access if subscription expired.
-- [ ] Allow admin access to subscription page even if expired.
-- [ ] Show clear expired message on guest site.
+- [x] Check max posts before creating post.
+- [x] Check max images before uploading image.
+- [x] Block public access if subscription expired.
+- [x] Allow admin access to subscription page even if expired.
+- [x] Show clear expired message on guest site.
 
 ---
 
@@ -434,15 +493,16 @@
 ### Logging
 
 - [ ] Create audit log service.
-- [ ] Log super admin creates site.
-- [ ] Log super admin updates site.
-- [ ] Log super admin activates/deactivates site.
-- [ ] Log super admin resets password.
-- [ ] Log admin creates post.
-- [ ] Log admin updates post.
-- [ ] Log admin deletes post.
-- [ ] Log admin uploads image.
-- [ ] Log admin updates site config.
+- [x] Log super admin creates site.
+- [x] Log super admin updates site.
+- [x] Log super admin activates/deactivates site.
+- [x] Log super admin resets password.
+- [x] Log admin creates post.
+- [x] Log admin updates post.
+- [x] Log admin archives post.
+- [x] Log admin uploads image.
+- [x] Log admin updates site config.
+- [x] Log admin category mutations.
 
 ### Audit Log UI
 
@@ -470,45 +530,57 @@
 ### Performance
 
 - [ ] Optimize images.
-- [ ] Use lazy loading.
-- [ ] Add pagination.
-- [ ] Avoid loading all posts at once.
-- [ ] Add database indexes.
+- [x] Use lazy loading and responsive image sizes where supported.
+- [x] Add public and admin post pagination.
+- [x] Avoid loading all posts at once.
+- [x] Add database indexes.
 - [ ] Add caching where safe.
 
 ---
 
 ## Phase 13 - Testing
 
+### Public Theme Tests
+
+- [x] Unit test the theme registry and default fallback.
+- [x] Contract test `themeKey` in public/admin/superadmin site payloads.
+- [ ] Integration test create/update site theme permissions and audit logs.
+- [x] Component test shared feature parity across all four themes.
+- [ ] Add visual regression screenshots for homepage, listing and detail per theme.
+- [x] Add responsive browser checks at 360px, 768px, 1024px and desktop.
+- [x] Verify only the selected theme stylesheet/font stack is loaded.
+- [x] Verify Admin, Super Admin and landing pages are unchanged.
+
 ### Unit Tests
 
-- [ ] Test hostname parser.
-- [ ] Test tenant resolver.
-- [ ] Test auth utilities.
-- [ ] Test plan limit logic.
+- [x] Test hostname parser.
+- [x] Test tenant resolver.
+- [x] Test auth utilities.
+- [x] Test plan limit logic.
 - [ ] Test post validation.
 
 ### Integration Tests
 
-- [ ] Test admin login.
-- [ ] Test super admin login.
-- [ ] Test create site.
-- [ ] Test create post.
-- [ ] Test edit post.
-- [ ] Test delete post.
-- [ ] Test guest listing.
-- [ ] Test guest detail.
-- [ ] Test image upload.
+- [x] Test admin login.
+- [x] Test super admin login.
+- [x] Test create site.
+- [x] Test create post.
+- [x] Test edit post.
+- [x] Test archive post.
+- [x] Test guest listing.
+- [x] Test guest detail.
+- [x] Test image upload contract and tenant access.
+- [x] Test category CRUD and cross-tenant protection.
 
 ### Security Tests
 
-- [ ] Admin A cannot access Admin B posts.
-- [ ] Admin A cannot update Admin B posts.
-- [ ] Admin A cannot delete Admin B posts.
-- [ ] Guest cannot access draft posts.
-- [ ] Inactive site is blocked.
-- [ ] Expired site is blocked.
-- [ ] Super admin can access all sites.
+- [x] Admin A cannot access Admin B posts.
+- [x] Admin A cannot update Admin B posts.
+- [x] Admin A cannot delete Admin B posts.
+- [x] Guest cannot access draft posts.
+- [x] Inactive site is blocked.
+- [x] Expired site is blocked.
+- [x] Super admin can operate all sites through protected APIs.
 
 ---
 
@@ -516,13 +588,13 @@
 
 ### Production Setup
 
-- [ ] Setup production database.
+- [x] Setup Prisma Postgres primary database.
 - [ ] Setup production environment variables.
 - [ ] Setup root domain.
 - [ ] Setup wildcard subdomain DNS.
 - [ ] Setup SSL.
 - [ ] Setup storage bucket.
-- [ ] Run database migration.
+- [x] Run database migration on Prisma Postgres primary database.
 - [ ] Seed super admin.
 - [ ] Deploy frontend/backend.
 - [ ] Verify tenant subdomain routing.
@@ -563,7 +635,7 @@
 ### Advanced Real Estate Features
 
 - [ ] Save favorite posts.
-- [ ] Lead/contact tracking.
+- [x] Lead/contact tracking.
 - [ ] CRM for agents.
 - [ ] Appointment booking.
 - [ ] Advanced map search.
@@ -583,15 +655,18 @@
 
 The MVP is complete when:
 
-- [ ] Super admin can login.
-- [ ] Super admin can create a tenant site.
-- [ ] Tenant subdomain is accessible.
-- [ ] Tenant admin can login.
-- [ ] Tenant admin can create posts.
-- [ ] Tenant admin can upload images.
-- [ ] Guest can view published posts.
-- [ ] Guest can view post details.
-- [ ] Admin cannot access another tenant's data.
-- [ ] Inactive site is blocked.
-- [ ] Expired site is blocked.
-- [ ] All tenant queries include `siteId`.
+- [x] Super admin can login.
+- [x] Super admin can create a tenant site.
+- [x] Tenant subdomain routing works in local development.
+- [x] Tenant admin can login.
+- [x] Tenant admin can create posts.
+- [x] Tenant admin image-upload flow is implemented (production S3 smoke pending).
+- [x] Guest can view published posts.
+- [x] Guest can view post details.
+- [x] Admin cannot access another tenant's data.
+- [x] Inactive site is blocked.
+- [x] Expired site is blocked.
+- [x] Tenant repositories scope data access by resolved `siteId`.
+- [ ] Super Admin can choose a public theme when creating a tenant site.
+- [ ] Tenant Admin can preview and switch among four supported public themes.
+- [ ] All public themes provide identical features and tenant-safe data behavior.

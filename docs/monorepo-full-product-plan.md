@@ -24,6 +24,10 @@ Chuyển codebase hiện tại từ một Next.js full-stack demo thành monorep
 8. API chạy tại `api.nice-land.vn`.
 9. Auth dùng access token ngắn hạn và refresh token trong cookie `HttpOnly`.
 10. Giai đoạn đầu chưa tự động thanh toán; Super Admin quản lý gói và gia hạn thủ công.
+11. Mỗi tenant chọn một trong 4 public theme cố định; theme không thay đổi tính
+    năng, dữ liệu hay API.
+12. Theme chỉ áp dụng cho website public. Admin, Super Admin và landing page giữ
+    giao diện chung.
 
 Các giả định này phải được xác nhận trước Phase 2.
 
@@ -40,20 +44,16 @@ Các giả định này phải được xác nhận trước Phase 2.
 - Prisma schema nháp.
 - Một vài Next.js Route Handler demo.
 
-### Chưa phải chức năng thật
+### Khoảng trống còn lại
 
-- Data đang đọc từ `lib/data.ts`.
-- Đăng nhập chưa xác thực với server.
-- Các nút tạo, sửa, xóa, publish, deactivate, renew chỉ là UI.
-- Form tạo tin không lưu database.
-- Upload ảnh chưa có storage.
-- Dashboard dùng số liệu hard-code.
-- Contact form không lưu database.
-- Chưa có API CRUD hoàn chỉnh.
-- Chưa có refresh token, session revocation hoặc password reset.
-- Chưa có migration và seed chạy trên PostgreSQL.
-- Chưa có integration/E2E test cho luồng nghiệp vụ.
-- Chưa có CI/CD, monitoring, backup hoặc production security.
+- Forgot/reset password đã có code; còn cấu hình Resend và smoke test email thật trên production.
+- Landing page và development fallback vẫn còn một phần dữ liệu trình diễn.
+- Logo/banner chưa có luồng upload S3 riêng.
+- Google Map và tin liên quan chưa triển khai.
+- Chưa có critical E2E suite, contract tests và accessibility audit đầy đủ.
+- Chưa smoke test upload với AWS S3 production.
+- Public theme system 4 mẫu chưa triển khai.
+- Chưa có CI/CD, monitoring, backup drill và production security hardening.
 
 ## 4. Kiến trúc đích
 
@@ -440,7 +440,8 @@ smoke test với user thật.**
 - [x] Logout action.
 - [x] Unit/integration tests cho credential, rotation và cross-tenant access.
 - [ ] Apply database migration/seed trên Prisma Postgres rồi smoke test user thật.
-- [ ] Forgot/reset password phụ thuộc email provider.
+- [x] Forgot/reset password bằng token một lần, tenant-aware, có UI và thu hồi session.
+- [ ] Cấu hình Resend production và smoke test email reset thật.
 
 ### Vertical slice 3.1: Tenant Admin login
 
@@ -464,10 +465,10 @@ smoke test với user thật.**
 
 ### Vertical slice 3.4: Password reset
 
-- Forgot password.
-- One-time reset token.
-- Email.
-- Reset tenant admin từ Super Admin.
+- [x] Forgot password.
+- [x] One-time reset token.
+- [x] Email qua Resend khi provider được cấu hình.
+- [x] Reset tenant admin từ Super Admin.
 
 ### Checkpoint Phase 3
 
@@ -479,6 +480,25 @@ smoke test với user thật.**
 ---
 
 ## Phase 4 — Public website nối API thật
+
+### Kiến trúc public theme
+
+- Một codebase frontend và một bộ API dùng chung cho mọi tenant.
+- `Site.themeKey` chọn presentation layer từ registry có type.
+- Feature/container dùng chung chịu trách nhiệm fetch dữ liệu, filter,
+  pagination, lead form và analytics.
+- Mỗi theme chỉ định nghĩa design tokens và các presentation components cho
+  header, hero, listing, property card, detail và footer.
+- Logo, banner và `themeColor` tiếp tục là branding override trên theme.
+- Theme không được thay đổi URL, quyền truy cập, trạng thái tin hoặc tính năng.
+- Theme key không hợp lệ phải fallback về `CLASSIC_ESTATE`.
+
+Bốn theme launch:
+
+1. `CLASSIC_ESTATE`: cao cấp, serif, bố cục bất động sản truyền thống.
+2. `MODERN_GRID`: sans-serif, grid rõ ràng, ưu tiên tìm kiếm và danh sách.
+3. `EDITORIAL`: ảnh lớn, nhịp bố cục như tạp chí.
+4. `WARM_MINIMAL`: màu ấm, thoáng, gần gũi với môi giới cá nhân.
 
 ### Vertical slice 4.1: Site config
 
@@ -509,6 +529,26 @@ smoke test với user thật.**
 - Spam protection.
 - Super Admin nhận và xử lý request.
 
+### Vertical slice 4.5: Public theme rendering
+
+- [x] Thêm `PublicTheme` và `Site.themeKey` với default `CLASSIC_ESTATE`.
+- [x] Public site contract trả `themeKey`.
+- [x] Tạo typed theme registry và fallback an toàn.
+- [x] Giữ public data containers và business behavior dùng chung giữa các theme.
+- [x] Implement 4 theme cho homepage/listing/detail với cùng feature parity.
+- [x] Theme presentation stylesheet tải theo tenant; không ship CSS của cả bốn theme.
+- [x] Branding variables và typography tokens được giới hạn theo theme đang dùng.
+- [x] Không fork route, API client hoặc business logic theo theme.
+
+### Checkpoint Public Theme Rendering
+
+- [x] Cùng một tenant fixture render được đủ 4 theme.
+- [x] Search, filter, pagination, detail, CTA và lead form hoạt động giống nhau.
+- [x] Không có horizontal overflow ở 360px, 768px, 1024px và desktop.
+- [x] Theme không hợp lệ fallback đúng.
+- [x] Chuyển theme không làm mất bài đăng hoặc cấu hình branding.
+- Lighthouse/performance budget không giảm đáng kể do font hoặc bundle theme.
+
 ### Checkpoint Phase 4
 
 - Không còn public data hard-code.
@@ -519,8 +559,8 @@ smoke test với user thật.**
 
 ## Phase 5 — Tenant Admin post management
 
-**Trạng thái hiện tại: CRUD tin đăng tenant-safe đã hoàn thành ở mức code; chờ
-smoke test với Prisma Postgres và tài khoản seed thật.**
+**Trạng thái hiện tại: CRUD tin đăng tenant-safe, pagination, categories và
+tài khoản seed local đã hoạt động; production smoke test vẫn còn.**
 
 ### Vertical slice 5.1: Dashboard
 
@@ -547,7 +587,7 @@ smoke test với Prisma Postgres và tài khoản seed thật.**
 
 - [x] Confirm dialog.
 - [x] Archive/soft-delete policy.
-- [ ] Cleanup ảnh theo orphan cleanup job.
+- [x] Cleanup ảnh theo orphan cleanup job.
 - [x] Audit log.
 
 ### Vertical slice 5.5: Categories
@@ -568,8 +608,9 @@ smoke test với Prisma Postgres và tài khoản seed thật.**
 
 ## Phase 6 — Image upload
 
-**Trạng thái hiện tại: presign + direct PUT + complete metadata đã hoàn thành ở
-mức code; còn reorder, delete và orphan cleanup.**
+**Trạng thái hiện tại: presign, direct PUT, metadata, reorder, delete và orphan
+cleanup đã hoàn thành ở mức code; còn AWS production smoke test và image
+optimization.**
 
 ### Task 6.1: Presigned upload
 
@@ -616,6 +657,14 @@ mức code; còn reorder, delete và orphan cleanup.**
 - [x] Social links.
 - [x] Preview trước khi lưu.
 
+### Vertical slice 7.1.1: Theme selection
+
+- [x] Hiển thị gallery 4 theme với thumbnail, tên và mô tả ngắn.
+- [x] Cho Tenant Admin preview theme bằng dữ liệu site hiện tại trước khi lưu.
+- [x] Cho Tenant Admin đổi public theme trong Site Settings.
+- [x] Lưu theme qua site-config API và ghi audit log.
+- [x] Xác nhận rõ theme chỉ thay đổi website public.
+
 ### Vertical slice 7.2: Subscription usage
 
 - [x] Current plan.
@@ -626,8 +675,8 @@ mức code; còn reorder, delete và orphan cleanup.**
 ### Vertical slice 7.3: Renewal request
 
 - [x] Admin gửi request.
-- Super Admin duyệt/từ chối.
-- Ghi subscription history khi Super Admin duyệt.
+- [x] Super Admin duyệt/từ chối.
+- [x] Ghi subscription history khi Super Admin duyệt.
 - [x] Audit log khi tenant gửi yêu cầu.
 
 ### Checkpoint Phase 7
@@ -640,6 +689,9 @@ mức code; còn reorder, delete và orphan cleanup.**
 ## Phase 8 — Super Admin operations
 
 ### Vertical slice 8.1: Manage sites
+
+- [x] Chọn initial public theme khi Super Admin tạo site.
+- [x] Hiển thị và đổi theme trong tenant detail khi cần hỗ trợ khách hàng.
 
 - [x] Search/filter/pagination.
 - [x] Create site transaction.
@@ -840,6 +892,7 @@ Bắt buộc để có khách hàng thật:
 - Admin post CRUD.
 - Upload ảnh.
 - Branding.
+- 4 public themes có feature parity và cho phép chọn khi tạo site.
 - Super Admin site/plan management.
 - Subscription enforcement thủ công.
 - Audit logs.
@@ -895,6 +948,8 @@ Complete SaaS thường cần thêm 4–8 tuần.
 - Auth refresh/logout/reset password hoạt động.
 - RBAC và tenant isolation có test tự động.
 - Admin CRUD post + ảnh + branding hoàn chỉnh.
+- Super Admin chọn theme khi tạo site; Tenant Admin có thể preview và đổi theme.
+- Tất cả public themes có cùng tính năng, responsive và fallback an toàn.
 - Super Admin vận hành site/plan/subscription/account hoàn chỉnh.
 - Guest chỉ thấy published posts của tenant hợp lệ.
 - Inactive/expired tenant bị chặn đúng policy.

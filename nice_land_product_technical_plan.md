@@ -16,6 +16,11 @@ batdongsanabc.nice-land.vn
 
 Each client owns one subdomain and can manage their own property posts, images, descriptions, locations, branding, and contact information.
 
+Each tenant can also select one of the platform's predefined public themes.
+Themes change presentation only—layout, typography, color treatment, spacing,
+navigation, property cards, and detail-page composition. They do not change
+features, permissions, data models for listings, or API behavior.
+
 ---
 
 ## 2. Main User Roles
@@ -115,6 +120,7 @@ Public website for each tenant.
 
 Features:
 
+- Selectable public website theme.
 - View published property posts.
 - Search by keyword.
 - Filter by property type.
@@ -155,6 +161,7 @@ Features:
 - Change post status.
 - Update website branding.
 - Update logo, banner, theme color.
+- Preview and select the public website theme.
 - Update contact information.
 - View current subscription.
 - Send renewal request.
@@ -178,6 +185,7 @@ Features:
 - Login/logout.
 - View all tenant websites.
 - Create new tenant/subdomain.
+- Select the tenant's initial public theme during site creation.
 - Edit tenant information.
 - Activate/deactivate tenant.
 - Manage subscription plans.
@@ -213,6 +221,51 @@ Invoice    -> SubscriptionInvoice
 User       -> User
 AuditLog   -> AuditLog
 ```
+
+### 4.1 Public Theme Architecture
+
+The public website uses a fixed, versioned theme registry in `apps/web`.
+It must not create a separate frontend source tree or separate API for each
+theme.
+
+```txt
+Tenant Site.themeKey
+        │
+        ▼
+Public site API
+        │
+        ▼
+Theme registry
+        │
+        ├── CLASSIC_ESTATE
+        ├── MODERN_GRID
+        ├── EDITORIAL
+        └── WARM_MINIMAL
+```
+
+Initial theme set:
+
+1. `CLASSIC_ESTATE` — serif-led, premium and traditional.
+2. `MODERN_GRID` — clean sans-serif, dense cards and strong filtering.
+3. `EDITORIAL` — large imagery, magazine-style composition.
+4. `WARM_MINIMAL` — softer palette, generous spacing and approachable tone.
+
+Architecture rules:
+
+- All themes consume the same typed public site and property data.
+- All themes expose the same search, filters, pagination, detail, lead and
+  contact capabilities.
+- Shared behavior stays in feature/container components; themes provide
+  presentation components and design tokens.
+- Theme selection applies only to public tenant routes. Admin, Super Admin and
+  the SaaS landing page keep their existing layouts.
+- `themeColor`, logo and banner remain tenant branding overrides within the
+  selected theme.
+- Unknown or retired theme keys fall back to `CLASSIC_ESTATE`.
+- Theme keys are stable identifiers; display names and preview images may
+  change without migrating tenant records.
+- Do not store arbitrary HTML, CSS or layout JSON from tenants.
+- Do not duplicate API calls, business rules or form logic per theme.
 
 ---
 
@@ -371,6 +424,7 @@ model Site {
   domain             String?
   logo               String?
   banner             String?
+  themeKey           PublicTheme @default(CLASSIC_ESTATE)
   themeColor         String?
   phone              String?
   email              String?
@@ -388,6 +442,13 @@ model Site {
   posts              PropertyPost[]
   categories         PropertyCategory[]
   auditLogs          AuditLog[]
+}
+
+enum PublicTheme {
+  CLASSIC_ESTATE
+  MODERN_GRID
+  EDITORIAL
+  WARM_MINIMAL
 }
 ```
 
@@ -680,6 +741,7 @@ The MVP should focus on:
 - Landing page.
 - Super admin login.
 - Super admin creates tenant site.
+- Super admin selects the tenant's initial public theme.
 - Tenant admin login.
 - Tenant admin creates property posts.
 - Tenant admin uploads images.
@@ -720,6 +782,7 @@ Core MVP features:
 - Admin can login and create, edit, delete property posts.
 - Admin can upload images for each post.
 - Admin can edit site branding: logo, theme color, phone, email, address.
+- Admin can preview and switch among supported public themes.
 - System must block inactive or expired sites from public access.
 
 Use Next.js, TypeScript, Prisma, PostgreSQL, Tailwind, React Hook Form, Zod, and JWT authentication.
@@ -738,4 +801,6 @@ Use Next.js, TypeScript, Prisma, PostgreSQL, Tailwind, React Hook Form, Zod, and
 7. Public guest can only see `PUBLISHED` posts.
 8. Inactive or expired sites must be blocked.
 9. Use indexes on `siteId`.
+10. Public themes must not fork business logic or API contracts.
+11. Every supported theme must preserve feature parity and responsive behavior.
 10. Use audit logs for important admin and super admin actions.
