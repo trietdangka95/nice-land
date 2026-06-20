@@ -17,6 +17,8 @@ const config: AppConfig = {
   ACCESS_TOKEN_TTL_SECONDS: 900,
   REFRESH_TOKEN_TTL_DAYS: 30,
   REFRESH_COOKIE_NAME: "nice_land_refresh",
+  APP_URL: "http://localhost:3002",
+  PASSWORD_RESET_TTL_MINUTES: 30,
 };
 
 const tenantRepository: TenantSiteRepository = {
@@ -46,6 +48,7 @@ const settings = {
   tagline: "Chọn đúng nơi",
   logo: null,
   banner: null,
+  themeKey: "CLASSIC_ESTATE" as const,
   themeColor: "#315c45",
   phone: "0903868979",
   email: "hello@minhphat.vn",
@@ -157,6 +160,7 @@ describe("tenant admin site routes", () => {
         siteId: "site-b",
         name: "Minh Phát mới",
         tagline: "Tận tâm",
+        themeKey: "MODERN_GRID",
         themeColor: "#24405e",
         phone: "0903868979",
         email: "hello@minhphat.vn",
@@ -165,6 +169,7 @@ describe("tenant admin site routes", () => {
     });
     expect(response.statusCode).toBe(200);
     expect(receivedSiteId).toBe("site-a");
+    expect(response.json()).toMatchObject({ themeKey: "MODERN_GRID" });
   });
 
   it("returns real plan limits and usage", async () => {

@@ -50,6 +50,13 @@ enum RequestStatus {
   DONE
 }
 
+enum PublicTheme {
+  CLASSIC_ESTATE
+  MODERN_GRID
+  EDITORIAL
+  WARM_MINIMAL
+}
+
 model Site {
   id                 String                 @id @default(uuid())
   name               String
@@ -57,6 +64,7 @@ model Site {
   tagline            String?
   logo               String?
   banner             String?
+  themeKey           PublicTheme            @default(CLASSIC_ESTATE)
   themeColor         String?
   phone              String?
   email              String?

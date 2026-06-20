@@ -90,7 +90,11 @@ export function ProtectedAdminShell({
 }) {
   const pathname = usePathname();
 
-  if (pathname.endsWith("/login")) {
+  if (
+    pathname.endsWith("/login") ||
+    pathname.endsWith("/forgot-password") ||
+    pathname.endsWith("/reset-password")
+  ) {
     return children;
   }
 

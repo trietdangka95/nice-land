@@ -49,6 +49,38 @@ textarea {
   @apply mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12;
 }
 
+.tenant-public {
+  --tenant-surface: #f4f1ea;
+  --tenant-card-radius: 0px;
+  --tenant-body-font: Arial, "Helvetica Neue", sans-serif;
+  --tenant-display-font: Georgia, "Times New Roman", serif;
+  --tenant-content-width: 1440px;
+  background: var(--tenant-surface);
+  font-family: var(--tenant-body-font);
+}
+
+.tenant-public .font-display,
+.tenant-public .tenant-brand-name,
+.tenant-public .tenant-card-title,
+.tenant-public .tenant-detail-title {
+  font-family: var(--tenant-display-font);
+}
+
+.tenant-public .page-shell {
+  max-width: var(--tenant-content-width);
+}
+
+@media (max-width: 1023px) {
+  .tenant-public[data-public-theme] .tenant-hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tenant-public[data-public-theme] .tenant-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3rem;
+  }
+}
+
 .eyebrow {
   @apply text-xs font-bold uppercase tracking-[0.2em] text-leaf;
 }

@@ -23,6 +23,8 @@ const configSchema = z.object({
   ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().min(60).default(900),
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().min(1).default(30),
   REFRESH_COOKIE_NAME: z.string().default("nice_land_refresh"),
+  APP_URL: z.string().url().default("http://localhost:3002"),
+  PASSWORD_RESET_TTL_MINUTES: z.coerce.number().int().min(5).max(1440).default(30),
   AWS_REGION: optionalString,
   AWS_S3_BUCKET: optionalString,
   AWS_S3_PUBLIC_URL: optionalUrl,

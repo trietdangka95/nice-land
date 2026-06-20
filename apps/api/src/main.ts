@@ -18,6 +18,7 @@ import { PrismaSuperAdminRepository } from "./modules/superadmin/prisma-superadm
 import { PrismaEngagementRepository } from "./modules/engagement/prisma-engagement-repository.js";
 import { ResendLeadNotifier } from "./modules/engagement/lead-notifier.js";
 import { PrismaAdminCategoryRepository } from "./modules/categories/prisma-admin-category-repository.js";
+import { ResendPasswordResetNotifier } from "./modules/auth/password-reset-notifier.js";
 
 const config = loadConfig();
 const accessTokens = new AccessTokenService(
@@ -38,6 +39,10 @@ const leadNotifier =
   config.RESEND_API_KEY && config.EMAIL_FROM
     ? new ResendLeadNotifier(config.RESEND_API_KEY, config.EMAIL_FROM)
     : undefined;
+const passwordResetNotifier =
+  config.RESEND_API_KEY && config.EMAIL_FROM
+    ? new ResendPasswordResetNotifier(config.RESEND_API_KEY, config.EMAIL_FROM)
+    : undefined;
 const app = buildApp(config, {
   tenantRepository: new PrismaTenantSiteRepository(),
   publicSiteRepository: new PrismaPublicSiteRepository(),
@@ -46,6 +51,9 @@ const app = buildApp(config, {
   accessTokens,
   authService: new AuthService(new PrismaAuthRepository(), accessTokens, {
     refreshTokenTtlDays: config.REFRESH_TOKEN_TTL_DAYS,
+    passwordResetTtlMinutes: config.PASSWORD_RESET_TTL_MINUTES,
+    appUrl: config.APP_URL,
+    passwordResetNotifier,
   }),
   adminPostRepository: new PrismaAdminPostRepository(),
   adminCategoryRepository: new PrismaAdminCategoryRepository(),

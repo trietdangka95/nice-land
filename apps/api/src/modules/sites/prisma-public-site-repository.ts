@@ -16,6 +16,7 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
         tagline: true,
         logo: true,
         banner: true,
+        themeKey: true,
         themeColor: true,
         phone: true,
         email: true,

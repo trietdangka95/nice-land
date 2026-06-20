@@ -3,12 +3,27 @@ import Link from "next/link";
 import { ArrowUpRight, MapPin, Maximize2 } from "lucide-react";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
 import type { PropertyPost } from "@/lib/types";
+import type { PublicTheme } from "@nice-land/contracts";
 
-export function PropertyCard({ post, slug }: { post: PropertyPost; slug: string }) {
+export function PropertyCard({
+  post,
+  slug,
+  themePreview,
+}: {
+  post: PropertyPost;
+  slug: string;
+  themePreview?: PublicTheme;
+}) {
+  const previewSuffix = themePreview
+    ? `?themePreview=${encodeURIComponent(themePreview)}`
+    : "";
   return (
-    <article className="motion-card group bg-white">
-      <Link href={`/${slug}/posts/${post.slug ?? post.id}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-sand">
+    <article className="tenant-property-card motion-card group bg-white">
+      <Link
+        href={`/${slug}/posts/${post.slug ?? post.id}${previewSuffix}`}
+        className="block"
+      >
+        <div className="tenant-card-media relative aspect-[4/3] overflow-hidden bg-sand">
           <Image
             src={post.images[0]}
             alt={post.title}
@@ -25,14 +40,14 @@ export function PropertyCard({ post, slug }: { post: PropertyPost; slug: string 
             </span>
           )}
         </div>
-        <div className="border border-t-0 border-ink/10 p-5">
+        <div className="tenant-card-body border border-t-0 border-ink/10 p-5">
           <div className="flex items-start justify-between gap-4">
             <p className="text-lg font-extrabold text-[var(--tenant-color)]">
               {formatPrice(post.price, post.type)}
             </p>
             <ArrowUpRight className="text-ink/35 transition group-hover:text-ink" size={19} />
           </div>
-          <h3 className="mt-3 line-clamp-2 font-display text-2xl font-medium leading-tight">{post.title}</h3>
+          <h3 className="tenant-card-title mt-3 line-clamp-2 font-display text-2xl font-medium leading-tight">{post.title}</h3>
           <p className="mt-4 flex items-center gap-2 text-xs text-ink/50">
             <MapPin size={14} aria-hidden="true" />
             {post.district}, {post.province}

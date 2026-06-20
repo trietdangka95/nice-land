@@ -12,12 +12,14 @@ const config: AppConfig = {
   CORS_ORIGINS: "http://localhost:3002", LOG_LEVEL: "silent",
   JWT_ACCESS_SECRET: "test-secret-with-at-least-thirty-two-characters",
   ACCESS_TOKEN_TTL_SECONDS: 900, REFRESH_TOKEN_TTL_DAYS: 30, REFRESH_COOKIE_NAME: "refresh",
+  APP_URL: "http://localhost:3002", PASSWORD_RESET_TTL_MINUTES: 30,
 };
 
 const site = {
   id: "11111111-1111-4111-8111-111111111111",
   name: "Minh Phát", slug: "minhphat", phone: "0903868979",
   email: "hello@minhphat.vn", address: "Đà Nẵng", isActive: true,
+  themeKey: "CLASSIC_ESTATE" as const,
   subscriptionStatus: "ACTIVE" as const, subscriptionStart: null, subscriptionEnd: null,
   plan: { id: "22222222-2222-4222-8222-222222222222", name: "Pro", code: "PRO" },
   usage: { posts: 10, images: 30, users: 1 }, admin: null,
@@ -28,7 +30,12 @@ function repository(): SuperAdminRepository {
   return {
     listSites: async () => ({ items: [site], total: 1 }),
     findSite: async () => site,
-    createSite: async (input) => ({ ...site, name: input.name, slug: input.slug }),
+    createSite: async (input) => ({
+      ...site,
+      name: input.name,
+      slug: input.slug,
+      themeKey: input.themeKey,
+    }),
     updateSite: async (_id, input) => ({ ...site, ...input, subscriptionEnd: input.subscriptionEnd?.toISOString() ?? null }),
     setSiteActive: async () => true,
     resetAdminPassword: async () => "Nl!temporary",
@@ -74,12 +81,14 @@ describe("super admin routes", () => {
       method: "POST", url: "/v1/superadmin/sites", headers,
       payload: {
         name: "An Land", slug: "an-land", phone: "0912333558", email: "admin@anland.vn",
+        themeKey: "WARM_MINIMAL",
         planId: site.plan.id, subscriptionEnd: "2027-06-20T00:00:00.000Z",
         adminName: "Quản trị An Land", adminUsername: "admin.anland", adminPassword: "Secure123!",
       },
     });
     expect(response.statusCode).toBe(201);
     expect(response.json().slug).toBe("an-land");
+    expect(response.json().themeKey).toBe("WARM_MINIMAL");
   });
 
   it("returns a password only once after reset", async () => {

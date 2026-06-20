@@ -1,3 +1,5 @@
+import type { PublicTheme } from "@nice-land/contracts";
+
 export interface PublicSiteConfig {
   id: string;
   name: string;
@@ -5,6 +7,7 @@ export interface PublicSiteConfig {
   tagline: string | null;
   logo: string | null;
   banner: string | null;
+  themeKey: PublicTheme;
   themeColor: string | null;
   phone: string | null;
   email: string | null;

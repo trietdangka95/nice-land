@@ -8,6 +8,8 @@ import { getTenantPost, getTenantSite } from "@/lib/server-api";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
 import { PropertyEngagement } from "@/components/property-engagement";
 import { TrackedContactLink } from "@/components/tracked-contact-link";
+import { resolvePublicTheme } from "@/lib/public-themes";
+import { PublicThemeStylesheet } from "@/components/public-theme-stylesheet";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3002";
 
@@ -31,14 +33,18 @@ export async function generateMetadata({
 
 export default async function PropertyDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string; id: string }>;
+  searchParams: Promise<{ themePreview?: string }>;
 }) {
   const { slug, id } = await params;
+  const query = await searchParams;
   const site = await getTenantSite(slug);
   if (!site || !site.isActive || site.subscriptionStatus === "EXPIRED") notFound();
   const post = await getTenantPost(slug, site.id, id);
   if (!post) notFound();
+  const renderedTheme = resolvePublicTheme(query.themePreview ?? site.themeKey);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",
@@ -61,19 +67,24 @@ export default async function PropertyDetailPage({
   };
 
   return (
-    <main>
+    <main
+      className="tenant-public tenant-detail"
+      data-public-theme={renderedTheme}
+      style={{ "--tenant-color": site.themeColor } as React.CSSProperties}
+    >
+      <PublicThemeStylesheet theme={renderedTheme} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <TenantHeader site={site} />
-      <div className="page-shell py-7">
+      <div className="tenant-detail-back page-shell py-7">
         <Link href={`/${slug}#properties`} className="inline-flex items-center gap-2 text-sm font-bold text-ink/60 hover:text-ink">
           <ArrowLeft size={16} />
           Trở lại danh sách
         </Link>
       </div>
 
-      <section className="page-shell">
-        <div className="grid gap-3 md:grid-cols-[1.6fr_1fr]" data-reveal="soft">
-          <div className="relative min-h-[380px] overflow-hidden md:min-h-[570px]">
+      <section className="tenant-detail-gallery page-shell">
+        <div className="tenant-detail-gallery-grid grid gap-3 md:grid-cols-[1.6fr_1fr]" data-reveal="soft">
+          <div className="tenant-detail-main-image relative min-h-[380px] overflow-hidden md:min-h-[570px]">
             <Image
               src={post.images[0]}
               alt={post.title}
@@ -83,7 +94,7 @@ export default async function PropertyDetailPage({
               sizes="(max-width: 768px) 100vw, 65vw"
             />
           </div>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
+          <div className="tenant-detail-thumbnails grid grid-cols-2 gap-3 md:grid-cols-1">
             {(post.images.slice(1, 3).length ? post.images.slice(1, 3) : [post.images[0], post.images[0]]).map(
               (image, index) => (
                 <div key={`${image}-${index}`} className="relative min-h-44 overflow-hidden md:min-h-0">
@@ -95,22 +106,22 @@ export default async function PropertyDetailPage({
         </div>
       </section>
 
-      <section className="page-shell grid gap-12 py-14 lg:grid-cols-[1fr_360px]">
-        <article data-reveal="left">
+      <section className="tenant-detail-layout page-shell grid gap-12 py-14 lg:grid-cols-[1fr_360px]">
+        <article className="tenant-detail-content" data-reveal="left">
           <div className="flex flex-wrap items-center gap-3">
             <span className="bg-[var(--tenant-color)] px-3 py-2 text-[10px] font-extrabold uppercase tracking-widest text-white">
               {propertyTypeLabels[post.type]}
             </span>
             <span className="text-xs font-semibold text-ink/45">Mã tin: {post.id.toUpperCase()}</span>
           </div>
-          <h1 className="mt-5 max-w-4xl text-balance font-display text-4xl font-medium leading-tight sm:text-5xl">
+          <h1 className="tenant-detail-title mt-5 max-w-4xl text-balance font-display text-4xl font-medium leading-tight sm:text-5xl">
             {post.title}
           </h1>
           <p className="mt-4 flex items-center gap-2 text-sm text-ink/55">
             <MapPin size={17} className="text-[var(--tenant-color)]" />
             {post.address}, {post.district}, {post.province}
           </p>
-          <div className="mt-8 flex flex-wrap gap-8 border-y border-ink/10 py-6">
+          <div className="tenant-detail-facts mt-8 flex flex-wrap gap-8 border-y border-ink/10 py-6">
             <div>
               <span className="block text-xs uppercase tracking-wider text-ink/40">Mức giá</span>
               <strong className="mt-1 block font-display text-3xl text-[var(--tenant-color)]">
@@ -145,16 +156,27 @@ export default async function PropertyDetailPage({
           </div>
         </article>
 
-        <aside data-reveal="right">
-          <div className="sticky top-6 border border-ink/10 bg-white p-6 shadow-soft">
+        <aside className="tenant-detail-aside" data-reveal="right">
+          <div className="tenant-contact-card sticky top-6 border border-ink/10 bg-white p-6 shadow-soft">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--tenant-color)]">Chuyên viên phụ trách</p>
             <div className="mt-5 flex items-center gap-4">
-              <div className="grid size-14 place-items-center rounded-full bg-[var(--tenant-color)] font-display text-xl text-white">
-                MP
+              <div className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-full bg-[var(--tenant-color)] font-display text-xl text-white">
+                {site.logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={site.logo}
+                    alt={`Logo ${site.name}`}
+                    className="size-full object-cover"
+                  />
+                ) : (
+                  site.logoMark
+                )}
               </div>
               <div>
-                <strong className="font-display text-xl">Minh Phát</strong>
-                <p className="mt-1 text-xs text-ink/45">Tư vấn bất động sản Đà Nẵng</p>
+                <strong className="font-display text-xl">{site.name}</strong>
+                <p className="mt-1 text-xs text-ink/45">
+                  Tư vấn bất động sản tại {post.province}
+                </p>
               </div>
             </div>
             <TrackedContactLink slug={slug} postId={post.id} source="PHONE_CLICK" href={`tel:${site.phone.replace(/\s/g, "")}`} className="mt-6 flex min-h-13 items-center justify-center gap-2 bg-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-white">

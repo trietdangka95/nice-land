@@ -9,6 +9,7 @@ import { propertyTypeLabels } from "@/lib/format";
 import { buildPublicPostsHref } from "@/lib/pagination";
 import type { PropertyPost, PropertyType } from "@/lib/types";
 import type { PropertyCategory } from "@nice-land/contracts";
+import type { PublicTheme } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 
 export function PropertyBrowser({
@@ -21,6 +22,7 @@ export function PropertyBrowser({
   initialType = "ALL",
   initialCategoryId = "",
   initialSort = "newest",
+  themePreview,
 }: {
   posts: PropertyPost[];
   slug: string;
@@ -31,6 +33,7 @@ export function PropertyBrowser({
   initialType?: "ALL" | PropertyType;
   initialCategoryId?: string;
   initialSort?: "newest" | "price_asc" | "price_desc";
+  themePreview?: PublicTheme;
 }) {
   const router = useRouter();
   const client = useMemo(() => createTenantApi(slug), [slug]);
@@ -61,15 +64,16 @@ export function PropertyBrowser({
         type,
         categoryId,
         sort,
+        themePreview,
       }),
     );
   }
 
   return (
-    <div>
+    <div className="tenant-property-browser">
       <form
         onSubmit={applyFilters}
-        className="grid gap-3 border border-ink/10 bg-white p-3 md:grid-cols-2 xl:grid-cols-[1fr_180px_180px_180px_auto]"
+        className="tenant-filter grid gap-3 border border-ink/10 bg-white p-3 md:grid-cols-2 xl:grid-cols-[1fr_180px_180px_180px_auto]"
       >
         <label className="relative">
           <span className="sr-only">Tìm kiếm bất động sản</span>
@@ -142,8 +146,15 @@ export function PropertyBrowser({
       </div>
 
       {posts.length > 0 ? (
-        <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3" data-reveal-group>
-          {posts.map((post) => <PropertyCard key={post.id} post={post} slug={slug} />)}
+        <div className="tenant-property-grid mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3" data-reveal-group>
+          {posts.map((post) => (
+            <PropertyCard
+              key={post.id}
+              post={post}
+              slug={slug}
+              themePreview={themePreview}
+            />
+          ))}
         </div>
       ) : (
         <div className="mt-6 border border-dashed border-ink/20 bg-white py-20 text-center">
@@ -165,7 +176,7 @@ export function PropertyBrowser({
           <div className="flex gap-2">
             {page > 1 ? (
               <Link
-                href={buildPublicPostsHref(slug, { page: page - 1, q: initialQuery, type: initialType, categoryId: initialCategoryId, sort: initialSort })}
+                href={buildPublicPostsHref(slug, { page: page - 1, q: initialQuery, type: initialType, categoryId: initialCategoryId, sort: initialSort, themePreview })}
                 className="button-secondary min-h-11 px-4"
               >
                 <ChevronLeft size={17} aria-hidden="true" />
@@ -179,7 +190,7 @@ export function PropertyBrowser({
             )}
             {page < totalPages ? (
               <Link
-                href={buildPublicPostsHref(slug, { page: page + 1, q: initialQuery, type: initialType, categoryId: initialCategoryId, sort: initialSort })}
+                href={buildPublicPostsHref(slug, { page: page + 1, q: initialQuery, type: initialType, categoryId: initialCategoryId, sort: initialSort, themePreview })}
                 className="button-secondary min-h-11 px-4"
               >
                 Trang sau

@@ -9,6 +9,7 @@ const config: AppConfig = {
   CORS_ORIGINS: "http://localhost:3002", LOG_LEVEL: "silent",
   JWT_ACCESS_SECRET: "test-secret-with-at-least-thirty-two-characters",
   ACCESS_TOKEN_TTL_SECONDS: 900, REFRESH_TOKEN_TTL_DAYS: 30, REFRESH_COOKIE_NAME: "refresh",
+  APP_URL: "http://localhost:3002", PASSWORD_RESET_TTL_MINUTES: 30,
 };
 const tenantRepository = {
   findBySlug: async () => ({ id: "site-a", slug: "minhphat", isActive: true, subscriptionStatus: "ACTIVE" as const, subscriptionEnd: null }),

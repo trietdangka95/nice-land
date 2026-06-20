@@ -3,8 +3,10 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Save } from "lucide-react";
 import type { SubscriptionPlan, SubscriptionStatus } from "@nice-land/contracts";
+import type { PublicTheme } from "@nice-land/contracts";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import { PublicThemePicker } from "@/components/public-theme-picker";
 
 export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
   const router = useRouter();
@@ -12,6 +14,7 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
   const [form, setForm] = useState({
     name: "", slug: "", phone: "", email: "", address: "", planId: "",
     subscriptionEnd: "", subscriptionStatus: "ACTIVE" as SubscriptionStatus,
+    themeKey: "CLASSIC_ESTATE" as PublicTheme,
     adminName: "", adminUsername: "", adminPassword: "",
   });
   const [saving, setSaving] = useState(false);
@@ -23,6 +26,7 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
       void api.getSuperAdminSite(siteId).then((site) => setForm((current) => ({
         ...current, name: site.name, slug: site.slug, phone: site.phone ?? "",
         email: site.email ?? "", address: site.address ?? "", planId: site.plan?.id ?? "",
+        themeKey: site.themeKey,
         subscriptionEnd: site.subscriptionEnd?.slice(0, 10) ?? "",
         subscriptionStatus: site.subscriptionStatus,
       }))).catch((requestError) => setError(requestError.message));
@@ -37,6 +41,7 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
         await api.updateSuperAdminSite(siteId, {
           name: form.name, slug: form.slug, phone: form.phone, email: form.email,
           address: form.address || null, planId: form.planId || null,
+          themeKey: form.themeKey,
           subscriptionEnd: form.subscriptionEnd ? new Date(form.subscriptionEnd) : null,
           subscriptionStatus: form.subscriptionStatus,
         });
@@ -44,6 +49,7 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
         await api.createSuperAdminSite({
           name: form.name, slug: form.slug, phone: form.phone, email: form.email,
           address: form.address || null, planId: form.planId,
+          themeKey: form.themeKey,
           subscriptionEnd: new Date(form.subscriptionEnd), adminName: form.adminName,
           adminUsername: form.adminUsername, adminPassword: form.adminPassword,
         });
@@ -54,7 +60,10 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
     } finally { setSaving(false); }
   }
 
-  const field = (key: keyof typeof form, value: string) => setForm((current) => ({ ...current, [key]: value }));
+  const field = <K extends keyof typeof form>(
+    key: K,
+    value: (typeof form)[K],
+  ) => setForm((current) => ({ ...current, [key]: value }));
   return (
     <>
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-moss">{siteId ? "Chỉnh sửa tenant" : "Tenant mới"}</p>
@@ -67,10 +76,18 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
           <Field label="Email" type="email" value={form.email} onChange={(v) => field("email", v)} required />
           <Field label="Địa chỉ" value={form.address} onChange={(v) => field("address", v)} />
           {!siteId && <><Field label="Tên quản trị viên" value={form.adminName} onChange={(v) => field("adminName", v)} required /><Field label="Tên đăng nhập" value={form.adminUsername} onChange={(v) => field("adminUsername", v)} required /><Field label="Mật khẩu ban đầu" type="password" value={form.adminPassword} onChange={(v) => field("adminPassword", v)} required /></>}
-        </div></section>
-        <aside className="space-y-6"><section className="border border-ink/10 bg-white p-6"><h2 className="font-display text-2xl">Gói dịch vụ</h2>
+        </div>
+          <div className="mt-8 border-t border-ink/10 pt-7">
+            <PublicThemePicker
+              value={form.themeKey}
+              onChange={(value) => field("themeKey", value)}
+            />
+          </div>
+        </section>
+        <aside className="space-y-6">
+          <section className="border border-ink/10 bg-white p-6"><h2 className="font-display text-2xl">Gói dịch vụ</h2>
           <label className="mt-5 grid gap-2 text-sm font-bold">Gói<select value={form.planId} onChange={(e) => field("planId", e.target.value)} required={!siteId} className="h-12 border border-ink/15 px-4 font-normal"><option value="">Chọn gói</option>{plans.map((plan) => <option key={plan.id} value={plan.id}>{plan.name} — {plan.price.toLocaleString("vi-VN")}đ</option>)}</select></label>
-          {siteId && <label className="mt-5 grid gap-2 text-sm font-bold">Trạng thái<select value={form.subscriptionStatus} onChange={(e) => field("subscriptionStatus", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal">{["TRIAL","ACTIVE","GRACE_PERIOD","EXPIRED","SUSPENDED"].map((status) => <option key={status}>{status}</option>)}</select></label>}
+          {siteId && <label className="mt-5 grid gap-2 text-sm font-bold">Trạng thái<select value={form.subscriptionStatus} onChange={(e) => field("subscriptionStatus", e.target.value as SubscriptionStatus)} className="h-12 border border-ink/15 px-4 font-normal">{["TRIAL","ACTIVE","GRACE_PERIOD","EXPIRED","SUSPENDED"].map((status) => <option key={status}>{status}</option>)}</select></label>}
           <label className="mt-5 grid gap-2 text-sm font-bold">Ngày hết hạn<input type="date" value={form.subscriptionEnd} onChange={(e) => field("subscriptionEnd", e.target.value)} required={!siteId} className="h-12 border border-ink/15 px-4 font-normal" /></label>
         </section>{error && <p className="border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}<button disabled={saving} className="button-primary w-full disabled:opacity-60"><Save size={17} /> {saving ? "Đang lưu..." : "Lưu website"}</button></aside>
       </form>

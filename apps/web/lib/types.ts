@@ -1,6 +1,11 @@
 export type PropertyType = "LAND" | "HOUSE" | "APARTMENT" | "RENTAL";
 export type PostStatus = "DRAFT" | "PUBLISHED" | "HIDDEN" | "SOLD";
 export type SubscriptionStatus = "ACTIVE" | "TRIAL" | "EXPIRED";
+export type PublicTheme =
+  | "CLASSIC_ESTATE"
+  | "MODERN_GRID"
+  | "EDITORIAL"
+  | "WARM_MINIMAL";
 
 export interface Site {
   id: string;
@@ -10,6 +15,7 @@ export interface Site {
   logoMark: string;
   logo?: string;
   banner?: string;
+  themeKey: PublicTheme;
   themeColor: string;
   phone: string;
   email: string;

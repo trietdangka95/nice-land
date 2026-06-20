@@ -137,6 +137,7 @@ describe("tenant request context", () => {
       tagline: null,
       logo: null,
       banner: null,
+      themeKey: "CLASSIC_ESTATE" as const,
       themeColor: null,
       phone: null,
       email: null,

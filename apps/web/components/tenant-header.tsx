@@ -6,7 +6,7 @@ import { MobileNavigation } from "@/components/mobile-navigation";
 export function TenantHeader({ site }: { site: Site }) {
   return (
     <>
-      <div className="bg-[var(--tenant-color)] text-white">
+      <div className="tenant-topbar bg-[var(--tenant-color)] text-white">
         <div className="page-shell flex min-h-9 items-center justify-between gap-4 py-2 text-[11px] font-semibold">
           <p className="hidden sm:block">{site.tagline}</p>
           <div className="ml-auto flex items-center gap-4">
@@ -20,17 +20,21 @@ export function TenantHeader({ site }: { site: Site }) {
           </div>
         </div>
       </div>
-      <header className="border-b border-ink/10 bg-white">
-        <div className="page-shell flex h-20 items-center justify-between">
-          <Link href={`/${site.slug}`} className="flex min-w-0 items-center gap-3">
-            <span className="relative grid size-11 shrink-0 place-items-center overflow-hidden text-sm font-extrabold text-white" style={{ backgroundColor: site.themeColor }}>
+      <header className="tenant-header border-b border-ink/10 bg-white">
+        <div className="tenant-header-inner page-shell flex h-20 items-center justify-between">
+          <Link href={`/${site.slug}`} className="tenant-brand flex min-w-0 items-center gap-3">
+            <span className="tenant-brand-mark relative grid size-11 shrink-0 place-items-center overflow-hidden text-sm font-extrabold text-white" style={{ backgroundColor: site.themeColor }}>
               {site.logo ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={site.logo} alt="" className="size-full object-cover" />
+                <img
+                  src={site.logo}
+                  alt={`Logo ${site.name}`}
+                  className="size-full object-cover"
+                />
               ) : site.logoMark}
             </span>
             <span className="min-w-0">
-              <strong className="block truncate font-display text-lg font-semibold sm:text-xl">
+              <strong className="tenant-brand-name block truncate font-display text-lg font-semibold sm:text-xl">
                 {site.name}
               </strong>
               <small className="hidden text-[9px] font-bold uppercase tracking-[0.18em] text-ink/45 min-[400px]:block">
@@ -38,7 +42,7 @@ export function TenantHeader({ site }: { site: Site }) {
               </small>
             </span>
           </Link>
-          <nav className="hidden items-center gap-7 text-sm font-semibold lg:flex" aria-label="Điều hướng website">
+          <nav className="tenant-navigation hidden items-center gap-7 text-sm font-semibold lg:flex" aria-label="Điều hướng website">
             <Link href={`/${site.slug}`}>Trang chủ</Link>
             <Link href={`/${site.slug}#properties`}>Bất động sản</Link>
             <Link href={`/${site.slug}#about`}>Về chúng tôi</Link>

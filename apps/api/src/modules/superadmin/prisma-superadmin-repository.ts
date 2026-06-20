@@ -20,6 +20,7 @@ const siteSelect = {
   phone: true,
   email: true,
   address: true,
+  themeKey: true,
   isActive: true,
   subscriptionStatus: true,
   subscriptionStart: true,
@@ -59,6 +60,7 @@ async function mapSite(site: SelectedSite) {
     phone: site.phone,
     email: site.email,
     address: site.address,
+    themeKey: site.themeKey,
     isActive: site.isActive,
     subscriptionStatus: site.subscriptionStatus,
     subscriptionStart: site.subscriptionStart?.toISOString() ?? null,
@@ -170,6 +172,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
             phone: input.phone,
             email: input.email,
             address: input.address || null,
+            themeKey: input.themeKey,
             planId: input.planId,
             subscriptionStatus: "ACTIVE",
             subscriptionStart: new Date(),
@@ -215,7 +218,11 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
             action: "SITE_CREATED",
             entityType: "Site",
             entityId: site.id,
-            details: { slug: input.slug, planId: input.planId },
+            details: {
+              slug: input.slug,
+              planId: input.planId,
+              themeKey: input.themeKey,
+            },
           },
         });
         return site;
@@ -242,6 +249,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
           phone: input.phone,
           email: input.email,
           address: input.address || null,
+          themeKey: input.themeKey,
           planId: input.planId,
           subscriptionStatus: input.subscriptionStatus,
           subscriptionEnd: input.subscriptionEnd,
@@ -254,7 +262,18 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
           });
         }
         await tx.auditLog.create({
-        data: { siteId: id, userId: actorId, action: "SITE_UPDATED", entityType: "Site", entityId: id, details: { planId: input.planId, status: input.subscriptionStatus } },
+        data: {
+          siteId: id,
+          userId: actorId,
+          action: "SITE_UPDATED",
+          entityType: "Site",
+          entityId: id,
+          details: {
+            planId: input.planId,
+            status: input.subscriptionStatus,
+            themeKey: input.themeKey,
+          },
+        },
         });
       });
     } catch (error) {

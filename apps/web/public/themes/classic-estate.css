@@ -1,0 +1,14 @@
+.tenant-public[data-public-theme="CLASSIC_ESTATE"] {
+  --tenant-body-font: Arial, "Helvetica Neue", sans-serif;
+  --tenant-display-font: Georgia, "Times New Roman", serif;
+  --tenant-content-width: 1440px;
+}
+
+.tenant-public[data-public-theme="CLASSIC_ESTATE"] .tenant-navigation {
+  letter-spacing: 0.01em;
+}
+
+.tenant-public[data-public-theme="CLASSIC_ESTATE"] .tenant-detail-gallery-grid {
+  border-bottom: 1px solid rgba(23, 33, 27, 0.1);
+  padding-bottom: 1.5rem;
+}

@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { TenantHeader } from "@/components/tenant-header";
 import { PropertyBrowser } from "@/components/property-browser";
 import { getTenantPosts, getTenantSite } from "@/lib/server-api";
+import { resolvePublicTheme } from "@/lib/public-themes";
+import { PublicThemeStylesheet } from "@/components/public-theme-stylesheet";
 
 export async function generateMetadata({
   params,
@@ -70,6 +72,14 @@ export default async function TenantHomePage({
   const sort = ["newest", "price_asc", "price_desc"].includes(sortValue ?? "")
     ? sortValue as "newest" | "price_asc" | "price_desc"
     : "newest";
+  const previewValue = Array.isArray(queryParams.themePreview)
+    ? queryParams.themePreview[0]
+    : queryParams.themePreview;
+  const renderedTheme = resolvePublicTheme(previewValue ?? site.themeKey);
+  const themePreview =
+    typeof previewValue === "string"
+      ? resolvePublicTheme(previewValue)
+      : undefined;
 
   const [listing, featuredListing] = await Promise.all([
     getTenantPosts(slug, site.id, { page, limit: 9, q: q || undefined, type, categoryId, sort }),
@@ -79,11 +89,16 @@ export default async function TenantHomePage({
   if (!featured) notFound();
 
   return (
-    <main>
+    <main
+      className="tenant-public"
+      data-public-theme={renderedTheme}
+      style={{ "--tenant-color": site.themeColor } as React.CSSProperties}
+    >
+      <PublicThemeStylesheet theme={renderedTheme} />
       <TenantHeader site={site} />
-      <section className="relative overflow-hidden bg-[#e7e2d7]">
-        <div className="page-shell grid min-h-[620px] items-center gap-10 py-14 lg:grid-cols-[0.75fr_1.25fr]">
-          <div className="relative z-10" data-reveal="left">
+      <section className="tenant-hero relative overflow-hidden bg-[#e7e2d7]">
+        <div className="tenant-hero-grid page-shell grid min-h-[620px] items-center gap-10 py-14 lg:grid-cols-[0.75fr_1.25fr]">
+          <div className="tenant-hero-copy relative z-10" data-reveal="left">
             <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[var(--tenant-color)]">
               Bất động sản tuyển chọn tại Đà Nẵng
             </p>
@@ -106,7 +121,7 @@ export default async function TenantHomePage({
               </a>
             </div>
           </div>
-          <div className="relative min-h-[430px] lg:min-h-[540px]" data-reveal="right">
+          <div className="tenant-hero-media relative min-h-[430px] lg:min-h-[540px]" data-reveal="right">
             <div className="absolute inset-y-0 right-0 w-[90%] overflow-hidden">
               <Image
                 src={site.banner ?? featured.images[0]}
@@ -118,7 +133,9 @@ export default async function TenantHomePage({
               />
             </div>
             <Link
-              href={`/${site.slug}/posts/${featured.slug ?? featured.id}`}
+              href={`/${site.slug}/posts/${featured.slug ?? featured.id}${
+                themePreview ? `?themePreview=${themePreview}` : ""
+              }`}
               className="absolute bottom-5 left-0 max-w-sm bg-white p-5 shadow-soft sm:p-6"
             >
               <span className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--tenant-color)]">
@@ -134,7 +151,7 @@ export default async function TenantHomePage({
         </div>
       </section>
 
-      <section id="properties" className="py-20 sm:py-28">
+      <section id="properties" className="tenant-listing py-20 sm:py-28">
         <div className="page-shell">
           <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <div>
@@ -160,12 +177,13 @@ export default async function TenantHomePage({
               initialType={type ?? "ALL"}
               initialCategoryId={categoryId ?? ""}
               initialSort={sort}
+              themePreview={themePreview}
             />
           </div>
         </div>
       </section>
 
-      <section id="about" className="bg-white py-20 sm:py-28">
+      <section id="about" className="tenant-about bg-white py-20 sm:py-28">
         <div className="page-shell grid items-center gap-12 lg:grid-cols-2">
           <div className="relative aspect-[5/4] overflow-hidden" data-reveal="left">
             <Image
@@ -220,7 +238,7 @@ export default async function TenantHomePage({
         </div>
       </section>
 
-      <footer className="bg-ink py-10 text-white">
+      <footer className="tenant-footer bg-ink py-10 text-white">
         <div className="page-shell flex flex-col justify-between gap-7 text-sm md:flex-row">
           <div>
             <strong className="font-display text-2xl">{site.name}</strong>

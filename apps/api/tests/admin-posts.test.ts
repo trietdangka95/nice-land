@@ -19,6 +19,8 @@ const config: AppConfig = {
   ACCESS_TOKEN_TTL_SECONDS: 900,
   REFRESH_TOKEN_TTL_DAYS: 30,
   REFRESH_COOKIE_NAME: "nice_land_refresh",
+  APP_URL: "http://localhost:3002",
+  PASSWORD_RESET_TTL_MINUTES: 30,
 };
 
 const tenantRepository: TenantSiteRepository = {

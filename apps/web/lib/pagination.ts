@@ -1,4 +1,5 @@
 import type { PropertyType } from "@/lib/types";
+import type { PublicTheme } from "@nice-land/contracts";
 
 export interface PublicPostUrlState {
   page: number;
@@ -6,6 +7,7 @@ export interface PublicPostUrlState {
   type?: "ALL" | PropertyType;
   categoryId?: string;
   sort?: "newest" | "price_asc" | "price_desc";
+  themePreview?: PublicTheme;
 }
 
 export function buildPublicPostsHref(
@@ -18,6 +20,7 @@ export function buildPublicPostsHref(
   if (state.type && state.type !== "ALL") search.set("type", state.type);
   if (state.categoryId) search.set("categoryId", state.categoryId);
   if (state.sort && state.sort !== "newest") search.set("sort", state.sort);
+  if (state.themePreview) search.set("themePreview", state.themePreview);
   const suffix = search.size ? `?${search.toString()}` : "";
   return `/${slug}${suffix}#properties`;
 }

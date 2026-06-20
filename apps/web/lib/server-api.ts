@@ -1,4 +1,5 @@
 import type { PropertyPost, Site } from "@/lib/types";
+import { resolvePublicTheme } from "@/lib/public-themes";
 import {
   getPublicPost as getMockPost,
   getPublicPosts as getMockPosts,
@@ -58,6 +59,7 @@ export async function getTenantSite(slug: string): Promise<Site | undefined> {
       tagline: string | null;
       logo: string | null;
       banner: string | null;
+      themeKey: string;
       themeColor: string | null;
       phone: string | null;
       email: string | null;
@@ -73,6 +75,7 @@ export async function getTenantSite(slug: string): Promise<Site | undefined> {
       logoMark: logoMark(site.name),
       logo: site.logo ?? undefined,
       banner: site.banner ?? undefined,
+      themeKey: resolvePublicTheme(site.themeKey),
       themeColor: site.themeColor ?? "#315c45",
       phone: site.phone ?? "",
       email: site.email ?? "",
