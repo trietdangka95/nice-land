@@ -1,6 +1,5 @@
-import { SitesTable } from "@/components/sites-table";
-import { sites } from "@/lib/data";
+import { SuperAdminSitesScreen } from "@/components/superadmin-sites-screen";
 
 export default function SitesPage() {
-  return <SitesTable sites={sites} />;
+  return <SuperAdminSitesScreen />;
 }
