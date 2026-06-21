@@ -92,6 +92,31 @@ async function main() {
     },
   });
 
+  const demoSite = await prisma.site.upsert({
+    where: { slug: "demo" },
+    update: {
+      name: "Nice Land Demo",
+      planId: professionalPlan.id,
+      isActive: true,
+      subscriptionStatus: SubscriptionStatus.ACTIVE,
+    },
+    create: {
+      name: "Nice Land Demo",
+      slug: "demo",
+      tagline: "Trải nghiệm website mẫu của Nice Land",
+      themeColor: "#315c45",
+      phone: "19001234",
+      email: "demo@nice-land.vn",
+      address: "Tòa nhà Nice Land, TP. Hồ Chí Minh",
+      facebookUrl: "https://facebook.com",
+      zaloPhone: "19001234",
+      planId: professionalPlan.id,
+      subscriptionStatus: SubscriptionStatus.ACTIVE,
+      subscriptionStart: now,
+      subscriptionEnd: new Date(now.getTime() + 365 * DAY),
+    },
+  });
+
   const minhPhat = await prisma.site.upsert({
     where: { slug: "minhphat" },
     update: {
@@ -139,7 +164,7 @@ async function main() {
     },
   });
 
-  for (const site of [minhPhat, anLand]) {
+  for (const site of [demoSite, minhPhat, anLand]) {
     await prisma.siteDomain.upsert({
       where: { hostname: `${site.slug}.nice-land.vn` },
       update: {
@@ -159,6 +184,27 @@ async function main() {
       },
     });
   }
+
+  const demoAdmin = await prisma.user.upsert({
+    where: {
+      username_siteId: {
+        username: "admin",
+        siteId: demoSite.id,
+      },
+    },
+    update: {
+      passwordHash,
+      isActive: true,
+    },
+    create: {
+      siteId: demoSite.id,
+      username: "admin",
+      email: "admin@demo.nice-land.vn",
+      passwordHash,
+      fullName: "Quản trị Demo",
+      role: UserRole.ADMIN,
+    },
+  });
 
   const minhPhatAdmin = await prisma.user.upsert({
     where: {
@@ -203,6 +249,36 @@ async function main() {
     },
   });
 
+  const demoHouseCategory = await prisma.propertyCategory.upsert({
+    where: {
+      siteId_slug: {
+        siteId: demoSite.id,
+        slug: "nha-o",
+      },
+    },
+    update: { name: "Nhà ở", deletedAt: null },
+    create: {
+      siteId: demoSite.id,
+      name: "Nhà ở",
+      slug: "nha-o",
+    },
+  });
+
+  const demoApartmentCategory = await prisma.propertyCategory.upsert({
+    where: {
+      siteId_slug: {
+        siteId: demoSite.id,
+        slug: "can-ho",
+      },
+    },
+    update: { name: "Căn hộ", deletedAt: null },
+    create: {
+      siteId: demoSite.id,
+      name: "Căn hộ",
+      slug: "can-ho",
+    },
+  });
+
   const houseCategory = await prisma.propertyCategory.upsert({
     where: {
       siteId_slug: {
@@ -230,6 +306,50 @@ async function main() {
       siteId: minhPhat.id,
       name: "Căn hộ",
       slug: "can-ho",
+    },
+  });
+
+  const demoVilla = await prisma.propertyPost.upsert({
+    where: {
+      siteId_slug: {
+        siteId: demoSite.id,
+        slug: "biet-thu-nhiet-doi-demo",
+      },
+    },
+    update: {
+      status: PostStatus.PUBLISHED,
+      deletedAt: null,
+    },
+    create: {
+      siteId: demoSite.id,
+      categoryId: demoHouseCategory.id,
+      slug: "biet-thu-nhiet-doi-demo",
+      title: "Biệt thự mẫu nghỉ dưỡng ven biển",
+      description:
+        "Căn biệt thự mẫu được thiết kế theo phong cách hiện đại nghỉ dưỡng để khách hàng trải nghiệm các tính năng của website Nice Land.",
+      type: PropertyType.HOUSE,
+      price: 18500000000,
+      area: 285,
+      address: "Đường Hoàng Sa, Thọ Quang",
+      province: "Đà Nẵng",
+      district: "Sơn Trà",
+      ward: "Thọ Quang",
+      status: PostStatus.PUBLISHED,
+      publishedAt: now,
+      createdById: demoAdmin.id,
+      updatedById: demoAdmin.id,
+    },
+  });
+
+  await prisma.propertyImage.upsert({
+    where: { storageKey: `sites/${demoSite.id}/demo/villa-son-tra.jpg` },
+    update: { postId: demoVilla.id, sortOrder: 0 },
+    create: {
+      postId: demoVilla.id,
+      storageKey: `sites/${demoSite.id}/demo/villa-son-tra.jpg`,
+      url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85",
+      mimeType: "image/jpeg",
+      sortOrder: 0,
     },
   });
 

@@ -2,6 +2,25 @@ import type { PropertyPost, Site } from "@/lib/types";
 
 export const sites: Site[] = [
   {
+    id: "site-demo",
+    name: "Nice Land Demo",
+    slug: "demo",
+    tagline: "Trải nghiệm website mẫu của Nice Land",
+    logoMark: "NL",
+    themeKey: "CLASSIC_ESTATE",
+    themeColor: "#315c45",
+    phone: "1900 1234",
+    email: "demo@nice-land.vn",
+    address: "Tòa nhà Nice Land, TP. Hồ Chí Minh",
+    facebookUrl: "https://facebook.com",
+    zaloPhone: "19001234",
+    isActive: true,
+    subscriptionStatus: "ACTIVE",
+    subscriptionEnd: "2029-12-31",
+    plan: "Chuyên nghiệp",
+    createdAt: "2026-06-21",
+  },
+  {
     id: "site-minhphat",
     name: "Nhà Đất Minh Phát",
     slug: "minhphat",
@@ -57,6 +76,30 @@ export const sites: Site[] = [
 ];
 
 export const properties: PropertyPost[] = [
+  {
+    id: "villa-demo",
+    siteId: "site-demo",
+    title: "Biệt thự mẫu nghỉ dưỡng ven biển",
+    description:
+      "Căn biệt thự mẫu được thiết kế theo phong cách hiện đại nghỉ dưỡng để khách hàng trải nghiệm các tính năng của website Nice Land.",
+    type: "HOUSE",
+    price: 18500000000,
+    area: 285,
+    address: "Đường Hoàng Sa, Thọ Quang",
+    province: "Đà Nẵng",
+    district: "Sơn Trà",
+    ward: "Thọ Quang",
+    latitude: 16.102,
+    longitude: 108.277,
+    status: "PUBLISHED",
+    featured: true,
+    images: [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85",
+      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=85",
+    ],
+    createdAt: "2026-06-21",
+  },
   {
     id: "villa-son-tra",
     siteId: "site-minhphat",

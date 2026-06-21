@@ -111,7 +111,7 @@ export function getPublicThemeStylesheet(value: unknown) {
 
 export function getPublicThemeDemoHref(
   theme: PublicTheme,
-  slug = "minhphat",
+  slug = "demo",
 ) {
   return `/${slug}?themePreview=${theme}`;
 }

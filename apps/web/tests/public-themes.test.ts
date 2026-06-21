@@ -80,7 +80,7 @@ describe("public theme registry", () => {
 
   it("builds a full sample website URL for landing-page previews", () => {
     expect(getPublicThemeDemoHref("EDITORIAL")).toBe(
-      "/minhphat?themePreview=EDITORIAL",
+      "/demo?themePreview=EDITORIAL",
     );
     expect(getPublicThemeDemoHref("WARM_MINIMAL", "anland")).toBe(
       "/anland?themePreview=WARM_MINIMAL",
