@@ -83,7 +83,7 @@ export function PropertyBrowser({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Tìm theo tên, khu vực..."
-            className="h-12 w-full bg-cream/70 pl-11 pr-4 text-sm"
+            className="h-12 w-full bg-cream/70 pl-12 pr-4 text-sm"
           />
         </label>
         <label>
@@ -146,7 +146,7 @@ export function PropertyBrowser({
       </div>
 
       {posts.length > 0 ? (
-        <div className="tenant-property-grid mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4" data-reveal-group>
+        <div className="tenant-property-grid mt-6 grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4" data-reveal-group>
           {posts.map((post) => (
             <PropertyCard
               key={post.id}

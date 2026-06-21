@@ -1,111 +1,276 @@
-.tenant-public[data-public-theme="MODERN_GRID"] {
-  --tenant-surface: #eef2f3;
-  --tenant-body-font: Inter, Arial, "Helvetica Neue", sans-serif;
-  --tenant-display-font: Inter, Arial, "Helvetica Neue", sans-serif;
-  --tenant-content-width: 1520px;
+/* ─── MODERN_GRID · Search First ────────────────────────────────────────────
+   Vibe: High-density tech portal. Slate blue + clean white.
+   Fonts: Inter ONLY — both display and body (solves clash/contrast issue)
+   ─────────────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── Force override hardcoded JSX Tailwind classes ── */
+/* Hero: overrides 'bg-[#24405e]' in search-first.tsx */
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-hero {
+  background-color: #0f172a !important;
+}
+/* Topbar sub-nav strip: overrides 'bg-[#24405e]' inside SearchHeader */
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-header > div[class*="bg-"] {
+  background-color: #1e293b !important;
+}
+/* Header: overrides 'bg-white shadow-sm' */
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-header {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+}
+/* Topbar (TenantHeader topbar strip) */
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-topbar {
+  background-color: #1e293b !important;
+}
+/* Listing section: overrides 'bg-[#eef2f3]' passed as className prop */
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-listing {
+  background-color: #f1f5f9 !important;
+}
+/* Footer: overrides 'bg-white border-t-4 border-[#e2574c]' in SearchFooter */
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-footer {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-top: 3px solid #3b82f6 !important;
 }
 
+.tenant-public[data-public-theme="MODERN_GRID"] {
+  --tenant-surface:       #f1f5f9;
+  --tenant-card-radius:   6px;
+  --tenant-body-font:     'Inter', system-ui, sans-serif;
+  --tenant-display-font:  'Inter', system-ui, sans-serif;
+  --tenant-content-width: 1520px;
+  background: var(--tenant-surface);
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header & Topbar ── */
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-header {
-  box-shadow: 0 1px 0 rgba(23, 33, 27, 0.08);
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-header-inner {
-  height: 4.5rem;
+  height: 4rem;
+}
+
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-topbar {
+  background: #1e293b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-brand-mark {
-  border-radius: 0.5rem;
+  border-radius: 6px;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-brand-name,
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-card-title,
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-detail-title {
-  font-weight: 750;
-  letter-spacing: -0.035em;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-navigation {
   text-transform: uppercase;
   font-size: 0.72rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  color: #475569;
 }
 
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-navigation a {
+  color: #475569;
+  transition: color 0.15s;
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+}
+
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-navigation a:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+/* ── Hero Section ── */
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-hero {
-  background: #24405e;
+  background: #1e293b;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-hero-grid {
-  min-height: 540px;
-  grid-template-columns: minmax(0, 1.1fr) minmax(380px, 0.9fr);
+  min-height: 480px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  align-items: stretch;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-hero-media {
-  min-height: 430px;
+  min-height: 380px;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-hero-media > div {
   width: 100%;
 }
 
+/* ── Filter Panel — clean, crisp ── */
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-filter {
-  border: 0;
-  box-shadow: 0 12px 35px rgba(36, 64, 94, 0.08);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--tenant-card-radius);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  padding: 0.75rem;
 }
 
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-filter input,
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-filter select {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-filter input:focus,
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-filter select:focus {
+  border-color: #3b82f6;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-filter button[type="submit"] {
+  border-radius: 4px;
+  background: #1e293b;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: background 0.15s;
+}
+
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-filter button[type="submit"]:hover {
+  background: #0f172a;
+}
+
+/* ── Property Grid ── */
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-property-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
 }
 
+/* ── Property Card — tech portal style ── */
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-property-card {
-  box-shadow: 0 8px 24px rgba(36, 64, 94, 0.07);
+  border-radius: var(--tenant-card-radius);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: none;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-property-card:hover {
+  border-color: #94a3b8;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+  transform: translateY(-3px);
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-card-media {
   aspect-ratio: 16 / 10;
+  border-radius: 0;
+}
+
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-card-type {
+  border-radius: 3px;
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-card-body {
-  border: 0;
-  padding: 1rem;
+  border: none;
+  padding: 0.875rem;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-card-title {
-  font-size: 0.92rem;
-  line-height: 1.35;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #0f172a;
+  letter-spacing: -0.02em;
 }
 
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-card-price {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-top: 0.5rem;
+}
+
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-card-location {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin-top: 0.4rem;
+}
+
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-card-meta {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 0.625rem;
+  margin-top: 0.75rem;
+}
+
+/* ── Detail Page ── */
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-detail-gallery-grid {
   grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-detail-main-image {
-  min-height: 620px;
+  min-height: 580px;
+  border-radius: var(--tenant-card-radius);
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-detail-thumbnails {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-detail-thumbnails > div {
-  min-height: 220px;
+  min-height: 200px;
+  border-radius: var(--tenant-card-radius);
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-contact-card {
-  border: 0;
-  border-radius: 0.75rem;
+  border-radius: var(--tenant-card-radius);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  background: #fff;
 }
 
+/* ── Footer — light slate directory ── */
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-footer {
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border-top: 3px solid #3b82f6;
+}
+
+/* ── Responsive ── */
 @media (max-width: 1023px) {
   .tenant-public[data-public-theme="MODERN_GRID"] .tenant-property-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
   .tenant-public[data-public-theme="MODERN_GRID"] .tenant-detail-main-image {
-    min-height: 500px;
+    min-height: 440px;
   }
 }
-
 @media (max-width: 639px) {
   .tenant-public[data-public-theme="MODERN_GRID"] .tenant-property-grid {
     grid-template-columns: minmax(0, 1fr);

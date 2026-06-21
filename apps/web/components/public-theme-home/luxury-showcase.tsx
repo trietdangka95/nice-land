@@ -33,12 +33,12 @@ export function LuxuryShowcaseHome(model: PublicThemeHomeProps) {
               {site.name} giới thiệu những bất động sản có vị trí, kiến trúc và
               giá trị sống khác biệt.
             </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <a href="#properties" className="inline-flex min-h-13 items-center justify-center gap-2 bg-white px-7 text-sm font-bold text-ink">
-                Khám phá bộ sưu tập <ArrowRight size={17} />
+            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+              <a href="#properties" className="inline-flex min-h-[60px] items-center justify-center gap-3 bg-white px-10 text-base font-bold text-ink tracking-[-0.01em]">
+                Khám phá bộ sưu tập <ArrowRight size={19} />
               </a>
-              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex min-h-13 items-center justify-center gap-2 border border-white/45 px-7 text-sm font-bold text-white">
-                <Phone size={16} /> Tư vấn riêng
+              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex min-h-[60px] items-center justify-center gap-3 border border-white/55 px-10 text-base font-bold text-white">
+                <Phone size={18} /> Tư vấn riêng
               </a>
             </div>
           </div>

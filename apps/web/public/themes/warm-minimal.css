@@ -1,36 +1,102 @@
-.tenant-public[data-public-theme="WARM_MINIMAL"] {
-  --tenant-surface: #f7f1e9;
-  --tenant-card-radius: 18px;
-  --tenant-body-font: "Trebuchet MS", Arial, sans-serif;
-  --tenant-display-font: Georgia, "Times New Roman", serif;
-  --tenant-content-width: 1320px;
+/* ─── WARM_MINIMAL · Personal Broker ──────────────────────────────────────────
+   Vibe: Organic boutique broker. Terracotta + sage green + sandstone.
+   Fonts: Plus Jakarta Sans — both display and body
+   Cards: Warm sandstone background (#f4efe8), NOT white
+   ─────────────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+/* ── Force override hardcoded JSX Tailwind classes ── */
+/* Header: overrides PersonalHeader 'bg-[#fffaf4] text-[#3d3028]' */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-header {
+  background-color: #fdf6ee !important;
+  color: #2d1f18 !important;
+  border-bottom: 1px solid rgba(178, 94, 67, 0.1) !important;
+  box-shadow: none !important;
+}
+/* Topbar: overrides TenantHeader 'bg-[var(--tenant-color)]' */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-topbar {
+  background-color: #b25e43 !important;
+  color: #ffffff !important;
+}
+/* Hero: overrides 'bg-[#eee3d6]' in personal-broker.tsx */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-hero {
+  background-color: #ead5c4 !important;
+}
+/* Hero inner section with brown bg: overrides bg-[#725746] hardcoded inline */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-hero > div > div[class*="bg-\["] {
+  background-color: #b25e43 !important;
+}
+/* Listing section */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-listing {
+  background-color: #f0e9df !important;
+}
+/* About section: overrides 'bg-white' */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-about {
+  background-color: #fdf6ee !important;
+}
+/* Footer: overrides 'bg-[#725746]' in PersonalFooter */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-footer {
+  background-color: #7c3a24 !important;
+  color: #ffffff !important;
 }
 
+.tenant-public[data-public-theme="WARM_MINIMAL"] {
+  --tenant-surface:       #f0e9df;
+  --tenant-card-radius:   24px;
+  --tenant-body-font:     'Plus Jakarta Sans', "Trebuchet MS", Arial, sans-serif;
+  --tenant-display-font:  'Plus Jakarta Sans', "Trebuchet MS", Arial, sans-serif;
+  --tenant-content-width: 1320px;
+  background: var(--tenant-surface);
+  color: #2d1f18;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header — warm clay ── */
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-header {
-  border: 0;
-  background: #fffaf4;
+  background: #fdf6ee !important;
+  border-bottom: 1px solid rgba(178, 94, 67, 0.1);
+  box-shadow: none;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-topbar {
+  background: #b25e43 !important;
+  color: #ffffff !important;
+  border-bottom: none;
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-header-inner {
-  height: 5.75rem;
+  height: 5rem;
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-brand-mark {
   border-radius: 999px;
+  background: #b25e43;
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-brand-name {
-  font-style: italic;
-  font-weight: 500;
+  font-weight: 700;
+  color: #2d1f18;
+  letter-spacing: -0.01em;
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-navigation {
   gap: 2rem;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-navigation a {
+  color: #5c3d2e;
+  transition: color 0.2s;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-navigation a:hover {
+  color: #b25e43;
+}
+
+/* ── Hero Section ── */
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-hero {
-  background: #efe3d5;
+  background: #ead5c4;
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-hero-grid {
@@ -39,69 +105,185 @@
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-hero-media > div,
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-hero-media > a,
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter,
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-card,
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-card a > div:first-child {
-  border-radius: var(--tenant-card-radius);
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-hero-media > a {
+  border-radius: 20px;
 }
 
+/* ── Filter Panel — round & organic ── */
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter {
-  border: 0;
+  border: 1px solid rgba(178, 94, 67, 0.12);
+  border-radius: 20px;
+  background: #fdf6ee;
+  box-shadow: 0 4px 24px rgba(178, 94, 67, 0.05);
   padding: 1rem;
 }
 
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter input,
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter select {
+  border: 1px solid rgba(178, 94, 67, 0.15);
+  border-radius: 14px;
+  background: #fff8f2;
+  color: #2d1f18;
+  font-weight: 500;
+  transition: border-color 0.2s;
 }
 
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter input:focus,
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter select:focus {
+  border-color: #b25e43;
+  background: #ffffff;
+  outline: none;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter button[type="submit"] {
+  border-radius: 14px;
+  background: #b25e43;
+  color: #ffffff;
+  font-weight: 700;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter button[type="submit"]:hover {
+  background: #9a4e38;
+  transform: translateY(-1px);
+}
+
+/* ── Property Grid ── */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.75rem;
+}
+
+/* ── Property Card — sandstone, NOT white ── */
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-card {
+  border-radius: var(--tenant-card-radius);
   overflow: hidden;
-  box-shadow: 0 14px 40px rgba(96, 65, 43, 0.07);
+  background: #f4efe8;           /* warm sandstone — distinct from white themes */
+  border: 1px solid rgba(178, 94, 67, 0.08);
+  box-shadow: 0 2px 16px rgba(178, 94, 67, 0.04);
+  transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1),
+              box-shadow 0.35s ease;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(178, 94, 67, 0.1);
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-card a > div:first-child {
+  border-radius: var(--tenant-card-radius) var(--tenant-card-radius) 0 0;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-card-media {
+  border-radius: var(--tenant-card-radius) var(--tenant-card-radius) 0 0;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-card-type {
+  border-radius: 8px;
+  background: #b25e43;
+  color: #ffffff;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-card-body {
-  border: 0;
-  padding: 1.5rem;
+  border: none;
+  border-top: 1px solid rgba(178, 94, 67, 0.1);
+  padding: 1.25rem;
+  background: #f4efe8;
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-card-title {
-  font-size: 1.05rem;
-  font-weight: 400;
-  line-height: 1.15;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #2d1f18;
+  letter-spacing: -0.01em;
+  transition: color 0.2s;
 }
 
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-gallery-grid,
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-main-image,
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-thumbnails > div,
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-contact-card {
-  border-radius: 1.25rem;
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-card:hover .tenant-card-title {
+  color: #b25e43;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-card-price {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-top: 0.6rem;
+  letter-spacing: -0.01em;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-card-location {
+  color: #7a5a4e;
+  font-size: 0.75rem;
+  margin-top: 0.4rem;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-card-meta {
+  border-top: 1px solid rgba(178, 94, 67, 0.1);
+  padding-top: 0.6rem;
+  margin-top: 0.75rem;
+  background: #f4efe8;
+}
+
+/* ── Detail Page ── */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-gallery-grid {
+  border-radius: 20px;
+  overflow: hidden;
+  gap: 0.5rem;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-main-image {
+  border-radius: 20px;
   overflow: hidden;
 }
 
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-thumbnails > div {
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-layout {
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 4rem;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #2d1f18;
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-facts {
+  border-color: rgba(178, 94, 67, 0.12);
+}
+
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-contact-card {
+  border-radius: 20px;
+  border: 1px solid rgba(178, 94, 67, 0.1);
+  box-shadow: 0 8px 32px rgba(178, 94, 67, 0.06);
+  background: #fdf6ee;
+  overflow: hidden;
+}
+
+/* ── Footer — deep terracotta ── */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-footer {
+  background: #7c3a24 !important;
+  color: #ffffff !important;
+}
+
+/* ── Responsive ── */
 @media (max-width: 1023px) {
   .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-
 @media (max-width: 639px) {
   .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-grid {
     grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
   }
-}
-
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-layout {
-  grid-template-columns: minmax(0, 1fr) 380px;
-  gap: 5rem;
-}
-
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-title {
-  font-weight: 400;
-}
-
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-contact-card {
-  border: 0;
-  box-shadow: 0 20px 55px rgba(96, 65, 43, 0.1);
 }

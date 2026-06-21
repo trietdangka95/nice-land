@@ -9,7 +9,7 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
   return (
     <>
       <PersonalHeader site={site} />
-      <section className="tenant-hero bg-[#eee3d6]">
+      <section className="tenant-hero bg-[#ead5c4]">
         <div className="page-shell grid min-h-[650px] items-stretch px-0 sm:px-8 lg:grid-cols-2 lg:px-12">
           <div className="relative min-h-[430px] lg:order-1 lg:min-h-full" data-reveal="left">
             <Image
@@ -24,7 +24,7 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
               8+ năm am hiểu thị trường địa phương
             </span>
           </div>
-          <div className="flex flex-col justify-center bg-[#725746] px-6 py-14 text-white sm:px-12 lg:order-2 lg:px-16" data-reveal="right">
+          <div className="flex flex-col justify-center bg-[#b25e43] px-6 py-14 text-white sm:px-12 lg:order-2 lg:px-16" data-reveal="right">
             <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#ead6c3]">
               Môi giới bất động sản địa phương
             </p>

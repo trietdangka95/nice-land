@@ -10,7 +10,7 @@ export function PropertyEditorialHome(model: PublicThemeHomeProps) {
   return (
     <>
       <EditorialHeader site={site} />
-      <section className="tenant-hero bg-[#1c1b19] text-white">
+      <section className="tenant-hero bg-[#111111] text-white">
         <div className="page-shell grid min-h-[720px] gap-8 py-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-stretch">
           <div className="flex flex-col justify-between border-t border-white/35 pt-6" data-reveal="left">
             <div>

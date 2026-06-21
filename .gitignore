@@ -11,3 +11,4 @@ coverage
 .prisma/
 packages/database/src/generated/
 .prisma/
+.agent
