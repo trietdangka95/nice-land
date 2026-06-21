@@ -77,7 +77,21 @@ describe("super admin routes", () => {
   });
 
   it("creates a site and admin account through one input", async () => {
-    const response = await createApp().inject({
+    let receivedTheme: string | undefined;
+    let receivedActor: string | undefined;
+    const repo = repository();
+    repo.createSite = async (input, actorId) => {
+      receivedTheme = input.themeKey;
+      receivedActor = actorId;
+      return {
+        ...site,
+        name: input.name,
+        slug: input.slug,
+        themeKey: input.themeKey,
+      };
+    };
+
+    const response = await createApp(repo).inject({
       method: "POST", url: "/v1/superadmin/sites", headers,
       payload: {
         name: "An Land", slug: "an-land", phone: "0912333558", email: "admin@anland.vn",
@@ -89,6 +103,68 @@ describe("super admin routes", () => {
     expect(response.statusCode).toBe(201);
     expect(response.json().slug).toBe("an-land");
     expect(response.json().themeKey).toBe("WARM_MINIMAL");
+    expect(receivedTheme).toBe("WARM_MINIMAL");
+    expect(receivedActor).toBe("super-user");
+  });
+
+  it("updates a tenant theme as the authenticated super admin actor", async () => {
+    let receivedTheme: string | undefined;
+    let receivedActor: string | undefined;
+    const repo = repository();
+    repo.updateSite = async (_id, input, actorId) => {
+      receivedTheme = input.themeKey;
+      receivedActor = actorId;
+      return {
+        ...site,
+        ...input,
+        subscriptionEnd: input.subscriptionEnd?.toISOString() ?? null,
+      };
+    };
+
+    const response = await createApp(repo).inject({
+      method: "PUT",
+      url: `/v1/superadmin/sites/${site.id}`,
+      headers,
+      payload: {
+        name: site.name,
+        slug: site.slug,
+        phone: site.phone,
+        email: site.email,
+        address: site.address,
+        themeKey: "EDITORIAL",
+        planId: site.plan.id,
+        subscriptionStatus: "ACTIVE",
+        subscriptionEnd: "2027-06-20T00:00:00.000Z",
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().themeKey).toBe("EDITORIAL");
+    expect(receivedTheme).toBe("EDITORIAL");
+    expect(receivedActor).toBe("super-user");
+  });
+
+  it("rejects an unsupported public theme before creating a site", async () => {
+    const response = await createApp().inject({
+      method: "POST",
+      url: "/v1/superadmin/sites",
+      headers,
+      payload: {
+        name: "An Land",
+        slug: "an-land",
+        phone: "0912333558",
+        email: "admin@anland.vn",
+        themeKey: "UNKNOWN_THEME",
+        planId: site.plan.id,
+        subscriptionEnd: "2027-06-20T00:00:00.000Z",
+        adminName: "Quản trị An Land",
+        adminUsername: "admin.anland",
+        adminPassword: "Secure123!",
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().code).toBe("VALIDATION_ERROR");
   });
 
   it("returns a password only once after reset", async () => {

@@ -38,6 +38,7 @@ import type {
   PropertyCategory,
   PropertyCategoryInput,
   TenantAnalytics,
+  TenantDashboard,
   TenantLead,
 } from "@nice-land/contracts";
 
@@ -117,6 +118,8 @@ export function createApiClient(options: ApiClientOptions) {
         method: "POST",
       }),
     me: () => request<AuthUser>("/v1/auth/me"),
+    getTenantDashboard: () =>
+      request<TenantDashboard>("/v1/admin/dashboard"),
     listAdminPosts: (query: Partial<AdminPostListQuery> = {}) => {
       const search = new URLSearchParams();
       for (const [key, value] of Object.entries(query)) {

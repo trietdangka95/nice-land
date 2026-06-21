@@ -66,7 +66,6 @@ export class PrismaAdminSiteRepository implements AdminSiteRepository {
           tagline: input.tagline || null,
           logo: input.logo || null,
           banner: input.banner || null,
-          themeKey: input.themeKey,
           themeColor: input.themeColor,
           phone: input.phone,
           email: input.email,

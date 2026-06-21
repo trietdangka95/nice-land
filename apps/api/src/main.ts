@@ -19,6 +19,7 @@ import { PrismaEngagementRepository } from "./modules/engagement/prisma-engageme
 import { ResendLeadNotifier } from "./modules/engagement/lead-notifier.js";
 import { PrismaAdminCategoryRepository } from "./modules/categories/prisma-admin-category-repository.js";
 import { ResendPasswordResetNotifier } from "./modules/auth/password-reset-notifier.js";
+import { PrismaAdminDashboardRepository } from "./modules/dashboard/prisma-admin-dashboard-repository.js";
 
 const config = loadConfig();
 const accessTokens = new AccessTokenService(
@@ -57,6 +58,7 @@ const app = buildApp(config, {
   }),
   adminPostRepository: new PrismaAdminPostRepository(),
   adminCategoryRepository: new PrismaAdminCategoryRepository(),
+  adminDashboardRepository: new PrismaAdminDashboardRepository(),
   adminSiteRepository: new PrismaAdminSiteRepository(),
   superAdminRepository: new PrismaSuperAdminRepository(),
   engagementRepository: new PrismaEngagementRepository(),

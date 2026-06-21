@@ -8,14 +8,11 @@ import {
   CircleCheckBig,
   FilePenLine,
   FileText,
+  Handshake,
   Plus,
   TrendingUp,
 } from "lucide-react";
-import type {
-  AdminPost,
-  AdminSubscription,
-  TenantAnalytics,
-} from "@nice-land/contracts";
+import type { TenantDashboard } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 import { DashboardStat } from "@/components/dashboard-stat";
 import { StatusPill } from "@/components/status-pill";
@@ -31,33 +28,17 @@ const statusLabels = {
 
 export function TenantDashboardScreen({ slug }: { slug: string }) {
   const client = useMemo(() => createTenantApi(slug), [slug]);
-  const [recentPosts, setRecentPosts] = useState<AdminPost[]>([]);
-  const [totalPosts, setTotalPosts] = useState(0);
-  const [publishedPosts, setPublishedPosts] = useState(0);
-  const [draftPosts, setDraftPosts] = useState(0);
-  const [analytics, setAnalytics] = useState<TenantAnalytics | null>(null);
-  const [subscription, setSubscription] =
-    useState<AdminSubscription | null>(null);
+  const [dashboard, setDashboard] = useState<TenantDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
-    Promise.all([
-      client.listAdminPosts({ limit: 4 }),
-      client.listAdminPosts({ status: "PUBLISHED", limit: 1 }),
-      client.listAdminPosts({ status: "DRAFT", limit: 1 }),
-      client.getTenantAnalytics(),
-      client.getSubscription(),
-    ])
-      .then(([all, published, drafts, analyticsResult, subscriptionResult]) => {
+    client
+      .getTenantDashboard()
+      .then((result) => {
         if (!active) return;
-        setRecentPosts(all.items);
-        setTotalPosts(all.total);
-        setPublishedPosts(published.total);
-        setDraftPosts(drafts.total);
-        setAnalytics(analyticsResult);
-        setSubscription(subscriptionResult);
+        setDashboard(result);
       })
       .catch((requestError) => {
         if (active) {
@@ -74,6 +55,14 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
       active = false;
     };
   }, [client]);
+
+  const recentPosts = dashboard?.recentPosts ?? [];
+  const totalPosts = dashboard?.postCounts.total ?? 0;
+  const publishedPosts = dashboard?.postCounts.published ?? 0;
+  const draftPosts = dashboard?.postCounts.draft ?? 0;
+  const soldPosts = dashboard?.postCounts.sold ?? 0;
+  const subscription = dashboard?.subscription ?? null;
+  const engagement = dashboard?.engagement;
 
   if (loading) {
     return (
@@ -117,7 +106,7 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
         </p>
       )}
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <DashboardStat
           label="Tổng tin đăng"
           value={`${totalPosts}`}
@@ -139,9 +128,16 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
           tone="gold"
         />
         <DashboardStat
+          label="Đã bán"
+          value={`${soldPosts}`}
+          detail="Giao dịch đã hoàn tất"
+          icon={Handshake}
+          tone="green"
+        />
+        <DashboardStat
           label="Lượt xem 30 ngày"
-          value={(analytics?.totals.views ?? 0).toLocaleString("vi-VN")}
-          detail={`${analytics?.totals.leads ?? 0} lead trong cùng kỳ`}
+          value={(engagement?.views ?? 0).toLocaleString("vi-VN")}
+          detail={`${engagement?.leads ?? 0} lead trong cùng kỳ`}
           icon={TrendingUp}
           tone="blue"
         />
@@ -268,8 +264,8 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
                 recentPosts.some((post) => post.images.length === 0)
                   ? "Bổ sung ảnh cho các tin chưa có ảnh"
                   : "Ảnh tin đăng đã đầy đủ",
-                (analytics?.totals.leads ?? 0) > 0
-                  ? `Xử lý ${analytics?.totals.leads} lead mới`
+                (engagement?.leads ?? 0) > 0
+                  ? `Xử lý ${engagement?.leads} lead mới`
                   : "Theo dõi lead mới từ website",
               ].map((item, index) => (
                 <li key={item} className="flex items-center gap-3">

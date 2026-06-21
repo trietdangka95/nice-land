@@ -4,7 +4,13 @@ import { FormEvent, useState } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { api } from "@/lib/api";
 
-export function ContactForm() {
+export function ContactForm({
+  selectedTheme,
+  selectedPlan,
+}: {
+  selectedTheme?: string;
+  selectedPlan?: string;
+}) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -14,13 +20,20 @@ export function ContactForm() {
     setLoading(true);
     setError("");
     const form = new FormData(event.currentTarget);
+    const selection = [
+      selectedPlan ? `Gói quan tâm: ${selectedPlan}` : "",
+      selectedTheme ? `Giao diện đã chọn: ${selectedTheme}` : "",
+      String(form.get("message") ?? ""),
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     try {
       await api.createContactRequest({
         name: String(form.get("name") ?? ""),
         phone: String(form.get("phone") ?? ""),
         email: String(form.get("email") ?? ""),
-        message: String(form.get("message") ?? ""),
+        message: selection,
       });
       setSubmitted(true);
       event.currentTarget.reset();
@@ -48,6 +61,12 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4 border border-white/15 bg-white/5 p-6 sm:p-8">
+      {(selectedTheme || selectedPlan) && (
+        <div className="border border-gold/30 bg-gold/10 p-4 text-sm text-white/80">
+          {selectedPlan && <p>Gói quan tâm: <strong>{selectedPlan}</strong></p>}
+          {selectedTheme && <p className={selectedPlan ? "mt-1" : ""}>Giao diện: <strong>{selectedTheme}</strong></p>}
+        </div>
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-2 text-sm font-semibold">
           Họ và tên

@@ -52,7 +52,8 @@
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-grid {
-  gap: 2rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-card {
@@ -66,6 +67,7 @@
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-card-title {
+  font-size: 1.05rem;
   font-weight: 400;
   line-height: 1.15;
 }
@@ -76,6 +78,18 @@
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-contact-card {
   border-radius: 1.25rem;
   overflow: hidden;
+}
+
+@media (max-width: 1023px) {
+  .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 639px) {
+  .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-layout {

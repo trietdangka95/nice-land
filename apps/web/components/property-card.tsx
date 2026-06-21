@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, MapPin, Maximize2 } from "lucide-react";
+import { Heart, MapPin } from "lucide-react";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
 import type { PropertyPost } from "@/lib/types";
 import type { PublicTheme } from "@nice-land/contracts";
@@ -17,21 +17,19 @@ export function PropertyCard({
   const previewSuffix = themePreview
     ? `?themePreview=${encodeURIComponent(themePreview)}`
     : "";
+  const href = `/${slug}/posts/${post.slug ?? post.id}${previewSuffix}`;
   return (
-    <article className="tenant-property-card motion-card group bg-white">
-      <Link
-        href={`/${slug}/posts/${post.slug ?? post.id}${previewSuffix}`}
-        className="block"
-      >
-        <div className="tenant-card-media relative aspect-[4/3] overflow-hidden bg-sand">
+    <article className="tenant-property-card motion-card group flex h-full flex-col overflow-hidden bg-white">
+      <Link href={href} className="block">
+        <div className="tenant-card-media relative aspect-[16/10] overflow-hidden bg-sand">
           <Image
             src={post.images[0]}
             alt={post.title}
             fill
             className="object-cover transition duration-500 group-hover:scale-[1.025]"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
-          <span className="absolute left-4 top-4 bg-white/95 px-3 py-2 text-[10px] font-extrabold uppercase tracking-widest">
+          <span className="tenant-card-type absolute left-3 top-3 bg-white/95 px-2.5 py-1.5 text-[9px] font-extrabold uppercase tracking-wider">
             {propertyTypeLabels[post.type]}
           </span>
           {post.status === "SOLD" && (
@@ -40,27 +38,38 @@ export function PropertyCard({
             </span>
           )}
         </div>
-        <div className="tenant-card-body border border-t-0 border-ink/10 p-5">
-          <div className="flex items-start justify-between gap-4">
-            <p className="text-lg font-extrabold text-[var(--tenant-color)]">
-              {formatPrice(post.price, post.type)}
-            </p>
-            <ArrowUpRight className="text-ink/35 transition group-hover:text-ink" size={19} />
-          </div>
-          <h3 className="tenant-card-title mt-3 line-clamp-2 font-display text-2xl font-medium leading-tight">{post.title}</h3>
-          <p className="mt-4 flex items-center gap-2 text-xs text-ink/50">
+      </Link>
+      <div className="tenant-card-body flex flex-1 flex-col border border-t-0 border-ink/10 p-4">
+        <Link href={href}>
+          <h3 className="tenant-card-title line-clamp-2 text-[15px] font-bold leading-5">
+            {post.title}
+          </h3>
+          <p className="tenant-card-price mt-2.5 text-base font-extrabold text-[var(--tenant-color)]">
+            {formatPrice(post.price, post.type)}
+            <span className="mx-2 font-normal text-ink/25">·</span>
+            <span>{post.area} m²</span>
+          </p>
+          <p className="tenant-card-location mt-2.5 flex items-center gap-1.5 text-xs text-ink/60">
             <MapPin size={14} aria-hidden="true" />
             {post.district}, {post.province}
           </p>
-          <div className="mt-4 flex items-center gap-5 border-t border-ink/10 pt-4 text-xs font-semibold text-ink/60">
-            <span className="flex items-center gap-2">
-              <Maximize2 size={14} aria-hidden="true" />
-              {post.area} m²
-            </span>
-            <span>Mã: {post.id.slice(0, 8).toUpperCase()}</span>
-          </div>
+        </Link>
+        <div className="tenant-card-meta mt-auto flex items-center justify-between pt-5 text-[11px] text-ink/40">
+          <span>
+            Đăng{" "}
+            {new Date(post.createdAt).toLocaleDateString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+            })}
+          </span>
+          <span
+            className="grid size-8 place-items-center rounded border border-ink/20 text-ink/70"
+            aria-label="Tính năng lưu tin sẽ sớm có"
+          >
+            <Heart size={16} aria-hidden="true" />
+          </span>
         </div>
-      </Link>
+      </div>
     </article>
   );
 }

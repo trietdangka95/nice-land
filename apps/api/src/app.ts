@@ -36,6 +36,8 @@ import { registerEngagementRoutes } from "./modules/engagement/engagement-routes
 import type { LeadNotifier } from "./modules/engagement/lead-notifier.js";
 import type { AdminCategoryRepository } from "./modules/categories/admin-category-repository.js";
 import { registerAdminCategoryRoutes } from "./modules/categories/admin-category-routes.js";
+import type { AdminDashboardRepository } from "./modules/dashboard/admin-dashboard-repository.js";
+import { registerAdminDashboardRoutes } from "./modules/dashboard/admin-dashboard-routes.js";
 
 interface BuildAppOptions {
   tenantRepository?: TenantSiteRepository;
@@ -46,6 +48,7 @@ interface BuildAppOptions {
   accessTokens?: AccessTokenService;
   adminPostRepository?: AdminPostRepository;
   adminCategoryRepository?: AdminCategoryRepository;
+  adminDashboardRepository?: AdminDashboardRepository;
   adminSiteRepository?: AdminSiteRepository;
   superAdminRepository?: SuperAdminRepository;
   engagementRepository?: EngagementRepository;
@@ -250,6 +253,19 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
       authService: options.authService,
       accessTokens: options.accessTokens,
       tenantRepository: options.tenantRepository,
+    });
+  }
+
+  if (
+    options.tenantRepository &&
+    options.accessTokens &&
+    options.adminDashboardRepository
+  ) {
+    void registerAdminDashboardRoutes(app, {
+      config,
+      tenantRepository: options.tenantRepository,
+      accessTokens: options.accessTokens,
+      repository: options.adminDashboardRepository,
     });
   }
 

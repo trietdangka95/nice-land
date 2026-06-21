@@ -265,6 +265,13 @@ export class PrismaAdminPostRepository implements AdminPostRepository {
     context: AdminPostMutationContext,
   ) {
     return prisma.$transaction(async (tx) => {
+      const images = await tx.propertyImage.findMany({
+        where: {
+          postId: id,
+          post: { siteId, version, deletedAt: null },
+        },
+        select: { id: true, storageKey: true },
+      });
       const result = await tx.propertyPost.updateMany({
         where: { id, siteId, version, deletedAt: null },
         data: {
@@ -275,6 +282,9 @@ export class PrismaAdminPostRepository implements AdminPostRepository {
         },
       });
       if (result.count !== 1) return false;
+      await tx.propertyImage.deleteMany({
+        where: { id: { in: images.map((image) => image.id) } },
+      });
       await tx.auditLog.create({
         data: {
           siteId,
@@ -282,6 +292,10 @@ export class PrismaAdminPostRepository implements AdminPostRepository {
           action: "POST_ARCHIVED",
           entityType: "PropertyPost",
           entityId: id,
+          details: {
+            removedImageCount: images.length,
+            storageCleanup: "ORPHAN_IMAGE_JOB",
+          },
         },
       });
       return true;

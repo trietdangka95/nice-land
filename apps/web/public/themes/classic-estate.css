@@ -8,7 +8,34 @@
   letter-spacing: 0.01em;
 }
 
+.tenant-public[data-public-theme="CLASSIC_ESTATE"] .tenant-property-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.tenant-public[data-public-theme="CLASSIC_ESTATE"] .tenant-property-card {
+  border-bottom: 2px solid rgba(49, 92, 69, 0.28);
+}
+
+.tenant-public[data-public-theme="CLASSIC_ESTATE"] .tenant-card-title {
+  font-family: Arial, "Helvetica Neue", sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
 .tenant-public[data-public-theme="CLASSIC_ESTATE"] .tenant-detail-gallery-grid {
   border-bottom: 1px solid rgba(23, 33, 27, 0.1);
   padding-bottom: 1.5rem;
+}
+
+@media (max-width: 1279px) {
+  .tenant-public[data-public-theme="CLASSIC_ESTATE"] .tenant-property-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .tenant-public[data-public-theme="CLASSIC_ESTATE"] .tenant-property-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

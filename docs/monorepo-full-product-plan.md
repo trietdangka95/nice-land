@@ -564,10 +564,11 @@ tài khoản seed local đã hoạt động; production smoke test vẫn còn.**
 
 ### Vertical slice 5.1: Dashboard
 
-- Counts thật.
-- Plan usage.
-- Recent posts.
-- View statistics cơ bản.
+- [x] API tổng hợp tenant-safe cho dashboard.
+- [x] Counts thật, gồm tổng tin, đang đăng, bản nháp và đã bán.
+- [x] Plan usage.
+- [x] Recent posts.
+- [x] View/lead statistics 30 ngày.
 
 ### Vertical slice 5.2: Create post
 
@@ -659,11 +660,12 @@ optimization.**
 
 ### Vertical slice 7.1.1: Theme selection
 
-- [x] Hiển thị gallery 4 theme với thumbnail, tên và mô tả ngắn.
-- [x] Cho Tenant Admin preview theme bằng dữ liệu site hiện tại trước khi lưu.
-- [x] Cho Tenant Admin đổi public theme trong Site Settings.
-- [x] Lưu theme qua site-config API và ghi audit log.
-- [x] Xác nhận rõ theme chỉ thay đổi website public.
+- [x] Landing có CTA `Xem website mẫu`.
+- [x] Landing và `/themes` hiển thị gallery 4 theme.
+- [x] Khách có thể mở full sample website cho từng theme.
+- [x] Lựa chọn gói/theme được chuyển vào form tư vấn.
+- [x] Tenant Admin không có quyền đổi theme qua UI hoặc API.
+- [x] Theme chỉ áp dụng cho website public.
 
 ### Vertical slice 7.2: Subscription usage
 
@@ -948,7 +950,7 @@ Complete SaaS thường cần thêm 4–8 tuần.
 - Auth refresh/logout/reset password hoạt động.
 - RBAC và tenant isolation có test tự động.
 - Admin CRUD post + ảnh + branding hoàn chỉnh.
-- Super Admin chọn theme khi tạo site; Tenant Admin có thể preview và đổi theme.
+- Khách chọn theme từ landing/onboarding; Super Admin gán theme khi tạo site.
 - Tất cả public themes có cùng tính năng, responsive và fallback an toàn.
 - Super Admin vận hành site/plan/subscription/account hoàn chỉnh.
 - Guest chỉ thấy published posts của tenant hợp lệ.

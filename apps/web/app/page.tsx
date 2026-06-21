@@ -20,10 +20,22 @@ import { Faq } from "@/components/faq";
 import { MobileNavigation } from "@/components/mobile-navigation";
 import { plans, properties } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
+import { ThemeShowcase } from "@/components/theme-showcase";
+import { publicThemes } from "@/lib/public-themes";
 
 const heroProperty = properties[0];
 
-export default function LandingPage() {
+export default async function LandingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ theme?: string; plan?: string }>;
+}) {
+  const query = await searchParams;
+  const selectedTheme = publicThemes.find(
+    (theme) => theme.key === query.theme,
+  )?.name;
+  const selectedPlan = query.plan?.slice(0, 120);
+
   return (
     <main>
       <header className="absolute inset-x-0 top-0 z-20">
@@ -31,6 +43,7 @@ export default function LandingPage() {
           <Logo />
           <nav className="hidden items-center gap-8 text-sm font-semibold lg:flex" aria-label="Điều hướng chính">
             <a href="#features" className="hover:text-leaf">Tính năng</a>
+            <Link href="/themes" className="hover:text-leaf">Giao diện mẫu</Link>
             <a href="#process" className="hover:text-leaf">Cách hoạt động</a>
             <a href="#pricing" className="hover:text-leaf">Bảng giá</a>
             <a href="#faq" className="hover:text-leaf">Hỏi đáp</a>
@@ -51,6 +64,7 @@ export default function LandingPage() {
           >
             <nav className="flex flex-col p-4 text-base font-semibold" aria-label="Điều hướng chính trên di động">
               <a href="#features" className="border-b border-white/10 px-3 py-4">Tính năng</a>
+              <Link href="/themes" className="border-b border-white/10 px-3 py-4">Giao diện mẫu</Link>
               <a href="#process" className="border-b border-white/10 px-3 py-4">Cách hoạt động</a>
               <a href="#pricing" className="border-b border-white/10 px-3 py-4">Bảng giá</a>
               <a href="#faq" className="border-b border-white/10 px-3 py-4">Hỏi đáp</a>
@@ -89,7 +103,7 @@ export default function LandingPage() {
                 Bắt đầu website của bạn
                 <ArrowRight size={17} aria-hidden="true" />
               </a>
-              <Link href="/minhphat" className="button-secondary">
+              <Link href="/themes" className="button-secondary">
                 Xem website mẫu
                 <ChevronRight size={17} aria-hidden="true" />
               </Link>
@@ -203,8 +217,8 @@ export default function LandingPage() {
           />
           <div className="mt-16 grid gap-px bg-white/15 lg:grid-cols-3" data-reveal-group>
             {[
-              ["01", "Chọn tên của bạn", "Đăng ký địa chỉ dễ nhớ như tenban.nice-land.vn và chọn gói phù hợp."],
-              ["02", "Tạo dấu ấn riêng", "Cập nhật logo, màu sắc, câu chuyện thương hiệu và thông tin liên hệ."],
+              ["01", "Chọn gói và giao diện", "Xem bốn website mẫu, chọn phong cách phù hợp rồi đăng ký gói dịch vụ."],
+              ["02", "Tạo dấu ấn riêng", "Chúng tôi cấu hình theme đã chọn với tên, logo, màu sắc và thông tin liên hệ của bạn."],
               ["03", "Đăng tin, bắt đầu bán", "Đưa bất động sản lên website, chia sẻ đường dẫn và kết nối khách hàng."],
             ].map(([number, title, description]) => (
               <article key={number} className="bg-ink p-8 sm:p-10">
@@ -287,14 +301,14 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href="#contact"
+                <Link
+                  href={`/themes?plan=${encodeURIComponent(plan.name)}`}
                   className={`mt-9 inline-flex min-h-12 items-center justify-center gap-2 px-6 text-sm font-bold ${plan.popular ? "bg-white text-ink hover:bg-gold" : "border border-ink/20 hover:bg-cream"
                     }`}
                 >
                   Chọn gói {plan.name}
                   <ArrowRight size={16} />
-                </a>
+                </Link>
               </article>
             ))}
           </div>
@@ -304,37 +318,14 @@ export default function LandingPage() {
       <section className="border-y border-ink/10 bg-white py-24 sm:py-32">
         <div className="page-shell">
           <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
-            <SectionHeading eyebrow="Website đang hoạt động" title="Mỗi thương hiệu, một câu chuyện riêng." />
-            <Link href="/minhphat" className="inline-flex items-center gap-2 text-sm font-bold">
-              Xem website mẫu
+            <SectionHeading eyebrow="Bốn giao diện website" title="Cùng công cụ vận hành, khác biệt trong cách thương hiệu xuất hiện." />
+            <Link href="/themes" className="inline-flex items-center gap-2 text-sm font-bold">
+              Xem đủ 4 website mẫu
               <ArrowRight size={16} />
             </Link>
           </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-3" data-reveal-group>
-            {[
-              ["minhphat", "Nhà Đất Minh Phát", properties[0].images[0], "Đà Nẵng"],
-              ["anland", "An Land", properties[5].images[0], "TP. Hồ Chí Minh"],
-              ["minhphat", "Mộc Gia Property", properties[2].images[0], "Hội An"],
-            ].map(([slug, name, image, location]) => (
-              <Link key={name} href={`/${slug}`} className="group">
-                <div className="relative aspect-[4/3] overflow-hidden bg-sand">
-                  <Image
-                    src={image}
-                    alt={`Website mẫu ${name}`}
-                    fill
-                    className="object-cover transition duration-500 group-hover:scale-[1.03]"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                </div>
-                <div className="mt-5 flex items-start justify-between">
-                  <div>
-                    <h3 className="font-display text-2xl font-medium">{name}</h3>
-                    <p className="mt-1 text-sm text-ink/50">{location}</p>
-                  </div>
-                  <ArrowRight className="mt-1 transition group-hover:translate-x-1" size={19} />
-                </div>
-              </Link>
-            ))}
+          <div className="mt-12" data-reveal-group>
+            <ThemeShowcase compact />
           </div>
         </div>
       </section>
@@ -358,7 +349,10 @@ export default function LandingPage() {
               vừa đủ cho hiện tại và sẵn sàng cho bước tiếp theo.
             </p>
           </div>
-          <ContactForm />
+          <ContactForm
+            selectedTheme={selectedTheme}
+            selectedPlan={selectedPlan}
+          />
         </div>
       </section>
 
@@ -368,6 +362,7 @@ export default function LandingPage() {
             <Logo href="/" inverted />
             <div className="grid grid-cols-2 gap-x-14 gap-y-3 text-sm text-white/55 sm:grid-cols-4">
               <a href="#features" className="hover:text-white">Tính năng</a>
+              <Link href="/themes" className="hover:text-white">Giao diện mẫu</Link>
               <a href="#pricing" className="hover:text-white">Bảng giá</a>
               <a href="#faq" className="hover:text-white">Hỏi đáp</a>
               <a href="#contact" className="hover:text-white">Liên hệ</a>

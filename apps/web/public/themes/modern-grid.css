@@ -31,7 +31,7 @@
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-hero {
-  background: #dfe8ec;
+  background: #24405e;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-hero-grid {
@@ -53,6 +53,7 @@
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-property-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -67,6 +68,11 @@
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-card-body {
   border: 0;
   padding: 1rem;
+}
+
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-card-title {
+  font-size: 0.92rem;
+  line-height: 1.35;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-detail-gallery-grid {
@@ -91,7 +97,17 @@
 }
 
 @media (max-width: 1023px) {
+  .tenant-public[data-public-theme="MODERN_GRID"] .tenant-property-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .tenant-public[data-public-theme="MODERN_GRID"] .tenant-detail-main-image {
     min-height: 500px;
+  }
+}
+
+@media (max-width: 639px) {
+  .tenant-public[data-public-theme="MODERN_GRID"] .tenant-property-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

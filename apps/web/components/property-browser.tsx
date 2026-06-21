@@ -146,7 +146,7 @@ export function PropertyBrowser({
       </div>
 
       {posts.length > 0 ? (
-        <div className="tenant-property-grid mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3" data-reveal-group>
+        <div className="tenant-property-grid mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4" data-reveal-group>
           {posts.map((post) => (
             <PropertyCard
               key={post.id}

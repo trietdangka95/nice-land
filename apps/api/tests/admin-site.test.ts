@@ -160,7 +160,6 @@ describe("tenant admin site routes", () => {
         siteId: "site-b",
         name: "Minh Phát mới",
         tagline: "Tận tâm",
-        themeKey: "MODERN_GRID",
         themeColor: "#24405e",
         phone: "0903868979",
         email: "hello@minhphat.vn",
@@ -169,7 +168,38 @@ describe("tenant admin site routes", () => {
     });
     expect(response.statusCode).toBe(200);
     expect(receivedSiteId).toBe("site-a");
-    expect(response.json()).toMatchObject({ themeKey: "MODERN_GRID" });
+    expect(response.json()).toMatchObject({
+      themeKey: "CLASSIC_ESTATE",
+      themeColor: "#24405e",
+    });
+  });
+
+  it("does not allow tenant admins to change the public theme", async () => {
+    let receivedInput: unknown;
+    const custom = repository();
+    custom.updateSettings = async (_siteId, input) => {
+      receivedInput = input;
+      return { ...settings, ...input };
+    };
+
+    const response = await createApp(custom).inject({
+      method: "PUT",
+      url: "/v1/admin/site-config",
+      headers: authHeaders,
+      payload: {
+        name: "Minh Phát mới",
+        tagline: "Tận tâm",
+        themeKey: "EDITORIAL",
+        themeColor: "#24405e",
+        phone: "0903868979",
+        email: "hello@minhphat.vn",
+        address: "Đà Nẵng",
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(receivedInput).not.toHaveProperty("themeKey");
+    expect(response.json().themeKey).toBe("CLASSIC_ESTATE");
   });
 
   it("returns real plan limits and usage", async () => {

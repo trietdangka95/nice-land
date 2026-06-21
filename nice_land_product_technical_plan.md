@@ -92,6 +92,7 @@ Main sections:
 - How it works.
 - Pricing plans.
 - Example tenant websites.
+- Four-theme gallery with preview links.
 - FAQ.
 - Contact form.
 - CTA: Create your real estate website.
@@ -102,7 +103,20 @@ Main CTA examples:
 Create your website
 Start your property website
 Register your subdomain
+View sample websites
 ```
+
+Theme selection flow:
+
+1. A prospective customer opens `Xem website mẫu` from the landing page.
+2. The platform shows four theme previews.
+3. The customer opens a full sample website for the preferred theme.
+4. When choosing a subscription plan, the customer also submits the preferred
+   theme.
+5. Super Admin creates the tenant and assigns that theme.
+
+Tenant Admin does not change the theme. They only manage tenant branding and
+content such as logo, banner, color, contact information and property posts.
 
 ---
 
@@ -161,7 +175,6 @@ Features:
 - Change post status.
 - Update website branding.
 - Update logo, banner, theme color.
-- Preview and select the public website theme.
 - Update contact information.
 - View current subscription.
 - Send renewal request.
@@ -782,7 +795,8 @@ Core MVP features:
 - Admin can login and create, edit, delete property posts.
 - Admin can upload images for each post.
 - Admin can edit site branding: logo, theme color, phone, email, address.
-- Admin can preview and switch among supported public themes.
+- Tenant Admin can view the assigned theme but cannot change it.
+- Super Admin assigns or changes the public theme after confirming with the customer.
 - System must block inactive or expired sites from public access.
 
 Use Next.js, TypeScript, Prisma, PostgreSQL, Tailwind, React Hook Form, Zod, and JWT authentication.

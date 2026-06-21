@@ -180,7 +180,6 @@ export const siteSettingsInputSchema = z.object({
   tagline: z.string().trim().max(240).nullable().optional(),
   logo: optionalUrlSchema,
   banner: optionalUrlSchema,
-  themeKey: publicThemeSchema,
   themeColor: z
     .string()
     .trim()
@@ -425,6 +424,21 @@ export interface TenantAnalytics {
     views: number;
     leads: number;
   }>;
+}
+
+export interface TenantDashboard {
+  postCounts: {
+    total: number;
+    published: number;
+    draft: number;
+    sold: number;
+  };
+  engagement: {
+    views: number;
+    leads: number;
+  };
+  subscription: AdminSubscription;
+  recentPosts: AdminPost[];
 }
 
 export interface SiteSettings {

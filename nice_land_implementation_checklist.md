@@ -144,6 +144,17 @@
 
 ## Phase 4 - Landing Page
 
+### Theme Discovery
+
+- [x] Link `Xem website mẫu` to a four-theme gallery.
+- [x] Show a website-section thumbnail for all four themes.
+- [x] Let prospects open a full sample website for each theme.
+- [x] Carry selected plan and theme into the contact/onboarding request.
+- [x] Give every theme a distinct public homepage renderer.
+- [x] Keep theme metadata, homepage renderer and thumbnail renderer extensible through a registry.
+- [x] Give every public theme a distinct header and footer composition.
+- [x] Use compact public listing cards with a four-column Search First layout.
+
 ### Landing UI
 
 - [x] Build hero section.
@@ -266,11 +277,11 @@
 
 ### Dashboard Overview
 
-- [ ] Create dashboard API.
+- [x] Create dashboard API.
 - [x] Count total posts.
 - [x] Count published posts.
 - [x] Count draft posts.
-- [ ] Count sold posts.
+- [x] Count sold posts.
 - [x] Show subscription status.
 - [x] Show plan limit.
 - [x] Show remaining post slots.
@@ -316,7 +327,7 @@
 
 - [x] Create `DELETE /v1/admin/posts/:id` archive endpoint.
 - [x] Validate post belongs to current `siteId`.
-- [ ] Delete post images if needed.
+- [x] Delete archived post image metadata and defer S3 object removal to the orphan cleanup job.
 - [x] Archive/soft-delete post.
 - [x] Add audit log.
 
@@ -377,12 +388,9 @@
 
 ### Public Theme Selection
 
-- [x] Add four-theme gallery to Tenant Admin Site Settings.
-- [x] Show theme name, description and preview thumbnail.
-- [x] Preview a theme with the tenant's current branding and listing data.
-- [x] Update `themeKey` through the tenant site-config API.
-- [x] Require explicit save before publishing a theme change.
-- [x] Write an audit log when a tenant changes theme.
+- [x] Remove theme selection from Tenant Admin Site Settings.
+- [x] Reject/strip `themeKey` from Tenant Admin site-config updates.
+- [x] Keep Tenant Admin branding controls independent from the assigned theme.
 
 ### Subscription View
 
@@ -544,7 +552,7 @@
 
 - [x] Unit test the theme registry and default fallback.
 - [x] Contract test `themeKey` in public/admin/superadmin site payloads.
-- [ ] Integration test create/update site theme permissions and audit logs.
+- [x] Integration test create/update site theme permissions and audit logs.
 - [x] Component test shared feature parity across all four themes.
 - [ ] Add visual regression screenshots for homepage, listing and detail per theme.
 - [x] Add responsive browser checks at 360px, 768px, 1024px and desktop.
@@ -557,7 +565,7 @@
 - [x] Test tenant resolver.
 - [x] Test auth utilities.
 - [x] Test plan limit logic.
-- [ ] Test post validation.
+- [x] Test post validation.
 
 ### Integration Tests
 
@@ -667,6 +675,6 @@ The MVP is complete when:
 - [x] Inactive site is blocked.
 - [x] Expired site is blocked.
 - [x] Tenant repositories scope data access by resolved `siteId`.
-- [ ] Super Admin can choose a public theme when creating a tenant site.
-- [ ] Tenant Admin can preview and switch among four supported public themes.
-- [ ] All public themes provide identical features and tenant-safe data behavior.
+- [x] Super Admin can choose a public theme when creating a tenant site.
+- [x] Only Super Admin can assign or change a tenant's public theme.
+- [x] All public themes provide identical features and tenant-safe data behavior.

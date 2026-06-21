@@ -4,7 +4,6 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Check, ExternalLink, Palette, Save } from "lucide-react";
 import type { SiteSettingsInput } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
-import { PublicThemePicker } from "@/components/public-theme-picker";
 
 const colors = ["#315c45", "#8b5a3c", "#24405e", "#6b4f7d", "#9a6d22"];
 
@@ -13,7 +12,6 @@ const emptySettings: SiteSettingsInput = {
   tagline: "",
   logo: "",
   banner: "",
-  themeKey: "CLASSIC_ESTATE",
   themeColor: colors[0],
   phone: "",
   email: "",
@@ -36,7 +34,18 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
       .getSiteSettings()
       .then((settings) => {
         if (!active) return;
-        setForm(settings);
+        setForm({
+          name: settings.name,
+          tagline: settings.tagline,
+          logo: settings.logo,
+          banner: settings.banner,
+          themeColor: settings.themeColor,
+          phone: settings.phone,
+          email: settings.email,
+          address: settings.address,
+          facebookUrl: settings.facebookUrl,
+          zaloPhone: settings.zaloPhone,
+        });
       })
       .catch((requestError) => {
         if (active) {
@@ -105,13 +114,6 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
             <TextField label="Logo URL" type="url" value={form.logo ?? ""} onChange={(value) => setField("logo", value)} />
             <TextField label="Ảnh banner URL" type="url" value={form.banner ?? ""} onChange={(value) => setField("banner", value)} wide />
           </div>
-          <div className="mt-8 border-t border-ink/10 pt-7">
-            <PublicThemePicker
-              value={form.themeKey}
-              onChange={(value) => setField("themeKey", value)}
-            />
-          </div>
-
           {error && <p className="mt-5 border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}
           {message && <p className="mt-5 border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800" role="status">{message}</p>}
           <button className="button-primary mt-7 disabled:opacity-60" disabled={saving}>
@@ -150,7 +152,7 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
               <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: form.themeColor }}>Xem trước website</p>
               <h2 className="mt-2 font-display text-2xl">{form.name || "Tên website"}</h2>
               <p className="mt-2 text-sm text-ink/50">{form.tagline || "Slogan của bạn sẽ hiển thị tại đây."}</p>
-              <a href={`/${slug}?themePreview=${form.themeKey}`} target="_blank" className="mt-4 inline-flex items-center gap-2 text-sm font-bold" style={{ color: form.themeColor }}>
+              <a href={`/${slug}`} target="_blank" className="mt-4 inline-flex items-center gap-2 text-sm font-bold" style={{ color: form.themeColor }}>
                 Mở trang khách <ExternalLink size={14} />
               </a>
             </div>
