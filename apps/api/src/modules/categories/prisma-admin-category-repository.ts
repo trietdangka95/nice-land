@@ -1,5 +1,6 @@
 import { Prisma, prisma } from "@nice-land/database";
 import type { PropertyCategoryInput } from "@nice-land/contracts";
+import { writeAuditLog } from "../audit/audit-log-service.js";
 import {
   CategoryInUseError,
   CategorySlugConflictError,
@@ -80,15 +81,13 @@ export class PrismaAdminCategoryRepository
               data: { siteId, name: input.name, slug: input.slug },
               select: categorySelect,
             });
-        await tx.auditLog.create({
-          data: {
-            siteId,
-            userId,
-            action: "CATEGORY_CREATED",
-            entityType: "PropertyCategory",
-            entityId: category.id,
-            details: { name: input.name, slug: input.slug },
-          },
+        await writeAuditLog(tx, {
+          siteId,
+          userId,
+          action: "CATEGORY_CREATED",
+          entityType: "PropertyCategory",
+          entityId: category.id,
+          details: { name: input.name, slug: input.slug },
         });
         return serialize(category);
       });
@@ -116,15 +115,13 @@ export class PrismaAdminCategoryRepository
           data: { name: input.name, slug: input.slug },
           select: categorySelect,
         });
-        await tx.auditLog.create({
-          data: {
-            siteId,
-            userId,
-            action: "CATEGORY_UPDATED",
-            entityType: "PropertyCategory",
-            entityId: id,
-            details: { name: input.name, slug: input.slug },
-          },
+        await writeAuditLog(tx, {
+          siteId,
+          userId,
+          action: "CATEGORY_UPDATED",
+          entityType: "PropertyCategory",
+          entityId: id,
+          details: { name: input.name, slug: input.slug },
         });
         return serialize(category);
       });
@@ -149,14 +146,12 @@ export class PrismaAdminCategoryRepository
         where: { id },
         data: { deletedAt: new Date() },
       });
-      await tx.auditLog.create({
-        data: {
-          siteId,
-          userId,
-          action: "CATEGORY_DELETED",
-          entityType: "PropertyCategory",
-          entityId: id,
-        },
+      await writeAuditLog(tx, {
+        siteId,
+        userId,
+        action: "CATEGORY_DELETED",
+        entityType: "PropertyCategory",
+        entityId: id,
       });
       return true;
     });

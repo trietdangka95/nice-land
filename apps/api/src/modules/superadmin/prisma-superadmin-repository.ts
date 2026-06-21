@@ -12,6 +12,7 @@ import {
   SuperAdminConflictError,
   type SuperAdminRepository,
 } from "./superadmin-repository.js";
+import { writeAuditLog } from "../audit/audit-log-service.js";
 
 const siteSelect = {
   id: true,
@@ -211,18 +212,16 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
             note: "Khởi tạo website",
           },
         });
-        await tx.auditLog.create({
-          data: {
-            siteId: site.id,
-            userId: actorId,
-            action: "SITE_CREATED",
-            entityType: "Site",
-            entityId: site.id,
-            details: {
-              slug: input.slug,
-              planId: input.planId,
-              themeKey: input.themeKey,
-            },
+        await writeAuditLog(tx, {
+          siteId: site.id,
+          userId: actorId,
+          action: "SITE_CREATED",
+          entityType: "Site",
+          entityId: site.id,
+          details: {
+            slug: input.slug,
+            planId: input.planId,
+            themeKey: input.themeKey,
           },
         });
         return site;
@@ -261,8 +260,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
             data: { hostname: `${input.slug}.nice-land.vn` },
           });
         }
-        await tx.auditLog.create({
-        data: {
+        await writeAuditLog(tx, {
           siteId: id,
           userId: actorId,
           action: "SITE_UPDATED",
@@ -273,7 +271,6 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
             status: input.subscriptionStatus,
             themeKey: input.themeKey,
           },
-        },
         });
       });
     } catch (error) {
@@ -288,8 +285,12 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
   async setSiteActive(id: string, isActive: boolean, actorId: string) {
     const result = await prisma.site.updateMany({ where: { id, deletedAt: null }, data: { isActive } });
     if (!result.count) return false;
-    await prisma.auditLog.create({
-      data: { siteId: id, userId: actorId, action: isActive ? "SITE_ACTIVATED" : "SITE_DEACTIVATED", entityType: "Site", entityId: id },
+    await writeAuditLog(prisma, {
+      siteId: id,
+      userId: actorId,
+      action: isActive ? "SITE_ACTIVATED" : "SITE_DEACTIVATED",
+      entityType: "Site",
+      entityId: id,
     });
     return true;
   }
@@ -298,22 +299,46 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
     const admin = await prisma.user.findFirst({ where: { siteId: id, role: "ADMIN", deletedAt: null }, select: { id: true } });
     if (!admin) return null;
     const temporaryPassword = `Nl!${randomBytes(8).toString("base64url")}`;
-    await prisma.$transaction([
-      prisma.user.update({ where: { id: admin.id }, data: { passwordHash: await hash(temporaryPassword, 12), isActive: true } }),
-      prisma.refreshSession.updateMany({ where: { userId: admin.id, revokedAt: null }, data: { revokedAt: new Date() } }),
-      prisma.auditLog.create({ data: { siteId: id, userId: actorId, action: "ADMIN_PASSWORD_RESET", entityType: "User", entityId: admin.id } }),
-    ]);
+    const passwordHash = await hash(temporaryPassword, 12);
+    await prisma.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: admin.id },
+        data: { passwordHash, isActive: true },
+      });
+      await tx.refreshSession.updateMany({
+        where: { userId: admin.id, revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+      await writeAuditLog(tx, {
+        siteId: id,
+        userId: actorId,
+        action: "ADMIN_PASSWORD_RESET",
+        entityType: "User",
+        entityId: admin.id,
+      });
+    });
     return temporaryPassword;
   }
 
   async setAdminActive(id: string, isActive: boolean, actorId: string) {
     const admin = await prisma.user.findFirst({ where: { siteId: id, role: "ADMIN", deletedAt: null }, select: { id: true } });
     if (!admin) return false;
-    await prisma.$transaction([
-      prisma.user.update({ where: { id: admin.id }, data: { isActive } }),
-      ...(!isActive ? [prisma.refreshSession.updateMany({ where: { userId: admin.id, revokedAt: null }, data: { revokedAt: new Date() } })] : []),
-      prisma.auditLog.create({ data: { siteId: id, userId: actorId, action: isActive ? "ADMIN_ACTIVATED" : "ADMIN_DISABLED", entityType: "User", entityId: admin.id } }),
-    ]);
+    await prisma.$transaction(async (tx) => {
+      await tx.user.update({ where: { id: admin.id }, data: { isActive } });
+      if (!isActive) {
+        await tx.refreshSession.updateMany({
+          where: { userId: admin.id, revokedAt: null },
+          data: { revokedAt: new Date() },
+        });
+      }
+      await writeAuditLog(tx, {
+        siteId: id,
+        userId: actorId,
+        action: isActive ? "ADMIN_ACTIVATED" : "ADMIN_DISABLED",
+        entityType: "User",
+        entityId: admin.id,
+      });
+    });
     return true;
   }
 
@@ -331,7 +356,12 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
       }
       throw error;
     }
-    await prisma.auditLog.create({ data: { userId: actorId, action: "PLAN_CREATED", entityType: "SubscriptionPlan", entityId: plan.id } });
+    await writeAuditLog(prisma, {
+      userId: actorId,
+      action: "PLAN_CREATED",
+      entityType: "SubscriptionPlan",
+      entityId: plan.id,
+    });
     return mapPlan(plan);
   }
 
@@ -347,7 +377,12 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
       }
       throw error;
     }
-    await prisma.auditLog.create({ data: { userId: actorId, action: "PLAN_UPDATED", entityType: "SubscriptionPlan", entityId: id } });
+    await writeAuditLog(prisma, {
+      userId: actorId,
+      action: "PLAN_UPDATED",
+      entityType: "SubscriptionPlan",
+      entityId: id,
+    });
     return mapPlan(plan);
   }
 
@@ -355,10 +390,15 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
     const plan = await prisma.subscriptionPlan.findUnique({ where: { id }, select: { _count: { select: { sites: true } } } });
     if (!plan) return false;
     if (plan._count.sites > 0) throw new SuperAdminConflictError("Không thể xóa gói đang được website sử dụng.");
-    await prisma.$transaction([
-      prisma.subscriptionPlan.delete({ where: { id } }),
-      prisma.auditLog.create({ data: { userId: actorId, action: "PLAN_DELETED", entityType: "SubscriptionPlan", entityId: id } }),
-    ]);
+    await prisma.$transaction(async (tx) => {
+      await tx.subscriptionPlan.delete({ where: { id } });
+      await writeAuditLog(tx, {
+        userId: actorId,
+        action: "PLAN_DELETED",
+        entityType: "SubscriptionPlan",
+        entityId: id,
+      });
+    });
     return true;
   }
 
@@ -386,7 +426,14 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
         await tx.site.update({ where: { id: request.siteId }, data: { planId: request.planId, subscriptionStatus: "ACTIVE", subscriptionStart: startsAt, subscriptionEnd: endsAt, isActive: true } });
         await tx.subscriptionHistory.create({ data: { siteId: request.siteId, planId: request.planId, status: "ACTIVE", startsAt, endsAt, amount: request.plan.price, note: input.adminNote || "Gia hạn được duyệt" } });
       }
-      await tx.auditLog.create({ data: { siteId: request.siteId, userId: actorId, action: `RENEWAL_${input.status}`, entityType: "RenewalRequest", entityId: id, details: { adminNote: input.adminNote } } });
+      await writeAuditLog(tx, {
+        siteId: request.siteId,
+        userId: actorId,
+        action: `RENEWAL_${input.status}`,
+        entityType: "RenewalRequest",
+        entityId: id,
+        details: { adminNote: input.adminNote },
+      });
     });
     const updated = await prisma.renewalRequest.findUnique({ where: { id }, select: renewalSelect });
     return updated ? mapRenewal(updated) : null;
@@ -400,7 +447,13 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
   async updateContactStatus(id: string, status: "NEW" | "IN_PROGRESS" | "DONE" | "REJECTED", actorId: string) {
     const result = await prisma.contactRequest.updateMany({ where: { id }, data: { status } });
     if (!result.count) return false;
-    await prisma.auditLog.create({ data: { userId: actorId, action: "CONTACT_STATUS_UPDATED", entityType: "ContactRequest", entityId: id, details: { status } } });
+    await writeAuditLog(prisma, {
+      userId: actorId,
+      action: "CONTACT_STATUS_UPDATED",
+      entityType: "ContactRequest",
+      entityId: id,
+      details: { status },
+    });
     return true;
   }
 

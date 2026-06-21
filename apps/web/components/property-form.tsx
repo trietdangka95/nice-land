@@ -2,6 +2,7 @@
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import { optimizeImageForUpload } from "@/lib/image-optimization";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -136,28 +137,29 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
         if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
           throw new Error(`${file.name} không phải định dạng ảnh được hỗ trợ.`);
         }
-        const mimeType = file.type as
+        const optimizedFile = await optimizeImageForUpload(file);
+        const mimeType = optimizedFile.type as
           | "image/jpeg"
           | "image/png"
           | "image/webp";
         const presigned = await client.presignPostImage(post.id, {
-          fileName: file.name,
+          fileName: optimizedFile.name,
           mimeType,
-          size: file.size,
+          size: optimizedFile.size,
         });
         const upload = await fetch(presigned.uploadUrl, {
           method: "PUT",
           headers: presigned.headers,
-          body: file,
+          body: optimizedFile,
         });
         if (!upload.ok) {
           throw new Error(`Upload ${file.name} lên S3 thất bại.`);
         }
         const completed = await client.completePostImage(post.id, {
           objectKey: presigned.objectKey,
-          fileName: file.name,
+          fileName: optimizedFile.name,
           mimeType,
-          size: file.size,
+          size: optimizedFile.size,
           altText: form.title,
         });
         setImages((current) => [
@@ -317,7 +319,6 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
                       src={image.url}
                       alt={image.altText ?? form.title}
                       fill
-                      unoptimized
                       className="object-cover"
                       sizes="160px"
                     />
@@ -379,7 +380,9 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
                     ? "Đang upload lên S3..."
                     : "Chọn ảnh tải lên"}
               </strong>
-              <small className="mt-1 block text-ink/40">JPG, PNG, WebP · tối đa 8 MB mỗi ảnh</small>
+              <small className="mt-1 block text-ink/40">
+                JPG, PNG, WebP · tự động tối ưu WebP tối đa 1920px
+              </small>
             </span>
             <input
               className="sr-only"

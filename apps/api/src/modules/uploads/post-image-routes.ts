@@ -105,6 +105,7 @@ export async function registerPostImageRoutes(
         ...input,
         siteId,
         postId: request.params.id,
+        userId: request.auth!.sub,
       });
       return reply.status(201).send(image);
     },

@@ -3,6 +3,7 @@ import type {
   RenewalRequestInput,
   SiteSettingsInput,
 } from "@nice-land/contracts";
+import { writeAuditLog } from "../audit/audit-log-service.js";
 import {
   type AdminSiteRepository,
   PendingRenewalRequestError,
@@ -75,15 +76,13 @@ export class PrismaAdminSiteRepository implements AdminSiteRepository {
         },
         select: settingsSelect,
       });
-      await tx.auditLog.create({
-        data: {
-          siteId,
-          userId,
-          action: "SITE_SETTINGS_UPDATED",
-          entityType: "Site",
-          entityId: siteId,
-          details: { fields: Object.keys(input) },
-        },
+      await writeAuditLog(tx, {
+        siteId,
+        userId,
+        action: "SITE_SETTINGS_UPDATED",
+        entityType: "Site",
+        entityId: siteId,
+        details: { fields: Object.keys(input) },
       });
       return serializeSettings(updated);
     });
@@ -208,15 +207,13 @@ export class PrismaAdminSiteRepository implements AdminSiteRepository {
         }
         throw error;
       }
-      await tx.auditLog.create({
-        data: {
-          siteId,
-          userId,
-          action: "RENEWAL_REQUEST_CREATED",
-          entityType: "RenewalRequest",
-          entityId: created.id,
-          details: { planId },
-        },
+      await writeAuditLog(tx, {
+        siteId,
+        userId,
+        action: "RENEWAL_REQUEST_CREATED",
+        entityType: "RenewalRequest",
+        entityId: created.id,
+        details: { planId },
       });
       return {
         ...created,

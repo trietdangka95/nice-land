@@ -143,6 +143,34 @@ describe("post image upload routes", () => {
     expect(response.statusCode).toBe(403);
   });
 
+  it("records the authenticated admin when completing an upload", async () => {
+    const current = dependencies();
+    let completedBy: string | undefined;
+    const originalAddImage = current.repository.addImage;
+    current.repository.addImage = async (input) => {
+      completedBy = input.userId;
+      return originalAddImage(input);
+    };
+
+    const response = await createApp(current).inject({
+      method: "POST",
+      url: "/v1/admin/posts/post-a/images/complete",
+      headers: {
+        authorization: "Bearer token",
+        "x-tenant-host": "minhphat.nice-land.vn",
+      },
+      payload: {
+        objectKey: "sites/site-a/posts/post-a/front.jpg",
+        fileName: "front.jpg",
+        mimeType: "image/jpeg",
+        size: 200_000,
+      },
+    });
+
+    expect(response.statusCode).toBe(201);
+    expect(completedBy).toBe("user-a");
+  });
+
   it("reorders all images and makes the first image the cover", async () => {
     const { repository, storage, firstImageId, secondImageId } = dependencies();
     const response = await createApp({

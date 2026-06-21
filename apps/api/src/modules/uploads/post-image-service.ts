@@ -7,6 +7,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { prisma } from "@nice-land/database";
 import type { ImageCompleteInput } from "@nice-land/contracts";
+import { writeAuditLog } from "../audit/audit-log-service.js";
 
 export interface PostImageStorage {
   createUploadUrl(input: {
@@ -28,7 +29,11 @@ export interface PostImageRepository {
     postId: string,
   ): Promise<{ postExists: boolean; imageCount: number; maxImages: number }>;
   addImage(
-    input: ImageCompleteInput & { siteId: string; postId: string },
+    input: ImageCompleteInput & {
+      siteId: string;
+      postId: string;
+      userId: string;
+    },
   ): Promise<{ id: string; url: string; sortOrder: number }>;
   reorderImages(
     siteId: string,
@@ -65,23 +70,42 @@ export class PrismaPostImageRepository implements PostImageRepository {
   }
 
   async addImage(
-    input: ImageCompleteInput & { siteId: string; postId: string },
+    input: ImageCompleteInput & {
+      siteId: string;
+      postId: string;
+      userId: string;
+    },
   ) {
     const context = await this.getUploadContext(input.siteId, input.postId);
     if (!context.postExists || context.imageCount >= context.maxImages) {
       throw new Error("Không thể thêm ảnh cho tin đăng này.");
     }
-    return prisma.propertyImage.create({
-      data: {
-        postId: input.postId,
-        storageKey: input.objectKey,
-        url: `${this.publicUrl.replace(/\/$/, "")}/${input.objectKey}`,
-        mimeType: input.mimeType,
-        size: input.size,
-        altText: input.altText,
-        sortOrder: context.imageCount,
-      },
-      select: { id: true, url: true, sortOrder: true },
+    return prisma.$transaction(async (tx) => {
+      const image = await tx.propertyImage.create({
+        data: {
+          postId: input.postId,
+          storageKey: input.objectKey,
+          url: `${this.publicUrl.replace(/\/$/, "")}/${input.objectKey}`,
+          mimeType: input.mimeType,
+          size: input.size,
+          altText: input.altText,
+          sortOrder: context.imageCount,
+        },
+        select: { id: true, url: true, sortOrder: true },
+      });
+      await writeAuditLog(tx, {
+        siteId: input.siteId,
+        userId: input.userId,
+        action: "IMAGE_UPLOADED",
+        entityType: "PropertyImage",
+        entityId: image.id,
+        details: {
+          postId: input.postId,
+          mimeType: input.mimeType,
+          size: input.size,
+        },
+      });
+      return image;
     });
   }
 

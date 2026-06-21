@@ -500,7 +500,7 @@
 
 ### Logging
 
-- [ ] Create audit log service.
+- [x] Create audit log service.
 - [x] Log super admin creates site.
 - [x] Log super admin updates site.
 - [x] Log super admin activates/deactivates site.
@@ -537,7 +537,7 @@
 
 ### Performance
 
-- [ ] Optimize images.
+- [x] Optimize images.
 - [x] Use lazy loading and responsive image sizes where supported.
 - [x] Add public and admin post pagination.
 - [x] Avoid loading all posts at once.

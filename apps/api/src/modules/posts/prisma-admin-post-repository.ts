@@ -4,6 +4,7 @@ import type {
   AdminPostListQuery,
   AdminPostUpdate,
 } from "@nice-land/contracts";
+import { writeAuditLog } from "../audit/audit-log-service.js";
 import {
   type AdminPostMutationContext,
   type AdminPostRecord,
@@ -187,15 +188,13 @@ export class PrismaAdminPostRepository implements AdminPostRepository {
         },
         select: adminPostSelect,
       });
-      await tx.auditLog.create({
-        data: {
-          siteId: context.siteId,
-          userId: context.userId,
-          action: "POST_CREATED",
-          entityType: "PropertyPost",
-          entityId: created.id,
-          details: { status: created.status, title: created.title },
-        },
+      await writeAuditLog(tx, {
+        siteId: context.siteId,
+        userId: context.userId,
+        action: "POST_CREATED",
+        entityType: "PropertyPost",
+        entityId: created.id,
+        details: { status: created.status, title: created.title },
       });
       return toRecord(created);
     });
@@ -240,18 +239,16 @@ export class PrismaAdminPostRepository implements AdminPostRepository {
         where: { id, siteId },
         select: adminPostSelect,
       });
-      await tx.auditLog.create({
-        data: {
-          siteId,
-          userId: context.userId,
-          action: "POST_UPDATED",
-          entityType: "PropertyPost",
-          entityId: id,
-          details: {
-            previousStatus: existing.status,
-            status: updated.status,
-            fields: Object.keys(changes),
-          },
+      await writeAuditLog(tx, {
+        siteId,
+        userId: context.userId,
+        action: "POST_UPDATED",
+        entityType: "PropertyPost",
+        entityId: id,
+        details: {
+          previousStatus: existing.status,
+          status: updated.status,
+          fields: Object.keys(changes),
         },
       });
       return toRecord(updated);
@@ -285,17 +282,15 @@ export class PrismaAdminPostRepository implements AdminPostRepository {
       await tx.propertyImage.deleteMany({
         where: { id: { in: images.map((image) => image.id) } },
       });
-      await tx.auditLog.create({
-        data: {
-          siteId,
-          userId: context.userId,
-          action: "POST_ARCHIVED",
-          entityType: "PropertyPost",
-          entityId: id,
-          details: {
-            removedImageCount: images.length,
-            storageCleanup: "ORPHAN_IMAGE_JOB",
-          },
+      await writeAuditLog(tx, {
+        siteId,
+        userId: context.userId,
+        action: "POST_ARCHIVED",
+        entityType: "PropertyPost",
+        entityId: id,
+        details: {
+          removedImageCount: images.length,
+          storageCleanup: "ORPHAN_IMAGE_JOB",
         },
       });
       return true;
