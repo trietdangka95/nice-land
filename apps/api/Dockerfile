@@ -40,8 +40,8 @@ RUN pnpm --filter @nice-land/contracts build && \
     pnpm --filter @nice-land/api build
 
 # Deploy the @nice-land/api workspace app to a standalone production directory
-# This generates a pruned node_modules with only production dependencies
-RUN pnpm --filter @nice-land/api deploy --prod /usr/src/app/prod-api
+# --legacy flag required for pnpm v10+ without inject-workspace-packages
+RUN pnpm --filter @nice-land/api deploy --legacy --prod /usr/src/app/prod-api
 
 # Manually copy the compiled dist files (not handled by pnpm deploy unless configured in files)
 RUN cp -R apps/api/dist /usr/src/app/prod-api/dist
