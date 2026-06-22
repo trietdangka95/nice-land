@@ -50,11 +50,16 @@ RUN pnpm --filter @nice-land/api deploy --legacy --prod /usr/src/app/prod-api
 RUN cp -R apps/api/dist /usr/src/app/prod-api/dist
 
 # Copy the generated .prisma/client directory from pnpm virtual store into prod-api.
-# Without this, @prisma/client in the production container falls back to its CJS stub
-# and named ESM exports like PrismaClient won't be found at runtime.
+# Without this, @prisma/client falls back to its CJS stub.
 RUN find /usr/src/app/node_modules/.pnpm -name ".prisma" -type d 2>/dev/null | head -1 | \
     xargs -I{} cp -R {} /usr/src/app/prod-api/node_modules/ && \
     echo "Prisma client copied to prod-api"
+
+# Dereference all pnpm symlinks in prod-api to create a fully self-contained directory.
+# pnpm deploy --prod creates symlinks pointing to its virtual store (.pnpm/).
+# When copied to Stage 2 (runner), those symlinks become broken since the .pnpm store
+# is not copied over. cp -rL follows and resolves all symlinks into real file copies.
+RUN cp -rL /usr/src/app/prod-api /usr/src/app/prod-api-final
 
 # ==========================================
 # STAGE 2: Lightweight Production Runtime
@@ -69,9 +74,8 @@ RUN apk add --no-cache openssl
 # Set node environment to production
 ENV NODE_ENV=production
 
-# Copy the pre-packaged standalone api deployment from the builder stage
-# (includes production dependencies, dist, and generated Prisma client)
-COPY --from=builder /usr/src/app/prod-api ./
+# Copy the dereferenced (symlink-free) production deployment from builder
+COPY --from=builder /usr/src/app/prod-api-final ./
 
 # Expose backend API port (default is 4000)
 EXPOSE 4000
