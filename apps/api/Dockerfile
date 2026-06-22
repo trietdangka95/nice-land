@@ -11,6 +11,10 @@ RUN apk add --no-cache openssl
 # Enable corepack to use pnpm (ver. 10.12.1 matching the workspace packageManager)
 RUN corepack enable && corepack prepare pnpm@10.12.1 --activate
 
+# Increase Node.js heap size to prevent OOM errors during TypeScript compilation
+# on low-memory VPS instances (e.g. AWS Lightsail 1GB RAM)
+ENV NODE_OPTIONS="--max-old-space-size=512"
+
 # Copy workspace settings and package.json files for layer caching
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
