@@ -39,17 +39,21 @@ RUN pnpm --filter @nice-land/contracts build && \
     pnpm --filter @nice-land/database build && \
     pnpm --filter @nice-land/api build
 
+# Generate Prisma Client in the BUILD workspace (prisma CLI is available here as devDep)
+RUN pnpm --filter @nice-land/database exec prisma generate
+
 # Deploy the @nice-land/api workspace app to a standalone production directory
 # --legacy flag required for pnpm v10+ without inject-workspace-packages
 RUN pnpm --filter @nice-land/api deploy --legacy --prod /usr/src/app/prod-api
 
-# Manually copy the compiled dist files (not handled by pnpm deploy unless configured in files)
+# Manually copy the compiled dist files (not handled by pnpm deploy)
 RUN cp -R apps/api/dist /usr/src/app/prod-api/dist
 
-# Generate Prisma Client inside the production build's node_modules
-# (uses the schema file located in the deployed database package dependencies)
-WORKDIR /usr/src/app/prod-api
-RUN npx prisma generate --schema=node_modules/@nice-land/database/prisma/schema.prisma
+# Copy the generated Prisma client into the prod-api node_modules
+# (pnpm deploy --prod excludes devDep-generated .prisma artifacts)
+RUN cp -R node_modules/.pnpm/node_modules/.prisma /usr/src/app/prod-api/node_modules/.prisma || \
+    cp -R packages/database/node_modules/.prisma /usr/src/app/prod-api/node_modules/.prisma || \
+    true
 
 # ==========================================
 # STAGE 2: Lightweight Production Runtime
