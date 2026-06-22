@@ -39,7 +39,7 @@ RUN pnpm --filter @nice-land/contracts build && \
     pnpm --filter @nice-land/database build && \
     pnpm --filter @nice-land/api build
 
-# Generate Prisma Client in the BUILD workspace (prisma CLI is available here as devDep)
+# Generate Prisma Client in the BUILD workspace (prisma CLI devDep is available here)
 RUN pnpm --filter @nice-land/database exec prisma generate
 
 # Deploy the @nice-land/api workspace app to a standalone production directory
@@ -49,11 +49,12 @@ RUN pnpm --filter @nice-land/api deploy --legacy --prod /usr/src/app/prod-api
 # Manually copy the compiled dist files (not handled by pnpm deploy)
 RUN cp -R apps/api/dist /usr/src/app/prod-api/dist
 
-# Copy the generated Prisma client into the prod-api node_modules
-# (pnpm deploy --prod excludes devDep-generated .prisma artifacts)
-RUN cp -R node_modules/.pnpm/node_modules/.prisma /usr/src/app/prod-api/node_modules/.prisma || \
-    cp -R packages/database/node_modules/.prisma /usr/src/app/prod-api/node_modules/.prisma || \
-    true
+# Copy the generated .prisma/client directory from pnpm virtual store into prod-api.
+# Without this, @prisma/client in the production container falls back to its CJS stub
+# and named ESM exports like PrismaClient won't be found at runtime.
+RUN find /usr/src/app/node_modules/.pnpm -name ".prisma" -type d 2>/dev/null | head -1 | \
+    xargs -I{} cp -R {} /usr/src/app/prod-api/node_modules/ && \
+    echo "Prisma client copied to prod-api"
 
 # ==========================================
 # STAGE 2: Lightweight Production Runtime
