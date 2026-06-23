@@ -26,7 +26,7 @@ RUN pnpm config set fetch-retries 5 && \
     pnpm config set fetch-retry-mintimeout 20000 && \
     pnpm config set fetch-retry-maxtimeout 120000
 
-# Install all dependencies (needed for compiling TS & contracts)
+# Install all dependencies (including devDeps needed for TS compilation + prisma CLI)
 RUN pnpm install --frozen-lockfile --filter @nice-land/api...
 
 # Copy the source code of the API and its dependent packages
@@ -39,27 +39,8 @@ RUN pnpm --filter @nice-land/contracts build && \
     pnpm --filter @nice-land/database build && \
     pnpm --filter @nice-land/api build
 
-# Generate Prisma Client in the BUILD workspace (prisma CLI devDep is available here)
+# Generate Prisma Client while prisma CLI devDep is still available
 RUN pnpm --filter @nice-land/database exec prisma generate
-
-# Deploy the @nice-land/api workspace app to a standalone production directory
-# --legacy flag required for pnpm v10+ without inject-workspace-packages
-RUN pnpm --filter @nice-land/api deploy --legacy --prod /usr/src/app/prod-api
-
-# Manually copy the compiled dist files (not handled by pnpm deploy)
-RUN cp -R apps/api/dist /usr/src/app/prod-api/dist
-
-# Copy the generated .prisma/client directory from pnpm virtual store into prod-api.
-# Without this, @prisma/client falls back to its CJS stub.
-RUN find /usr/src/app/node_modules/.pnpm -name ".prisma" -type d 2>/dev/null | head -1 | \
-    xargs -I{} cp -R {} /usr/src/app/prod-api/node_modules/ && \
-    echo "Prisma client copied to prod-api"
-
-# Dereference all pnpm symlinks in prod-api to create a fully self-contained directory.
-# pnpm deploy --prod creates symlinks pointing to its virtual store (.pnpm/).
-# When copied to Stage 2 (runner), those symlinks become broken since the .pnpm store
-# is not copied over. cp -rL follows and resolves all symlinks into real file copies.
-RUN cp -rL /usr/src/app/prod-api /usr/src/app/prod-api-final
 
 # ==========================================
 # STAGE 2: Lightweight Production Runtime
@@ -74,12 +55,29 @@ RUN apk add --no-cache openssl
 # Set node environment to production
 ENV NODE_ENV=production
 
-# Copy the dereferenced (symlink-free) production deployment from builder
-COPY --from=builder /usr/src/app/prod-api-final ./
+# Copy the entire pnpm node_modules from builder.
+# This includes the pnpm virtual store (.pnpm/) with real package files
+# and all workspace symlinks. Copying everything avoids broken symlinks
+# and ensures @prisma/client and all transitive deps resolve correctly.
+COPY --from=builder /usr/src/app/node_modules ./node_modules
 
-# Expose backend API port (default is 4000)
+# Copy built workspace packages (dist files only — no source code)
+COPY --from=builder /usr/src/app/packages/contracts/dist ./packages/contracts/dist
+COPY --from=builder /usr/src/app/packages/contracts/package.json ./packages/contracts/package.json
+COPY --from=builder /usr/src/app/packages/database/dist ./packages/database/dist
+COPY --from=builder /usr/src/app/packages/database/package.json ./packages/database/package.json
+
+# Copy the compiled API application
+COPY --from=builder /usr/src/app/apps/api/dist ./apps/api/dist
+COPY --from=builder /usr/src/app/apps/api/package.json ./apps/api/package.json
+
+# Copy root workspace manifests (needed for pnpm workspace resolution)
+COPY --from=builder /usr/src/app/package.json ./package.json
+COPY --from=builder /usr/src/app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+
+# Expose backend API port
 EXPOSE 4000
 
-# Start the application directly with Node for minimum overhead
+# Run from apps/api so relative module resolution works correctly
+WORKDIR /usr/src/app/apps/api
 CMD ["node", "dist/server.js"]
-
