@@ -41,4 +41,77 @@ describe("health endpoints", () => {
       service: "nice-land-api",
     });
   });
+
+  it("allows CORS requests from the production root domain", async () => {
+    const app = buildApp(
+      loadConfig({
+        NODE_ENV: "test",
+        LOG_LEVEL: "silent",
+        CORS_ORIGINS: "https://nice-land.id.vn,https://*.nice-land.id.vn",
+      }),
+    );
+    apps.push(app);
+
+    const response = await app.inject({
+      method: "OPTIONS",
+      url: "/health/live",
+      headers: {
+        origin: "https://nice-land.id.vn",
+        "access-control-request-method": "GET",
+      },
+    });
+
+    expect(response.statusCode).toBe(204);
+    expect(response.headers["access-control-allow-origin"]).toBe(
+      "https://nice-land.id.vn",
+    );
+  });
+
+  it("allows CORS requests from production tenant subdomains", async () => {
+    const app = buildApp(
+      loadConfig({
+        NODE_ENV: "test",
+        LOG_LEVEL: "silent",
+        CORS_ORIGINS: "https://nice-land.id.vn,https://*.nice-land.id.vn",
+      }),
+    );
+    apps.push(app);
+
+    const response = await app.inject({
+      method: "OPTIONS",
+      url: "/health/live",
+      headers: {
+        origin: "https://minhphat.nice-land.id.vn",
+        "access-control-request-method": "GET",
+      },
+    });
+
+    expect(response.statusCode).toBe(204);
+    expect(response.headers["access-control-allow-origin"]).toBe(
+      "https://minhphat.nice-land.id.vn",
+    );
+  });
+
+  it("does not allow CORS requests from unrelated domains", async () => {
+    const app = buildApp(
+      loadConfig({
+        NODE_ENV: "test",
+        LOG_LEVEL: "silent",
+        CORS_ORIGINS: "https://nice-land.id.vn,https://*.nice-land.id.vn",
+      }),
+    );
+    apps.push(app);
+
+    const response = await app.inject({
+      method: "OPTIONS",
+      url: "/health/live",
+      headers: {
+        origin: "https://example.com",
+        "access-control-request-method": "GET",
+      },
+    });
+
+    expect(response.statusCode).toBe(404);
+    expect(response.headers["access-control-allow-origin"]).toBeUndefined();
+  });
 });

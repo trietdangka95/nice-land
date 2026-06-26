@@ -60,6 +60,52 @@ interface BuildAppOptions {
   readinessCheck?: () => Promise<void>;
 }
 
+function createCorsOriginMatcher(corsOrigins: string) {
+  const origins = corsOrigins
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  const exactOrigins = new Set(
+    origins.filter((origin) => !origin.includes("*")),
+  );
+  const wildcardSuffixes = origins
+    .filter((origin) => origin.startsWith("https://*."))
+    .map((origin) => origin.replace("https://*.", "."));
+
+  return (
+    origin: string | undefined,
+    callback: (error: Error | null, allow: boolean) => void,
+  ) => {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    if (exactOrigins.has(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    let originUrl: URL;
+    try {
+      originUrl = new URL(origin);
+    } catch {
+      callback(null, false);
+      return;
+    }
+
+    const isAllowedWildcardOrigin =
+      originUrl.protocol === "https:" &&
+      wildcardSuffixes.some(
+        (suffix) =>
+          originUrl.hostname.endsWith(suffix) &&
+          originUrl.hostname.length > suffix.length,
+      );
+
+    callback(null, isAllowedWildcardOrigin);
+  };
+}
+
 export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
   const app = Fastify({
     logger: {
@@ -75,7 +121,7 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
   void app.register(cookie);
   void app.register(cors, {
     credentials: true,
-    origin: config.CORS_ORIGINS.split(",").map((origin) => origin.trim()),
+    origin: createCorsOriginMatcher(config.CORS_ORIGINS),
     methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Tenant-Host"],
   });
