@@ -29,10 +29,16 @@ services:
     entrypoint: >
       sh -c "
         echo 'Running database migrations...' &&
-        npx prisma@6 migrate deploy --schema ../../packages/database/prisma/schema.prisma &&
+        ../../node_modules/.bin/prisma migrate deploy --schema ../../packages/database/prisma/schema.prisma &&
         echo 'Starting application...' &&
-        node dist/server.js
+        exec node dist/server.js
       "
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4000/health/live >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
