@@ -6,7 +6,7 @@
     "dev": "next dev -p 3002",
     "build": "corepack pnpm --filter @nice-land/contracts build && corepack pnpm --filter @nice-land/api-client build && next build",
     "start": "next start -p 3002",
-    "lint": "tsc --noEmit",
+    "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },

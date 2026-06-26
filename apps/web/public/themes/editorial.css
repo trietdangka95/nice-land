@@ -1,60 +1,53 @@
 /* ─── EDITORIAL · Property Editorial ────────────────────────────────────────
-   Vibe: High-fashion art & architecture journal. Black + cream paper.
-   Fonts: Cormorant Garamond (display) · Public Sans (body)
+   Vibe: High-fashion art & architecture journal. Exaggerated Minimalism.
+   Fonts: Libre Bodoni (display) · Public Sans (body)
    ─────────────────────────────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;500;600;700&family=Public+Sans:wght@300;400;500;600;700&display=swap');
 
 /* ── Force override hardcoded JSX Tailwind classes ── */
-/* Header: overrides 'bg-[#1c1b19] text-white' in EditorialHeader */
-.tenant-public[data-public-theme="EDITORIAL"] .tenant-header {
-  background-color: #111111 !important;
-  color: #ffffff !important;
-}
-/* Topbar: overrides TenantHeader 'bg-[var(--tenant-color)]' */
-.tenant-public[data-public-theme="EDITORIAL"] .tenant-topbar {
-  background-color: #111111 !important;
-  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-}
-/* Hero: overrides 'bg-[#1c1b19] text-white' in property-editorial.tsx */
-.tenant-public[data-public-theme="EDITORIAL"] .tenant-hero {
-  background-color: #111111 !important;
-  color: #ffffff !important;
-}
-/* Listing: keep cream paper background */
-.tenant-public[data-public-theme="EDITORIAL"] .tenant-listing {
-  background-color: #f5f4f0 !important;
-}
-/* About section */
-.tenant-public[data-public-theme="EDITORIAL"] .tenant-about {
-  background-color: #e8e6e0 !important;
-}
-/* Footer: overrides 'bg-[#1c1b19]' in EditorialFooter */
+
 .tenant-public[data-public-theme="EDITORIAL"] .tenant-footer {
-  background-color: #111111 !important;
-  color: #ffffff !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+}
+
+.tenant-public[data-public-theme="EDITORIAL"] .tenant-listing {
+  background-color: #fafafa !important;
+}
+
+.tenant-public[data-public-theme="EDITORIAL"] .tenant-about {
+  background-color: #fafafa !important;
+  border-top: 2px solid #09090b;
 }
 
 .tenant-public[data-public-theme="EDITORIAL"] {
-  --tenant-surface:       #f5f4f0;
-  --tenant-card-radius:   0px;
-  --tenant-body-font:     'Public Sans', "Helvetica Neue", Arial, sans-serif;
-  --tenant-display-font:  'Cormorant Garamond', Didot, Georgia, serif;
-  --tenant-content-width: 1540px;
+  --tenant-surface:       #fafafa;
+  --tenant-color:         #ec4899; /* Pink accent */
+  --tenant-body-font:     'Public Sans', Arial, sans-serif;
+  --tenant-display-font:  'Libre Bodoni', Georgia, serif;
+  --tenant-content-width: 1440px;
+  
+  /* --- Property Card Tokens --- */
+  --tenant-card-bg: transparent; /* No background */
+  --tenant-card-radius: 0px; /* Sharp corners */
+  --tenant-card-border: none; /* No borders */
+  --tenant-card-shadow: none;
+  --tenant-card-hover-shadow: none;
+  
+  --tenant-card-ratio: 3/4; /* Portrait ratio for magazine feel */
+  --tenant-card-padding: 1.5rem 0 0 0; /* Only top padding */
+  --tenant-card-border-inner: none;
+  
+  --tenant-card-title: #09090b;
+  --tenant-card-text: #71717a;
+  
+  --tenant-tag-bg: #18181b;
+  --tenant-tag-color: #ffffff;
+  
   background: var(--tenant-surface);
-  color: #111111;
-  -webkit-font-smoothing: antialiased;
-}
+
 
 /* ── Header ── */
-.tenant-public[data-public-theme="EDITORIAL"] .tenant-header {
-  background: #111111 !important;
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.tenant-public[data-public-theme="EDITORIAL"] .tenant-header small {
-  color: rgba(255, 255, 255, 0.38);
-}
 
 .tenant-public[data-public-theme="EDITORIAL"] .tenant-topbar {
   background: #111111;
@@ -72,7 +65,7 @@
 }
 
 .tenant-public[data-public-theme="EDITORIAL"] .tenant-brand-name {
-  font-family: 'Cormorant Garamond', Didot, Georgia, serif;
+  font-family: 'Libre Bodoni', Didot, Georgia, serif;
   font-size: 1.5rem;
   letter-spacing: 0.03em;
   font-weight: 400;
@@ -236,7 +229,7 @@
 }
 
 .tenant-public[data-public-theme="EDITORIAL"] .tenant-card-title {
-  font-family: 'Cormorant Garamond', Didot, Georgia, serif;
+  font-family: 'Libre Bodoni', Didot, Georgia, serif;
   font-size: 1.25rem;
   font-weight: 500;
   font-style: italic;
@@ -304,7 +297,7 @@
 }
 
 .tenant-public[data-public-theme="EDITORIAL"] .tenant-detail-title {
-  font-family: 'Cormorant Garamond', Didot, Georgia, serif;
+  font-family: 'Libre Bodoni', Didot, Georgia, serif;
   max-width: 960px;
   font-size: clamp(2.8rem, 5.5vw, 5rem);
   line-height: 1.02;

@@ -1,52 +1,68 @@
-import { Search, ShieldCheck, Sparkles } from "lucide-react";
+import { Search, ShieldCheck, Sparkles, Building2, Map, Handshake } from "lucide-react";
 import { SearchFooter, SearchHeader } from "./chrome";
-import { PropertyCollection } from "./shared";
+import { PropertyBrowser } from "@/components/property-browser";
 import type { PublicThemeHomeProps } from "./types";
 
 export function SearchFirstHome(model: PublicThemeHomeProps) {
+  const { site, posts, total, page, totalPages, query, type, categoryId, sort, themePreview } = model;
   return (
     <>
-      <SearchHeader site={model.site} />
-      <section className="tenant-hero bg-[#0f172a] py-12 text-white sm:py-16">
-        <div className="page-shell text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#9ec7df]">
-            Dữ liệu cập nhật · Tư vấn địa phương
-          </p>
-          <h1 className="mx-auto mt-4 max-w-4xl text-balance text-4xl font-extrabold tracking-[-0.04em] sm:text-6xl">
-            Tìm bất động sản phù hợp, nhanh và rõ ràng hơn.
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 text-white/65 sm:text-base">
-            Lọc theo loại hình, khu vực và mức giá từ danh sách được xác minh
-            bởi {model.site.name}.
-          </p>
-          <div className="mx-auto mt-8 grid max-w-3xl gap-3 text-left sm:grid-cols-3">
-            {[
-              [Search, "Tìm kiếm nhanh", "Theo từ khóa và loại hình"],
-              [ShieldCheck, "Tin đã kiểm tra", "Thông tin rõ ràng hơn"],
-              [Sparkles, "Cập nhật mới", "Danh sách mới mỗi ngày"],
-            ].map(([Icon, title, description]) => {
-              const ItemIcon = Icon as typeof Search;
-              return (
-                <div key={title as string} className="flex gap-3 border border-white/15 bg-white/5 p-4">
-                  <ItemIcon size={18} className="mt-0.5 text-[#9ec7df]" />
-                  <div>
-                    <strong className="block text-sm">{title as string}</strong>
-                    <span className="mt-1 block text-xs text-white/50">{description as string}</span>
+      <SearchHeader site={site} />
+      
+
+
+      {/* 2. Custom Property Listing (Dense Data approach) */}
+      <section id="properties" className="tenant-listing bg-[#020617] text-[#f1f5f9] pt-32 pb-12">
+        <div className="page-shell">
+          <PropertyBrowser
+            variant="modern"
+            posts={posts}
+            slug={site.slug}
+            total={total}
+            page={page}
+            totalPages={totalPages}
+            initialQuery={query}
+            initialType={type ?? "ALL"}
+            initialCategoryId={categoryId ?? ""}
+            initialSort={sort}
+            themePreview={themePreview}
+          />
+        </div>
+      </section>
+
+      {/* 3. Custom Expertise/About Section (Data Banner layout) */}
+      <section id="about" className="tenant-about bg-[#0b1120] border-t border-slate-800 py-16">
+        <div className="page-shell">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-10">
+            <div className="max-w-xl">
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Cơ sở dữ liệu bất động sản thực tế.
+              </h2>
+              <p className="mt-4 text-slate-400 leading-relaxed">
+                Chúng tôi không chỉ là một cổng thông tin. Đội ngũ tại {site.name} trực tiếp đi khảo sát, thu thập và cập nhật giá cả thị trường hàng ngày để đảm bảo bạn không lãng phí thời gian vào những thông tin ảo.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 w-full md:w-auto shrink-0">
+              {[
+                [Building2, "500+", "Bất động sản"],
+                [Map, "12+", "Khu vực"],
+                [Handshake, "100%", "Giao dịch thực"],
+              ].map(([Icon, value, label]) => {
+                const ItemIcon = Icon as typeof Search;
+                return (
+                  <div key={label as string} className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-center flex flex-col items-center">
+                    <ItemIcon className="text-[var(--tenant-color)] mb-2" size={24} />
+                    <strong className="block text-2xl font-black text-white">{value as string}</strong>
+                    <span className="block text-xs font-medium text-slate-500 uppercase tracking-wide mt-1">{label as string}</span>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
-      <PropertyCollection
-        model={model}
-        eyebrow="Có thể giao dịch"
-        title={`${model.total} bất động sản đang chờ bạn khám phá`}
-        description="Dùng bộ lọc để thu hẹp danh sách theo nhu cầu thực tế của bạn."
-        className="bg-[#f1f5f9] py-10 sm:py-14"
-      />
-      <SearchFooter site={model.site} />
+
+      <SearchFooter site={site} />
     </>
   );
 }

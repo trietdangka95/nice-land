@@ -86,11 +86,11 @@ textarea {
 }
 
 .button-primary {
-  @apply inline-flex min-h-12 items-center justify-center gap-2 bg-moss px-6 py-3 text-sm font-bold text-white transition hover:bg-ink disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-moss px-7 py-3 text-sm font-bold text-white shadow-[0_4px_14px_0_rgba(49,92,69,0.39)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(49,92,69,0.23)] hover:bg-leaf disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0;
 }
 
 .button-secondary {
-  @apply inline-flex min-h-12 items-center justify-center gap-2 border border-ink/20 bg-transparent px-6 py-3 text-sm font-bold text-ink transition hover:border-ink hover:bg-white/60;
+  @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border-2 border-ink/10 bg-white/50 px-7 py-3 text-sm font-bold text-ink backdrop-blur-sm transition-all hover:border-ink/30 hover:bg-white/80 hover:-translate-y-0.5 hover:shadow-sm;
 }
 
 .hairline {
@@ -187,4 +187,44 @@ textarea {
   .admin-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Glassmorphism & Modern Utilities */
+.glass-panel {
+  @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-soft;
+}
+
+.glass-card {
+  @apply bg-white/50 backdrop-blur-sm border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)];
+}
+
+.glass-dark {
+  @apply bg-ink/90 backdrop-blur-xl border border-white/10 shadow-2xl;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-moss via-leaf to-gold;
+}
+
+.gradient-glow {
+  @apply absolute rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob;
+}
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
 }

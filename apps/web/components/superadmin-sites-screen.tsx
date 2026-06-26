@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ExternalLink, KeyRound, Pencil, Plus, Search } from "lucide-react";
 import type { SuperAdminSite } from "@nice-land/contracts";
 import { api } from "@/lib/api";
+import { revalidateTenant } from "@/app/actions";
 import { StatusPill } from "@/components/status-pill";
 
 export function SuperAdminSitesScreen() {
@@ -44,6 +45,7 @@ export function SuperAdminSitesScreen() {
 
   async function toggle(site: SuperAdminSite) {
     await api.setSuperAdminSiteActive(site.id, { isActive: !site.isActive });
+    await revalidateTenant(site.slug);
     setItems((current) => current.map((item) => item.id === site.id ? { ...item, isActive: !item.isActive } : item));
   }
 
@@ -66,21 +68,36 @@ export function SuperAdminSitesScreen() {
         <Link href="/superadmin/sites/create" className="button-primary"><Plus size={17} /> Tạo website mới</Link>
       </div>
       {temporaryPassword && <div className="mt-5 border border-amber-200 bg-amber-50 p-4 text-sm" role="status"><strong>Mật khẩu tạm — chỉ hiển thị lần này:</strong> <code className="ml-2 select-all">{temporaryPassword}</code><button className="ml-4 font-bold text-moss" onClick={() => setTemporaryPassword("")}>Đóng</button></div>}
-      <section className="mt-8 border border-ink/10 bg-white">
-        <div className="grid gap-3 border-b border-ink/10 p-4 md:grid-cols-[1fr_180px_200px]"><label className="relative block"><Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/35" size={17} /><span className="sr-only">Tìm website</span><input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} className="h-11 w-full bg-[#f4f5f2] pl-11 pr-4 text-sm" placeholder="Tìm tên hoặc subdomain..." /></label><select value={active} onChange={(e) => { setActive(e.target.value); setPage(1); }} className="h-11 border border-ink/10 px-3 text-sm"><option value="">Mọi hoạt động</option><option value="true">Đang hoạt động</option><option value="false">Tạm ngưng</option></select><select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="h-11 border border-ink/10 px-3 text-sm"><option value="">Mọi subscription</option>{["TRIAL","ACTIVE","GRACE_PERIOD","EXPIRED","SUSPENDED"].map((value) => <option key={value}>{value}</option>)}</select></div>
+      <section className="mt-8 glass-panel rounded-3xl overflow-hidden">
+        <div className="grid gap-3 border-b border-ink/5 p-6 md:grid-cols-[1fr_180px_200px]">
+          <label className="relative block">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/35" size={17} />
+            <span className="sr-only">Tìm website</span>
+            <input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} className="h-11 w-full rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm pl-11 pr-4 text-sm focus:bg-white" placeholder="Tìm tên hoặc subdomain..." />
+          </label>
+          <select value={active} onChange={(e) => { setActive(e.target.value); setPage(1); }} className="h-11 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-3 text-sm focus:bg-white">
+            <option value="">Mọi hoạt động</option>
+            <option value="true">Đang hoạt động</option>
+            <option value="false">Tạm ngưng</option>
+          </select>
+          <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="h-11 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-3 text-sm focus:bg-white">
+            <option value="">Mọi subscription</option>
+            {["TRIAL","ACTIVE","GRACE_PERIOD","EXPIRED","SUSPENDED"].map((value) => <option key={value}>{value}</option>)}
+          </select>
+        </div>
         {error && <p className="p-4 text-sm text-red-700" role="alert">{error}</p>}
-        {loading ? <div className="h-52 animate-pulse bg-ink/5" /> : (
-          <div className="overflow-x-auto"><table className="w-full min-w-[980px] text-left"><thead className="bg-[#f8f8f5] text-[10px] uppercase tracking-widest text-ink/40"><tr><th className="px-5 py-4">Website</th><th className="px-5 py-4">Admin</th><th className="px-5 py-4">Gói</th><th className="px-5 py-4">Sử dụng</th><th className="px-5 py-4">Trạng thái</th><th className="px-5 py-4">Thao tác</th></tr></thead>
-          <tbody className="divide-y divide-ink/10">{items.map((site) => <tr key={site.id}>
-            <td className="px-5 py-4"><strong className="block text-sm">{site.name}</strong><a href={`/${site.slug}`} target="_blank" className="mt-1 inline-flex items-center gap-1 text-xs text-moss">{site.slug}.nice-land.vn <ExternalLink size={11} /></a></td>
-            <td className="px-5 py-4 text-xs"><strong>{site.admin?.username ?? "Chưa có"}</strong><p className="mt-1 text-ink/45">{site.admin ? (site.admin.isActive ? "Tài khoản hoạt động" : "Tài khoản bị khóa") : "Chưa có tài khoản"}</p></td>
-            <td className="px-5 py-4 text-sm">{site.plan?.name ?? "Chưa gán"}</td>
-            <td className="px-5 py-4 text-xs text-ink/55">{site.usage.posts} tin · {site.usage.images} ảnh</td>
-            <td className="px-5 py-4"><StatusPill tone={site.isActive ? "green" : "red"}>{site.isActive ? site.subscriptionStatus : "Tạm ngưng"}</StatusPill></td>
-            <td className="px-5 py-4"><div className="flex gap-2"><Link href={`/superadmin/sites/${site.id}`} className="grid size-9 place-items-center border border-ink/10" aria-label={`Sửa ${site.name}`}><Pencil size={15} /></Link><button onClick={() => void resetPassword(site)} className="grid size-9 place-items-center border border-ink/10" aria-label={`Reset mật khẩu ${site.name}`}><KeyRound size={15} /></button><button onClick={() => void toggleAdmin(site)} className="border border-ink/10 px-3 text-xs font-bold">{site.admin?.isActive ? "Khóa admin" : "Mở admin"}</button><button onClick={() => void toggle(site)} className="border border-ink/10 px-3 text-xs font-bold">{site.isActive ? "Tạm ngưng" : "Kích hoạt"}</button></div></td>
+        {loading ? <div className="h-52 animate-pulse bg-white/20" /> : (
+          <div className="overflow-x-auto"><table className="w-full min-w-[980px] text-left"><thead className="bg-ink/5 text-[10px] font-bold uppercase tracking-widest text-ink/50"><tr><th className="px-6 py-4">Website</th><th className="px-6 py-4">Admin</th><th className="px-6 py-4">Gói</th><th className="px-6 py-4">Sử dụng</th><th className="px-6 py-4">Trạng thái</th><th className="px-6 py-4">Thao tác</th></tr></thead>
+          <tbody className="divide-y divide-ink/5">{items.map((site) => <tr key={site.id} className="hover:bg-white/40 transition-colors">
+            <td className="px-6 py-4"><strong className="block text-sm font-semibold">{site.name}</strong><a href={`/${site.slug}`} target="_blank" className="mt-1 inline-flex items-center gap-1 text-xs text-moss">{site.slug}.nice-land.vn <ExternalLink size={11} /></a></td>
+            <td className="px-6 py-4 text-xs"><strong>{site.admin?.username ?? "Chưa có"}</strong><p className="mt-1 text-ink/50 font-medium">{site.admin ? (site.admin.isActive ? "Tài khoản hoạt động" : "Tài khoản bị khóa") : "Chưa có tài khoản"}</p></td>
+            <td className="px-6 py-4 text-sm font-medium">{site.plan?.name ?? "Chưa gán"}</td>
+            <td className="px-6 py-4 text-xs font-medium text-ink/60">{site.usage.posts} tin · {site.usage.images} ảnh</td>
+            <td className="px-6 py-4"><StatusPill tone={site.isActive ? "green" : "red"}>{site.isActive ? site.subscriptionStatus : "Tạm ngưng"}</StatusPill></td>
+            <td className="px-6 py-4"><div className="flex gap-2"><Link href={`/superadmin/sites/${site.id}`} className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 hover:border-moss/30 hover:text-moss transition-colors" aria-label={`Sửa ${site.name}`}><Pencil size={15} /></Link><button onClick={() => void resetPassword(site)} className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 hover:border-moss/30 hover:text-moss transition-colors" aria-label={`Reset mật khẩu ${site.name}`}><KeyRound size={15} /></button><button onClick={() => void toggleAdmin(site)} className="rounded-lg bg-white shadow-sm border border-ink/5 hover:bg-ink/5 transition-colors px-3 text-xs font-bold">{site.admin?.isActive ? "Khóa admin" : "Mở admin"}</button><button onClick={() => void toggle(site)} className="rounded-lg bg-white shadow-sm border border-ink/5 hover:bg-ink/5 transition-colors px-3 text-xs font-bold">{site.isActive ? "Tạm ngưng" : "Kích hoạt"}</button></div></td>
           </tr>)}</tbody></table></div>
         )}
-        <div className="flex items-center justify-between border-t border-ink/10 p-4 text-sm"><span>Trang {page} / {totalPages}</span><div className="flex gap-2"><button disabled={page <= 1} onClick={() => setPage((value) => value - 1)} className="button-secondary disabled:opacity-40">Trước</button><button disabled={page >= totalPages} onClick={() => setPage((value) => value + 1)} className="button-secondary disabled:opacity-40">Sau</button></div></div>
+        <div className="flex items-center justify-between border-t border-ink/5 p-6 text-sm font-medium text-ink/60"><span>Trang {page} / {totalPages}</span><div className="flex gap-2"><button disabled={page <= 1} onClick={() => setPage((value) => value - 1)} className="button-secondary !py-2 !px-4 !min-h-0 disabled:opacity-40">Trước</button><button disabled={page >= totalPages} onClick={() => setPage((value) => value + 1)} className="button-secondary !py-2 !px-4 !min-h-0 disabled:opacity-40">Sau</button></div></div>
       </section>
     </>
   );

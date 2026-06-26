@@ -10,7 +10,7 @@
     "cleanup:images": "tsx src/jobs/cleanup-orphan-images.ts",
     "cleanup:images:apply": "tsx src/jobs/cleanup-orphan-images.ts --apply",
     "db:local": "prisma dev --name nice-land --detach",
-    "lint": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
   },

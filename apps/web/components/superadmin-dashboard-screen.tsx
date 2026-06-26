@@ -57,9 +57,43 @@ export function SuperAdminDashboardScreen() {
           <DashboardStat label="Yêu cầu gia hạn" value={`${pendingRenewals}`} detail="Đang chờ xử lý" icon={RefreshCw} tone="gold" />
           <DashboardStat label="Tài khoản tenant" value={`${sites.reduce((total, site) => total + site.usage.users, 0)}`} detail="Tài khoản chưa soft-delete" icon={Users} tone="gray" />
         </div>
-        <section className="mt-7 border border-ink/10 bg-white">
-          <div className="flex items-center justify-between border-b border-ink/10 p-5"><div><h2 className="font-display text-2xl">Website gần đây</h2><p className="mt-1 text-xs text-ink/45">Trạng thái tenant mới nhất</p></div><Link href="/superadmin/sites" className="text-xs font-bold text-moss">Quản lý tất cả</Link></div>
-          <div className="overflow-x-auto"><table className="w-full min-w-[680px] text-left"><thead className="bg-[#f8f8f5] text-[10px] uppercase tracking-widest text-ink/40"><tr><th className="px-5 py-4">Website</th><th className="px-5 py-4">Gói</th><th className="px-5 py-4">Sử dụng</th><th className="px-5 py-4">Trạng thái</th><th className="px-5 py-4">Hết hạn</th></tr></thead><tbody className="divide-y divide-ink/10">{sites.slice(0, 8).map((site) => <tr key={site.id}><td className="px-5 py-4"><strong className="block text-sm">{site.name}</strong><span className="text-xs text-ink/40">{site.slug}.nice-land.vn</span></td><td className="px-5 py-4 text-sm">{site.plan?.name ?? "Chưa gán"}</td><td className="px-5 py-4 text-xs text-ink/55">{site.usage.posts} tin · {site.usage.images} ảnh</td><td className="px-5 py-4"><StatusPill tone={site.isActive ? "green" : "red"}>{site.isActive ? site.subscriptionStatus : "Tạm ngưng"}</StatusPill></td><td className="px-5 py-4 text-xs text-ink/45">{site.subscriptionEnd ? new Date(site.subscriptionEnd).toLocaleDateString("vi-VN") : "—"}</td></tr>)}</tbody></table></div>
+        <section className="mt-7 glass-panel rounded-3xl overflow-hidden">
+          <div className="flex items-center justify-between border-b border-ink/5 p-6">
+            <div>
+              <h2 className="font-display text-2xl text-ink">Website gần đây</h2>
+              <p className="mt-1 text-xs text-ink/50 font-medium tracking-wide uppercase">Trạng thái tenant mới nhất</p>
+            </div>
+            <Link href="/superadmin/sites" className="button-secondary !py-2 !px-4 !min-h-0 text-xs">Quản lý tất cả</Link>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[680px] text-left">
+              <thead className="bg-ink/5 text-[10px] font-bold uppercase tracking-widest text-ink/50">
+                <tr>
+                  <th className="px-6 py-4">Website</th>
+                  <th className="px-6 py-4">Gói</th>
+                  <th className="px-6 py-4">Sử dụng</th>
+                  <th className="px-6 py-4">Trạng thái</th>
+                  <th className="px-6 py-4">Hết hạn</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-ink/5">
+                {sites.slice(0, 8).map((site) => (
+                  <tr key={site.id} className="hover:bg-white/40 transition-colors">
+                    <td className="px-6 py-4">
+                      <strong className="block text-sm font-semibold">{site.name}</strong>
+                      <span className="text-xs text-ink/50">{site.slug}.nice-land.vn</span>
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium">{site.plan?.name ?? "Chưa gán"}</td>
+                    <td className="px-6 py-4 text-xs font-medium text-ink/60">{site.usage.posts} tin · {site.usage.images} ảnh</td>
+                    <td className="px-6 py-4">
+                      <StatusPill tone={site.isActive ? "green" : "red"}>{site.isActive ? site.subscriptionStatus : "Tạm ngưng"}</StatusPill>
+                    </td>
+                    <td className="px-6 py-4 text-xs font-medium text-ink/60">{site.subscriptionEnd ? new Date(site.subscriptionEnd).toLocaleDateString("vi-VN") : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
       </>}
     </>

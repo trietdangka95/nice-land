@@ -73,15 +73,20 @@ export function AdminShell({
   }
 
   return (
-    <div className="admin-grid bg-[#f4f5f2]">
-      <aside className="hidden bg-ink text-white min-[901px]:flex min-[901px]:flex-col">
+    <div className="admin-grid relative overflow-hidden bg-background">
+      {/* Animated Background Gradients */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-moss/15 gradient-glow z-0 pointer-events-none"></div>
+      <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-gold/20 gradient-glow animation-delay-2000 z-0 pointer-events-none"></div>
+      <div className="absolute bottom-1/4 left-1/3 w-[600px] h-[600px] bg-leaf/10 gradient-glow animation-delay-4000 z-0 pointer-events-none"></div>
+
+      <aside className="hidden glass-dark text-white min-[901px]:flex min-[901px]:flex-col relative z-10 border-r border-white/10">
         <div className="flex h-20 items-center gap-3 border-b border-white/10 px-5">
-          <span className="grid size-10 shrink-0 place-items-center border border-white/10 bg-gold font-display text-sm font-bold text-ink">
+          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-gold/20 border border-gold/30 shadow-inner font-display text-sm font-bold text-gold">
             {superAdmin ? "Đ" : site?.logoMark}
           </span>
           <div className="min-w-0">
             <strong
-              className="block truncate font-display text-base font-semibold leading-5"
+              className="block truncate font-display text-base font-semibold leading-5 text-white"
               title={superAdmin ? "Nice Land" : site?.name}
             >
               {superAdmin ? "Nice Land" : site?.name}
@@ -102,7 +107,7 @@ export function AdminShell({
               <Link
                 key={label as string}
                 href={href as string}
-                className={`flex items-center gap-3 px-3 py-3 text-sm font-semibold transition ${active ? "bg-white text-ink" : "text-white/60 hover:bg-white/5 hover:text-white"
+                className={`flex items-center gap-3 px-3 py-3 text-sm font-semibold transition-all rounded-xl mx-2 ${active ? "bg-moss/20 text-gold border border-gold/10 shadow-inner" : "text-white/60 hover:bg-white/5 hover:text-white"
                   }`}
               >
                 <NavIcon size={18} strokeWidth={1.7} />
@@ -128,8 +133,8 @@ export function AdminShell({
         </div>
       </aside>
 
-      <div className="min-w-0">
-        <header className="flex h-20 items-center justify-between border-b border-ink/10 bg-white px-5 sm:px-8">
+      <div className="min-w-0 relative z-10 flex flex-col h-screen">
+        <header className="flex h-20 shrink-0 items-center justify-between border-b border-ink/5 glass-panel px-5 sm:px-8">
           <div className="flex items-center gap-3">
             <MobileNavigation
               label="Mở menu quản trị"
@@ -147,8 +152,8 @@ export function AdminShell({
                     <Link
                       key={label as string}
                       href={href as string}
-                      className={`flex items-center gap-3 px-3 py-3 text-sm font-semibold ${active
-                          ? "bg-white text-ink"
+                      className={`flex items-center gap-3 px-3 py-3 text-sm font-semibold transition-all rounded-xl mx-2 ${active
+                          ? "bg-moss/20 text-gold border border-gold/10 shadow-inner"
                           : "text-white/65 hover:bg-white/5 hover:text-white"
                         }`}
                     >
@@ -194,17 +199,17 @@ export function AdminShell({
               <span className="absolute right-2 top-2 size-2 rounded-full bg-red-500 ring-2 ring-white" />
             </button>
             <div className="hidden items-center gap-3 sm:flex">
-              <span className="grid size-10 place-items-center rounded-full bg-moss text-sm font-bold text-white">
+              <span className="grid size-10 place-items-center rounded-full bg-gradient-to-br from-moss to-ink shadow-md text-sm font-bold text-white border border-white/20">
                 {superAdmin ? "SA" : "MP"}
               </span>
               <div>
-                <strong className="block text-xs">{superAdmin ? "Quản trị hệ thống" : "Nguyễn Minh Phát"}</strong>
-                <span className="text-[10px] text-ink/40">{superAdmin ? "SUPER_ADMIN" : "ADMIN"}</span>
+                <strong className="block text-xs font-semibold">{superAdmin ? "Quản trị hệ thống" : "Nguyễn Minh Phát"}</strong>
+                <span className="text-[10px] text-ink/50 font-medium tracking-wide">{superAdmin ? "SUPER_ADMIN" : "ADMIN"}</span>
               </div>
             </div>
           </div>
         </header>
-        <div className="p-5 sm:p-8 lg:p-10">{children}</div>
+        <div className="flex-1 overflow-y-auto p-5 sm:p-8 lg:p-10">{children}</div>
       </div>
     </div>
   );

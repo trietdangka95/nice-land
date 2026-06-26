@@ -21,17 +21,23 @@ export function DashboardStat({
   };
 
   return (
-    <article className="motion-card border border-ink/10 bg-white p-5">
-      <div className="flex items-start justify-between">
+    <article className="motion-card glass-card rounded-2xl p-6 relative overflow-hidden group">
+      <div className="flex items-start justify-between relative z-10">
         <div>
-          <p className="text-xs font-semibold text-ink/45">{label}</p>
-          <strong className="mt-3 block font-display text-4xl font-medium">{value}</strong>
+          <p className="text-xs font-bold uppercase tracking-wider text-ink/50">{label}</p>
+          <strong className="mt-3 block font-display text-4xl font-medium text-gradient drop-shadow-sm">{value}</strong>
         </div>
         <span className={`grid size-10 place-items-center rounded-full ${tones[tone]}`}>
           <Icon size={18} strokeWidth={1.8} />
         </span>
       </div>
-      <p className="mt-5 border-t border-ink/10 pt-4 text-xs text-ink/45">{detail}</p>
+      <p className="mt-6 border-t border-ink/5 pt-4 text-xs font-medium text-ink/50 relative z-10">{detail}</p>
+      {/* Decorative gradient blur based on tone */}
+      <div className={`absolute -right-6 -bottom-6 w-32 h-32 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity ${
+        tone === 'green' ? 'bg-emerald-500' : 
+        tone === 'gold' ? 'bg-amber-500' : 
+        tone === 'blue' ? 'bg-sky-500' : 'bg-stone-500'
+      }`}></div>
     </article>
   );
 }

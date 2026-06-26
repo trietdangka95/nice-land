@@ -21,36 +21,50 @@
 }
 /* Topbar (TenantHeader topbar strip) */
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-topbar {
-  background-color: #1e293b !important;
-}
-/* Listing section: overrides 'bg-[#eef2f3]' passed as className prop */
-.tenant-public[data-public-theme="MODERN_GRID"] .tenant-listing {
-  background-color: #f1f5f9 !important;
-}
-/* Footer: overrides 'bg-white border-t-4 border-[#e2574c]' in SearchFooter */
-.tenant-public[data-public-theme="MODERN_GRID"] .tenant-footer {
-  background-color: #0f172a !important;
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-header {
+  background-color: #0b1120 !important;
   color: #f8fafc !important;
-  border-top: 3px solid #3b82f6 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-footer {
+  background-color: #020617 !important;
+  color: #94a3b8 !important;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-listing {
+  background-color: #0f172a !important; /* Slate 900 */
+  color: #f1f5f9 !important;
+}
+.tenant-public[data-public-theme="MODERN_GRID"] .tenant-about {
+  background-color: #0b1120 !important;
+  color: #f1f5f9 !important;
 }
 
 .tenant-public[data-public-theme="MODERN_GRID"] {
-  --tenant-surface:       #f1f5f9;
-  --tenant-card-radius:   6px;
+  --tenant-surface:       #0f172a; /* Slate 900 */
+  --tenant-color:         #14b8a6; /* Teal 500 */
   --tenant-body-font:     'Inter', system-ui, sans-serif;
   --tenant-display-font:  'Inter', system-ui, sans-serif;
-  --tenant-content-width: 1520px;
+  --tenant-content-width: 1536px; /* Widen for dense grid */
+  
+  /* --- Property Card Tokens --- */
+  --tenant-card-bg: #1e293b; /* Slate 800 */
+  --tenant-card-radius: 8px;
+  --tenant-card-border: 1px solid #334155; /* Slate 700 */
+  --tenant-card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --tenant-card-hover-shadow: 0 0 0 2px var(--tenant-color); /* Glowing border */
+  
+  --tenant-card-ratio: 16/9; /* Widescreen for dense portals */
+  --tenant-card-padding: 1rem;
+  --tenant-card-border-inner: 1px solid #334155;
+  
+  --tenant-card-title: #f1f5f9;
+  --tenant-card-text: #94a3b8;
+  
+  --tenant-tag-bg: #0f766e; /* Teal 700 */
+  --tenant-tag-color: #ccfbf1; /* Teal 50 */
+  
   background: var(--tenant-surface);
-  color: #0f172a;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ── Header & Topbar ── */
-.tenant-public[data-public-theme="MODERN_GRID"] .tenant-header {
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
-}
 
 .tenant-public[data-public-theme="MODERN_GRID"] .tenant-header-inner {
   height: 4rem;

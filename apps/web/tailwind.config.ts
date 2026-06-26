@@ -16,8 +16,8 @@ export default {
         gold: "#c99854",
       },
       fontFamily: {
-        sans: ["Arial", "Helvetica Neue", "sans-serif"],
-        display: ["Georgia", "Times New Roman", "serif"],
+        sans: ["var(--font-plus-jakarta-sans)", "Arial", "Helvetica Neue", "sans-serif"],
+        display: ["var(--font-plus-jakarta-sans)", "Georgia", "Times New Roman", "serif"],
       },
       boxShadow: {
         soft: "0 18px 60px rgba(23, 33, 27, 0.10)",

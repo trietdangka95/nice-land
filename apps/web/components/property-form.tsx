@@ -21,6 +21,7 @@ import type {
   PropertyType,
 } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
+import { revalidateTenant } from "@/app/actions";
 
 type FormState = {
   title: string;
@@ -119,6 +120,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
         await client.createAdminPost(input);
       }
       setSaved(true);
+      await revalidateTenant(slug);
       router.push(`/${slug}/admin/posts`);
       router.refresh();
     } catch (requestError) {
@@ -166,6 +168,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
           ...current,
           { ...completed, altText: form.title },
         ]);
+        await revalidateTenant(slug);
       }
     } catch (requestError) {
       setError(
@@ -190,6 +193,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
       setImages(
         nextImages.map((image, sortOrder) => ({ ...image, sortOrder })),
       );
+      await revalidateTenant(slug);
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -229,6 +233,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
           .filter((image) => image.id !== imageId)
           .map((image, sortOrder) => ({ ...image, sortOrder })),
       );
+      await revalidateTenant(slug);
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -243,33 +248,33 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
   return (
     <form onSubmit={handleSubmit} className="mt-8 grid gap-6 xl:grid-cols-[1fr_340px]">
       <div className="space-y-6">
-        <section className="border border-ink/10 bg-white p-5 sm:p-7">
+        <section className="glass-panel rounded-3xl p-6 sm:p-8">
           <h2 className="font-display text-2xl">Thông tin cơ bản</h2>
-          <div className="mt-6 grid gap-5">
-            <label className="grid gap-2 text-sm font-bold">
+          <div className="mt-8 grid gap-5">
+            <label className="grid gap-2 text-sm font-bold text-ink/80">
               Tiêu đề tin đăng
-              <input value={form.title} onChange={(e) => field("title", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal" required minLength={5} />
+              <input value={form.title} onChange={(e) => field("title", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" required minLength={5} />
             </label>
-            <label className="grid gap-2 text-sm font-bold">
+            <label className="grid gap-2 text-sm font-bold text-ink/80">
               Mô tả
-              <textarea value={form.description} onChange={(e) => field("description", e.target.value)} className="min-h-40 border border-ink/15 p-4 font-normal" required minLength={20} />
+              <textarea value={form.description} onChange={(e) => field("description", e.target.value)} className="min-h-40 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm p-4 font-normal focus:bg-white transition-colors" required minLength={20} />
             </label>
             <div className="grid gap-5 sm:grid-cols-2">
-              <label className="grid gap-2 text-sm font-bold">
+              <label className="grid gap-2 text-sm font-bold text-ink/80">
                 Loại hình
-                <select value={form.type} onChange={(e) => field("type", e.target.value as PropertyType)} className="h-12 border border-ink/15 px-4 font-normal">
+                <select value={form.type} onChange={(e) => field("type", e.target.value as PropertyType)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors">
                   <option value="HOUSE">Nhà ở</option>
                   <option value="APARTMENT">Căn hộ</option>
                   <option value="LAND">Đất</option>
                   <option value="RENTAL">Cho thuê</option>
                 </select>
               </label>
-              <label className="grid gap-2 text-sm font-bold">
+              <label className="grid gap-2 text-sm font-bold text-ink/80">
                 Danh mục
                 <select
                   value={form.categoryId}
                   onChange={(e) => field("categoryId", e.target.value)}
-                  className="h-12 border border-ink/15 px-4 font-normal"
+                  className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
                 >
                   <option value="">Chưa phân loại</option>
                   {categories.map((category) => (
@@ -281,39 +286,39 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
               </label>
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
-              <label className="grid gap-2 text-sm font-bold">
+              <label className="grid gap-2 text-sm font-bold text-ink/80">
                 Mức giá (đ)
-                <input value={form.price} onChange={(e) => field("price", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal" type="number" min="0" />
+                <input value={form.price} onChange={(e) => field("price", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" />
               </label>
-              <label className="grid gap-2 text-sm font-bold">
+              <label className="grid gap-2 text-sm font-bold text-ink/80">
                 Diện tích (m²)
-                <input value={form.area} onChange={(e) => field("area", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal" type="number" min="0" step="0.1" />
+                <input value={form.area} onChange={(e) => field("area", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" step="0.1" />
               </label>
             </div>
             <div className="grid gap-5 sm:grid-cols-3">
-              <label className="grid gap-2 text-sm font-bold">Phòng ngủ<input value={form.bedrooms} onChange={(e) => field("bedrooms", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal" type="number" min="0" /></label>
-              <label className="grid gap-2 text-sm font-bold">Phòng tắm<input value={form.bathrooms} onChange={(e) => field("bathrooms", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal" type="number" min="0" /></label>
-              <label className="grid gap-2 text-sm font-bold">Pháp lý<input value={form.legalStatus} onChange={(e) => field("legalStatus", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal" /></label>
+              <label className="grid gap-2 text-sm font-bold text-ink/80">Phòng ngủ<input value={form.bedrooms} onChange={(e) => field("bedrooms", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" /></label>
+              <label className="grid gap-2 text-sm font-bold text-ink/80">Phòng tắm<input value={form.bathrooms} onChange={(e) => field("bathrooms", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" /></label>
+              <label className="grid gap-2 text-sm font-bold text-ink/80">Pháp lý<input value={form.legalStatus} onChange={(e) => field("legalStatus", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" /></label>
             </div>
           </div>
         </section>
-        <section className="border border-ink/10 bg-white p-5 sm:p-7">
+        <section className="glass-panel rounded-3xl p-6 sm:p-8">
           <h2 className="font-display text-2xl">Vị trí</h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
-            <label className="grid gap-2 text-sm font-bold">Tỉnh / thành phố<input value={form.province} onChange={(e) => field("province", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal" /></label>
-            <label className="grid gap-2 text-sm font-bold">Quận / huyện<input value={form.district} onChange={(e) => field("district", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal" /></label>
-            <label className="grid gap-2 text-sm font-bold">Phường / xã<input value={form.ward} onChange={(e) => field("ward", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal" /></label>
-            <label className="grid gap-2 text-sm font-bold">Địa chỉ chi tiết<input value={form.address} onChange={(e) => field("address", e.target.value)} className="h-12 border border-ink/15 px-4 font-normal" /></label>
+          <div className="mt-8 grid gap-5 sm:grid-cols-2">
+            <label className="grid gap-2 text-sm font-bold text-ink/80">Tỉnh / thành phố<input value={form.province} onChange={(e) => field("province", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" /></label>
+            <label className="grid gap-2 text-sm font-bold text-ink/80">Quận / huyện<input value={form.district} onChange={(e) => field("district", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" /></label>
+            <label className="grid gap-2 text-sm font-bold text-ink/80">Phường / xã<input value={form.ward} onChange={(e) => field("ward", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" /></label>
+            <label className="grid gap-2 text-sm font-bold text-ink/80">Địa chỉ chi tiết<input value={form.address} onChange={(e) => field("address", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" /></label>
           </div>
         </section>
       </div>
       <aside className="space-y-6">
-        <section className="border border-ink/10 bg-white p-5">
+        <section className="glass-panel rounded-3xl p-6 sm:p-8">
           <h2 className="font-display text-xl">Hình ảnh</h2>
           {images.length > 0 && (
             <div className="mt-5 grid grid-cols-2 gap-3">
               {images.map((image, index) => (
-                <div key={image.id} className="border border-ink/10 bg-white">
+                <div key={image.id} className="rounded-xl overflow-hidden border border-ink/10 bg-white/50 backdrop-blur-sm">
                   <div className="relative aspect-[4/3] overflow-hidden bg-sand">
                     <Image
                       src={image.url}
@@ -323,17 +328,17 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
                       sizes="160px"
                     />
                     {index === 0 && (
-                      <span className="absolute left-2 top-2 bg-moss px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
+                      <span className="absolute left-2 top-2 rounded bg-moss/90 backdrop-blur px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
                         Ảnh bìa
                       </span>
                     )}
                   </div>
-                  <div className="grid grid-cols-4 border-t border-ink/10">
+                  <div className="grid grid-cols-4 border-t border-ink/5">
                     <button
                       type="button"
                       onClick={() => makeCover(index)}
                       disabled={index === 0 || managingImage !== null}
-                      className="grid h-9 place-items-center hover:bg-cream disabled:opacity-30"
+                      className="grid h-9 place-items-center hover:bg-white/80 hover:text-moss disabled:opacity-30 transition-colors"
                       aria-label="Đặt làm ảnh bìa"
                     >
                       <Star size={14} />
@@ -342,7 +347,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
                       type="button"
                       onClick={() => moveImage(index, -1)}
                       disabled={index === 0 || managingImage !== null}
-                      className="grid h-9 place-items-center hover:bg-cream disabled:opacity-30"
+                      className="grid h-9 place-items-center hover:bg-white/80 hover:text-moss disabled:opacity-30 transition-colors"
                       aria-label="Di chuyển ảnh sang trái"
                     >
                       <ArrowLeft size={14} />
@@ -351,7 +356,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
                       type="button"
                       onClick={() => moveImage(index, 1)}
                       disabled={index === images.length - 1 || managingImage !== null}
-                      className="grid h-9 place-items-center hover:bg-cream disabled:opacity-30"
+                      className="grid h-9 place-items-center hover:bg-white/80 hover:text-moss disabled:opacity-30 transition-colors"
                       aria-label="Di chuyển ảnh sang phải"
                     >
                       <ArrowRight size={14} />
@@ -360,7 +365,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
                       type="button"
                       onClick={() => void deleteImage(image.id)}
                       disabled={managingImage !== null}
-                      className="grid h-9 place-items-center hover:bg-red-50 hover:text-red-700 disabled:opacity-30"
+                      className="grid h-9 place-items-center hover:bg-red-50 hover:text-red-700 disabled:opacity-30 transition-colors"
                       aria-label="Xóa ảnh"
                     >
                       <Trash2 size={14} />
@@ -370,7 +375,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
               ))}
             </div>
           )}
-          <label className="mt-5 grid min-h-44 w-full cursor-pointer place-items-center border border-dashed border-ink/25 bg-[#fafaf7] text-center">
+          <label className="mt-6 grid min-h-44 w-full cursor-pointer place-items-center rounded-2xl border-2 border-dashed border-ink/20 bg-white/30 backdrop-blur hover:bg-white/50 transition-colors text-center">
             <span>
               <ImagePlus className="mx-auto text-moss" size={28} />
               <strong className="mt-3 block text-sm">
@@ -394,11 +399,11 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
             />
           </label>
         </section>
-        <section className="border border-ink/10 bg-white p-5">
+        <section className="glass-panel rounded-3xl p-6 sm:p-8">
           <h2 className="font-display text-xl">Xuất bản</h2>
-          <label className="mt-5 grid gap-2 text-sm font-bold">
+          <label className="mt-6 grid gap-2 text-sm font-bold text-ink/80">
             Trạng thái
-            <select value={form.status} onChange={(e) => field("status", e.target.value as FormState["status"])} className="h-12 border border-ink/15 px-4 font-normal">
+            <select value={form.status} onChange={(e) => field("status", e.target.value as FormState["status"])} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors">
               <option value="DRAFT">Bản nháp</option>
               <option value="PUBLISHED">Đăng công khai</option>
               <option value="HIDDEN">Ẩn tin</option>

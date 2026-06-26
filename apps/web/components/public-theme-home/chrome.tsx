@@ -69,14 +69,14 @@ function MobileMenu({
 
 export function LuxuryHeader({ site }: { site: Site }) {
   return (
-    <header className="tenant-header absolute inset-x-0 top-0 z-30 text-white">
+    <header className="tenant-header absolute inset-x-0 top-0 z-30">
       <div className="page-shell">
-        <div className="flex h-24 items-center justify-between border-b border-white/30">
+        <div className="flex h-24 items-center justify-between border-b border-current opacity-90 pb-[1px] md:pb-0" style={{ borderColor: 'var(--tenant-border, rgba(0,0,0,0.1))' }}>
           <Link href={`/${site.slug}`} className="flex items-center gap-4">
-            <BrandMark site={site} className="size-12 border border-white/45 bg-black/20 text-xs font-bold" />
+            <BrandMark site={site} className="size-12 border border-current opacity-80 bg-black/5 text-xs font-bold" />
             <span>
               <strong className="block font-display text-xl font-normal tracking-wide">{site.name}</strong>
-              <small className="mt-1 block text-[8px] uppercase tracking-[0.32em] text-white/55">Private property advisory</small>
+              <small className="mt-1 block text-[8px] uppercase tracking-[0.32em] opacity-60">Private property advisory</small>
             </span>
           </Link>
           <nav className="hidden items-center gap-9 text-[11px] font-bold uppercase tracking-[0.18em] lg:flex" aria-label="Điều hướng Luxury Showcase">
@@ -85,12 +85,12 @@ export function LuxuryHeader({ site }: { site: Site }) {
             <Link href={`/${site.slug}#contact`}>Private contact</Link>
           </nav>
           <div className="hidden items-center gap-5 lg:flex">
-            <span className="text-xs text-white/65">{site.phone}</span>
-            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="border border-white/45 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.16em]">
+            <span className="text-xs opacity-70">{site.phone}</span>
+            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="border border-current opacity-80 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.16em]">
               Book a viewing
             </a>
           </div>
-          <MobileMenu site={site} triggerClassName="grid size-11 place-items-center border border-white/40 lg:hidden" />
+          <MobileMenu site={site} triggerClassName="grid size-11 place-items-center border border-current opacity-80 lg:hidden" />
         </div>
       </div>
     </header>
@@ -186,22 +186,22 @@ export function PersonalHeader({ site }: { site: Site }) {
 
 export function LuxuryFooter({ site }: { site: Site }) {
   return (
-    <footer id="contact" className="tenant-footer bg-[#152e21] py-16 text-[#f0e8d5]">
+    <footer id="contact" className="tenant-footer py-16">
       <div className="page-shell">
-        <div className="grid gap-12 border-b border-white/15 pb-14 lg:grid-cols-[1.4fr_0.6fr_0.6fr]">
+        <div className="grid gap-12 border-b border-current opacity-90 pb-14 lg:grid-cols-[1.4fr_0.6fr_0.6fr]" style={{ borderColor: 'var(--tenant-border, rgba(0,0,0,0.1))' }}>
           <div>
             <p className="text-[10px] uppercase tracking-[0.28em] text-[#e8c990]">Private advisory</p>
             <h2 className="mt-5 max-w-2xl font-display text-5xl font-normal leading-tight">Một địa chỉ đẹp luôn bắt đầu từ một cuộc trò chuyện kín đáo.</h2>
           </div>
-          <div className="text-sm leading-7 text-white/55">
-            <strong className="mb-3 block text-xs uppercase tracking-widest text-white">Studio</strong>
+          <div className="text-sm leading-7 opacity-70">
+            <strong className="mb-3 block text-xs uppercase tracking-widest opacity-100">Studio</strong>
             <p>{site.address}</p><p>{site.email}</p>
           </div>
           <div>
             <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex items-center gap-3 border-b border-[#e8c990] pb-2 text-lg text-[#e8c990]">{site.phone}<ArrowUpRight size={18} /></a>
           </div>
         </div>
-        <div className="flex flex-col justify-between gap-3 pt-6 text-[10px] uppercase tracking-[0.2em] text-white/35 sm:flex-row">
+        <div className="flex flex-col justify-between gap-3 pt-6 text-[10px] uppercase tracking-[0.2em] opacity-50 sm:flex-row">
           <span>{site.name}</span><span>Powered by Nice Land</span>
         </div>
       </div>

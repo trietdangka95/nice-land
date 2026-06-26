@@ -23,7 +23,7 @@ function tenantHost(slug: string) {
 async function tenantFetch(slug: string, path: string) {
   return fetch(`${apiUrl}${path}`, {
     headers: { "X-Tenant-Host": tenantHost(slug) },
-    cache: "no-store",
+    next: { tags: [`tenant-${slug}`] },
   });
 }
 

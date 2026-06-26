@@ -146,12 +146,19 @@ export default async function PropertyDetailPage({
           </div>
           <div className="border-t border-ink/10 pt-8">
             <h2 className="font-display text-3xl font-medium">Vị trí bất động sản</h2>
-            <div className="mt-5 grid min-h-64 place-items-center bg-[#dbe1d7] text-center">
-              <div>
-                <MapPin className="mx-auto text-[var(--tenant-color)]" size={34} />
-                <p className="mt-3 font-bold">{post.address}</p>
-                <p className="mt-1 text-sm text-ink/50">{post.ward}, {post.district}, {post.province}</p>
-              </div>
+            <div className="mt-5 h-[400px] w-full bg-[#dbe1d7]">
+              <iframe
+                title="Bản đồ vị trí"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(
+                  `${post.address}, ${post.ward}, ${post.district}, ${post.province}`
+                )}&output=embed`}
+              />
             </div>
           </div>
         </article>

@@ -1,67 +1,76 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, MapPin, Phone } from "lucide-react";
+import { ArrowRight, MapPin, Phone, Award, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { LuxuryFooter, LuxuryHeader } from "./chrome";
-import { ExpertiseSection, PropertyCollection } from "./shared";
+import { PropertyBrowser } from "@/components/property-browser";
 import type { PublicThemeHomeProps } from "./types";
 
 export function LuxuryShowcaseHome(model: PublicThemeHomeProps) {
-  const { site, featured, themePreview } = model;
+  const { site, featured, themePreview, posts, total, page, totalPages, query, type, categoryId, sort } = model;
   return (
     <>
       <LuxuryHeader site={site} />
-      <section className="tenant-hero tenant-luxury-hero relative min-h-[720px] overflow-hidden bg-ink text-white">
-        <Image
-          src={site.banner ?? featured.images[0]}
-          alt={featured.title}
-          fill
-          loading="eager"
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-black/5" />
-        <div className="page-shell relative flex min-h-[720px] items-end py-16 sm:py-20 lg:items-center">
-          <div className="max-w-3xl" data-reveal="left">
-            <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#e8c990]">
-              Private collection · Đà Nẵng
-            </p>
-            <h1 className="mt-6 text-balance font-display text-5xl font-normal leading-[0.94] sm:text-7xl lg:text-[6.5rem]">
-              Những nơi chốn
-              <span className="block italic text-[#e8c990]">xứng đáng để thuộc về.</span>
-            </h1>
-            <p className="mt-7 max-w-xl text-base leading-7 text-white/65">
-              {site.name} giới thiệu những bất động sản có vị trí, kiến trúc và
-              giá trị sống khác biệt.
-            </p>
-            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-              <a href="#properties" className="inline-flex min-h-[60px] items-center justify-center gap-3 bg-white px-10 text-base font-bold text-ink tracking-[-0.01em]">
-                Khám phá bộ sưu tập <ArrowRight size={19} />
-              </a>
-              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex min-h-[60px] items-center justify-center gap-3 border border-white/55 px-10 text-base font-bold text-white">
-                <Phone size={18} /> Tư vấn riêng
-              </a>
-            </div>
-          </div>
-          <Link
-            href={`/${site.slug}/posts/${featured.slug ?? featured.id}${
-              themePreview ? `?themePreview=${themePreview}` : ""
-            }`}
-            className="absolute bottom-8 right-5 hidden w-80 border-t border-white/50 pt-4 lg:block"
-          >
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[#e8c990]">Featured residence</span>
-            <strong className="mt-2 block font-display text-2xl font-normal">{featured.title}</strong>
-            <span className="mt-2 flex items-center gap-2 text-xs text-white/60"><MapPin size={13} />{featured.district}, {featured.province}</span>
-          </Link>
+
+
+
+      {/* 2. Custom Property Listing (Classic Sidebar approach) */}
+      <section id="properties" className="tenant-listing relative min-h-screen overflow-hidden pt-32 pb-18">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[var(--tenant-color)]/10 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="page-shell relative z-10">
+          <PropertyBrowser
+            variant="classic"
+            posts={posts}
+            slug={site.slug}
+            total={total}
+            page={page}
+            totalPages={totalPages}
+            initialQuery={query}
+            initialType={type ?? "ALL"}
+            initialCategoryId={categoryId ?? ""}
+            initialSort={sort}
+            themePreview={themePreview}
+          />
         </div>
       </section>
-      <PropertyCollection
-        model={model}
-        eyebrow="Private collection"
-        title="Bất động sản dành cho một đời sống khác biệt"
-        description="Một tuyển tập cô đọng, ưu tiên chất lượng vị trí, kiến trúc và giá trị sở hữu lâu dài."
-        className="py-20 sm:py-28"
-      />
-      <ExpertiseSection site={site} />
+
+      {/* 3. Custom Expertise/About Section (Royal layout) */}
+      <section id="about" className="tenant-about py-24 sm:py-32">
+        <div className="page-shell">
+          <div className="grid gap-16 lg:grid-cols-[1fr_1.2fr] lg:items-center">
+            <div className="relative aspect-[3/4] max-w-md mx-auto w-full">
+              <div className="absolute -inset-4 border border-[var(--tenant-color)]/30 rounded-t-[100px]"></div>
+              <Image src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1400&q=85" alt={site.name} fill className="object-cover rounded-t-[100px] grayscale contrast-125" />
+            </div>
+            <div className="flex flex-col justify-center text-center lg:text-left">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--tenant-color)]">Đẳng cấp khác biệt</span>
+              <h2 className="mt-6 font-display text-4xl sm:text-6xl leading-[1.1]">
+                Chuẩn mực khắt khe<br />trong từng lựa chọn.
+              </h2>
+              <p className="mt-8 text-lg opacity-70 leading-relaxed font-light">
+                {site.name} không bán mọi thứ. Chúng tôi đại diện cho những chủ nhân trân trọng kiến trúc, sự riêng tư và đặc quyền thụ hưởng. Mọi thông tin đều được xử lý với mức độ bảo mật cao nhất.
+              </p>
+              <div className="mt-12 grid grid-cols-3 gap-6 border-t border-current/10 pt-10">
+                {[
+                  [Award, "Chuyên viên", "Hạng thương gia"],
+                  [ShieldCheck, "Bảo mật", "Tuyệt đối"],
+                  [CheckCircle2, "Pháp lý", "Rõ ràng"],
+                ].map(([Icon, title, desc]) => {
+                  const ItemIcon = Icon as typeof Award;
+                  return (
+                    <div key={title as string} className="flex flex-col items-center lg:items-start">
+                      <ItemIcon className="text-[var(--tenant-color)]" size={24} />
+                      <strong className="mt-4 block font-display text-xl">{title as string}</strong>
+                      <span className="mt-2 text-sm opacity-60 font-light">{desc as string}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <LuxuryFooter site={site} />
     </>
   );

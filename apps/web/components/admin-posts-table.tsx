@@ -7,6 +7,7 @@ import type { AdminPost, PostStatus, PropertyType } from "@nice-land/contracts";
 import { StatusPill } from "@/components/status-pill";
 import { createTenantApi } from "@/lib/api";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
+import { revalidateTenant } from "@/app/actions";
 
 const statusLabels: Record<PostStatus, string> = {
   DRAFT: "Bản nháp",
@@ -67,6 +68,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
     setError("");
     try {
       await client.archiveAdminPost(post.id, post.version);
+      await revalidateTenant(slug);
       if (posts.length === 1 && page > 1) {
         setPage((value) => value - 1);
       } else {
@@ -93,9 +95,9 @@ export function AdminPostsTable({ slug }: { slug: string }) {
         </Link>
       </div>
 
-      <section className="mt-8 border border-ink/10 bg-white">
-        <div className="flex flex-col gap-3 border-b border-ink/10 p-4 md:flex-row">
-          <label className="relative flex-1">
+      <section className="mt-8 glass-panel rounded-3xl overflow-hidden">
+        <div className="flex flex-col gap-3 border-b border-ink/5 p-6 md:flex-row">
+          <label className="relative flex-1 block">
             <span className="sr-only">Tìm tin đăng</span>
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/35" size={17} />
             <input
@@ -104,7 +106,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
                 setQuery(event.target.value);
                 setPage(1);
               }}
-              className="h-11 w-full bg-[#f4f5f2] pl-11 pr-4 text-sm"
+              className="h-11 w-full rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm pl-11 pr-4 text-sm focus:bg-white transition-colors"
               placeholder="Tìm theo tiêu đề..."
             />
           </label>
@@ -114,7 +116,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
               setStatus(event.target.value as PostStatus | "");
               setPage(1);
             }}
-            className="h-11 border border-ink/10 bg-white px-4 text-sm font-semibold"
+            className="h-11 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 text-sm font-semibold focus:bg-white transition-colors"
             aria-label="Lọc trạng thái"
           >
             <option value="">Tất cả trạng thái</option>
@@ -129,7 +131,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
               setType(event.target.value as PropertyType | "");
               setPage(1);
             }}
-            className="h-11 border border-ink/10 bg-white px-4 text-sm font-semibold"
+            className="h-11 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 text-sm font-semibold focus:bg-white transition-colors"
             aria-label="Lọc loại hình"
           >
             <option value="">Tất cả loại hình</option>
@@ -142,18 +144,18 @@ export function AdminPostsTable({ slug }: { slug: string }) {
         {error && <p role="alert" className="border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700">{error}</p>}
 
         {loading ? (
-          <div className="space-y-3 p-5" aria-busy="true" aria-label="Đang tải tin đăng">
-            {[1, 2, 3].map((item) => <div key={item} className="h-16 animate-pulse bg-ink/5" />)}
+          <div className="space-y-3 p-6" aria-busy="true" aria-label="Đang tải tin đăng">
+            {[1, 2, 3].map((item) => <div key={item} className="h-16 animate-pulse rounded-xl bg-ink/5" />)}
           </div>
         ) : posts.length === 0 ? (
-          <div className="px-5 py-14 text-center">
+          <div className="px-6 py-16 text-center">
             <h2 className="font-display text-2xl">Chưa có tin phù hợp</h2>
-            <p className="mt-2 text-sm text-ink/50">Thử đổi bộ lọc hoặc tạo tin đăng đầu tiên.</p>
+            <p className="mt-2 text-sm text-ink/50 font-medium">Thử đổi bộ lọc hoặc tạo tin đăng đầu tiên.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[780px] text-left">
-              <thead className="bg-[#f8f8f5] text-[10px] font-bold uppercase tracking-[0.12em] text-ink/40">
+              <thead className="bg-ink/5 text-[10px] font-bold uppercase tracking-widest text-ink/50">
                 <tr>
                   <th className="px-5 py-4">Bất động sản</th>
                   <th className="px-5 py-4">Loại hình</th>
@@ -165,36 +167,36 @@ export function AdminPostsTable({ slug }: { slug: string }) {
               </thead>
               <tbody className="divide-y divide-ink/10">
                 {posts.map((post) => (
-                  <tr key={post.id} className="hover:bg-[#fafaf7]">
-                    <td className="px-5 py-4">
+                  <tr key={post.id} className="hover:bg-white/40 transition-colors">
+                    <td className="px-6 py-4">
                       <div className="max-w-xs">
                         <p className="truncate text-sm font-bold">{post.title}</p>
-                        <p className="mt-1 text-xs text-ink/40">{post.area ? `${post.area} m²` : "Chưa nhập diện tích"} · {post.district ?? "Chưa nhập khu vực"}</p>
+                        <p className="mt-1 text-xs text-ink/50 font-medium">{post.area ? `${post.area} m²` : "Chưa nhập diện tích"} · {post.district ?? "Chưa nhập khu vực"}</p>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-sm text-ink/60">{propertyTypeLabels[post.type]}</td>
-                    <td className="px-5 py-4 text-sm font-bold">{post.price === null ? "Liên hệ" : formatPrice(post.price, post.type)}</td>
-                    <td className="px-5 py-4">
+                    <td className="px-6 py-4 text-sm font-medium text-ink/60">{propertyTypeLabels[post.type]}</td>
+                    <td className="px-6 py-4 text-sm font-bold">{post.price === null ? "Liên hệ" : formatPrice(post.price, post.type)}</td>
+                    <td className="px-6 py-4">
                       <StatusPill tone={post.status === "PUBLISHED" ? "green" : post.status === "SOLD" ? "gold" : "gray"}>
                         {statusLabels[post.status]}
                       </StatusPill>
                     </td>
-                    <td className="px-5 py-4 text-xs text-ink/45">{new Date(post.updatedAt).toLocaleDateString("vi-VN")}</td>
-                    <td className="px-5 py-4">
-                      <div className="flex justify-end gap-1">
+                    <td className="px-6 py-4 text-xs font-medium text-ink/60">{new Date(post.updatedAt).toLocaleDateString("vi-VN")}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
                         <Link
                           href={`/${slug}/admin/posts/${post.id}/edit`}
-                          className="grid size-9 place-items-center hover:bg-cream"
+                          className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 hover:border-moss/30 hover:text-moss transition-colors"
                           aria-label={`Sửa ${post.title}`}
                         >
-                          <Edit3 size={16} />
+                          <Edit3 size={15} />
                         </Link>
                         <button
                           onClick={() => void archive(post)}
-                          className="grid size-9 place-items-center hover:bg-red-50 hover:text-red-700"
+                          className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 text-red-700 hover:bg-red-50 hover:border-red-200 transition-colors"
                           aria-label={`Lưu trữ ${post.title}`}
                         >
-                          <Archive size={16} />
+                          <Archive size={15} />
                         </button>
                       </div>
                     </td>
@@ -207,10 +209,10 @@ export function AdminPostsTable({ slug }: { slug: string }) {
 
         {!loading && totalPages > 1 && (
           <nav
-            className="flex flex-col items-center justify-between gap-4 border-t border-ink/10 p-4 sm:flex-row"
+            className="flex flex-col items-center justify-between gap-4 border-t border-ink/5 p-6 sm:flex-row"
             aria-label="Phân trang tin đăng quản trị"
           >
-            <p className="text-sm text-ink/50">
+            <p className="text-sm font-medium text-ink/60">
               Trang <strong className="tabular-nums text-ink">{page}</strong> /{" "}
               <strong className="tabular-nums text-ink">{totalPages}</strong>
             </p>

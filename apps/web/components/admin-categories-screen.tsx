@@ -7,6 +7,7 @@ import type {
   PropertyCategoryInput,
 } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
+import { revalidateTenant } from "@/app/actions";
 
 function slugify(value: string) {
   return value
@@ -78,6 +79,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
       } else {
         await client.createAdminCategory(input);
       }
+      await revalidateTenant(slug);
       resetForm();
       await load();
     } catch (requestError) {
@@ -101,6 +103,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
     setError("");
     try {
       await client.deleteAdminCategory(category.id);
+      await revalidateTenant(slug);
       await load();
     } catch (requestError) {
       setError(
@@ -137,7 +140,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
       <div className="mt-8 grid gap-6 lg:grid-cols-[360px_1fr]">
         <form
           onSubmit={submit}
-          className="h-fit border border-ink/10 bg-white p-5 sm:p-6"
+          className="h-fit glass-panel rounded-3xl p-6 sm:p-8"
         >
           <div className="flex items-center justify-between gap-4">
             <h2 className="font-display text-2xl">
@@ -147,7 +150,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
               <button
                 type="button"
                 onClick={resetForm}
-                className="grid size-9 place-items-center border border-ink/10"
+                className="grid size-9 place-items-center rounded-lg bg-white/50 border border-ink/5 hover:bg-white transition-colors"
                 aria-label="Hủy chỉnh sửa"
               >
                 <X size={16} aria-hidden="true" />
@@ -163,7 +166,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
                 setName(value);
                 if (!slugTouched) setCategorySlug(slugify(value));
               }}
-              className="h-12 border border-ink/15 px-4 font-normal"
+              className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
               placeholder="Ví dụ: Nhà phố"
               required
               minLength={2}
@@ -177,7 +180,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
                 setSlugTouched(true);
                 setCategorySlug(slugify(event.target.value));
               }}
-              className="h-12 border border-ink/15 px-4 font-normal"
+              className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
               placeholder="nha-pho"
               required
             />
@@ -195,8 +198,8 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
           </button>
         </form>
 
-        <section className="border border-ink/10 bg-white">
-          <div className="flex items-center justify-between border-b border-ink/10 p-5">
+        <section className="glass-panel rounded-3xl overflow-hidden">
+          <div className="flex items-center justify-between border-b border-ink/5 p-6">
             <div>
               <h2 className="font-display text-2xl">Danh sách danh mục</h2>
               <p className="mt-1 text-sm text-ink/45">
@@ -206,9 +209,9 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
             <Tags className="text-moss" size={24} aria-hidden="true" />
           </div>
           {loading ? (
-            <div className="space-y-3 p-5" aria-busy="true">
+            <div className="space-y-3 p-6" aria-busy="true">
               {[1, 2, 3].map((item) => (
-                <div key={item} className="h-16 animate-pulse bg-ink/5" />
+                <div key={item} className="h-16 animate-pulse rounded-xl bg-ink/5" />
               ))}
             </div>
           ) : categories.length === 0 ? (
@@ -220,11 +223,11 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-ink/10">
+            <div className="divide-y divide-ink/5">
               {categories.map((category) => (
                 <article
                   key={category.id}
-                  className="flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-center"
+                  className="flex flex-col justify-between gap-4 p-5 sm:p-6 sm:flex-row sm:items-center hover:bg-white/40 transition-colors"
                 >
                   <div className="min-w-0">
                     <strong className="block truncate text-sm">
@@ -250,7 +253,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
                       type="button"
                       onClick={() => void remove(category)}
                       disabled={category.postCount > 0}
-                      className="grid size-10 place-items-center border border-ink/10 text-red-700 disabled:cursor-not-allowed disabled:opacity-30"
+                      className="grid size-10 place-items-center rounded-xl bg-white shadow-sm border border-ink/5 text-red-700 hover:bg-red-50 hover:border-red-200 transition-colors disabled:cursor-not-allowed disabled:opacity-30"
                       aria-label={
                         category.postCount > 0
                           ? `${category.name} đang được sử dụng`

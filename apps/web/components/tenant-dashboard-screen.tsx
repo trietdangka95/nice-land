@@ -144,8 +144,8 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
       </div>
 
       <div className="mt-7 grid gap-6 xl:grid-cols-[1.45fr_0.75fr]">
-        <section className="border border-ink/10 bg-white">
-          <div className="flex items-center justify-between border-b border-ink/10 p-5">
+        <section className="glass-panel rounded-3xl overflow-hidden">
+          <div className="flex items-center justify-between border-b border-ink/5 p-6">
             <div>
               <h2 className="font-display text-2xl font-medium">
                 Tin đăng gần đây
@@ -156,7 +156,7 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
             </div>
             <Link
               href={`/${slug}/admin/posts`}
-              className="text-xs font-bold text-moss"
+              className="button-secondary !py-2 !px-4 !min-h-0 text-xs"
             >
               Xem tất cả
             </Link>
@@ -173,13 +173,13 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
               </Link>
             </div>
           ) : (
-            <div className="divide-y divide-ink/10">
+            <div className="divide-y divide-ink/5">
               {recentPosts.map((post) => (
                 <div
                   key={post.id}
-                  className="flex items-center gap-4 p-4 sm:p-5"
+                  className="flex items-center gap-4 p-5 hover:bg-white/40 transition-colors"
                 >
-                  <div className="relative hidden size-14 overflow-hidden bg-sand sm:block">
+                  <div className="relative hidden size-16 overflow-hidden rounded-xl bg-ink/5 sm:block">
                     {post.images[0] ? (
                       <Image
                         src={post.images[0].url}
@@ -227,7 +227,9 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
         </section>
 
         <div className="space-y-6">
-          <section className="border border-ink/10 bg-moss p-6 text-white">
+          <section className="glass-dark p-8 rounded-3xl text-white relative overflow-hidden group">
+            <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-gold/20 rounded-full blur-3xl group-hover:bg-gold/30 transition-all duration-700 pointer-events-none"></div>
+            <div className="relative z-10">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold">
               Gói hiện tại
             </p>
@@ -252,9 +254,10 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
                 ? `Hết hạn ngày ${new Date(subscription.endsAt).toLocaleDateString("vi-VN")}`
                 : "Không có ngày hết hạn"}
             </div>
+            </div>
           </section>
 
-          <section className="border border-ink/10 bg-white p-6">
+          <section className="glass-panel rounded-3xl p-8">
             <h2 className="font-display text-2xl">Việc nên làm tiếp</h2>
             <ul className="mt-5 space-y-4 text-sm">
               {[
@@ -269,7 +272,7 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
                   : "Theo dõi lead mới từ website",
               ].map((item, index) => (
                 <li key={item} className="flex items-center gap-3">
-                  <span className="grid size-7 place-items-center rounded-full bg-cream text-xs font-bold text-moss">
+                  <span className="grid size-7 place-items-center rounded-full bg-white/50 border border-ink/5 shadow-sm text-xs font-bold text-moss">
                     {index + 1}
                   </span>
                   {item}

@@ -1,16 +1,41 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, Search, SlidersHorizontal } from "lucide-react";
-import { PropertyCard } from "@/components/property-card";
-import { propertyTypeLabels } from "@/lib/format";
 import { buildPublicPostsHref } from "@/lib/pagination";
 import type { PropertyPost, PropertyType } from "@/lib/types";
 import type { PropertyCategory } from "@nice-land/contracts";
 import type { PublicTheme } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
+
+import { ClassicBrowser } from "./browser-variants/classic";
+import { ModernBrowser } from "./browser-variants/modern";
+import { EditorialBrowser } from "./browser-variants/editorial";
+import { WarmBrowser } from "./browser-variants/warm";
+import { DefaultBrowser } from "./browser-variants/default";
+
+export interface BrowserVariantProps {
+  query: string;
+  setQuery: (q: string) => void;
+  type: string;
+  setType: (t: string) => void;
+  categoryId: string;
+  setCategoryId: (c: string) => void;
+  sort: string;
+  setSort: (s: string) => void;
+  categories: PropertyCategory[];
+  applyFilters: (e?: React.FormEvent<HTMLFormElement> | React.MouseEvent) => void;
+  posts: PropertyPost[];
+  slug: string;
+  total: number;
+  page: number;
+  totalPages: number;
+  initialQuery: string;
+  initialType: string;
+  initialCategoryId: string;
+  initialSort: string;
+  themePreview?: PublicTheme;
+}
 
 export function PropertyBrowser({
   posts,
@@ -23,6 +48,7 @@ export function PropertyBrowser({
   initialCategoryId = "",
   initialSort = "newest",
   themePreview,
+  variant = "default",
 }: {
   posts: PropertyPost[];
   slug: string;
@@ -34,13 +60,14 @@ export function PropertyBrowser({
   initialCategoryId?: string;
   initialSort?: "newest" | "price_asc" | "price_desc";
   themePreview?: PublicTheme;
+  variant?: "classic" | "modern" | "editorial" | "warm" | "default";
 }) {
   const router = useRouter();
   const client = useMemo(() => createTenantApi(slug), [slug]);
   const [query, setQuery] = useState(initialQuery);
-  const [type, setType] = useState<"ALL" | PropertyType>(initialType);
+  const [type, setType] = useState<string>(initialType);
   const [categoryId, setCategoryId] = useState(initialCategoryId);
-  const [sort, setSort] = useState(initialSort);
+  const [sort, setSort] = useState<string>(initialSort);
   const [categories, setCategories] = useState<PropertyCategory[]>([]);
 
   useEffect(() => {
@@ -55,156 +82,61 @@ export function PropertyBrowser({
     };
   }, [client]);
 
-  function applyFilters(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  function applyFilters(event?: React.FormEvent<HTMLFormElement> | React.MouseEvent) {
+    if (event && "preventDefault" in event) {
+      event.preventDefault();
+    }
     router.push(
       buildPublicPostsHref(slug, {
         page: 1,
         q: query,
-        type,
+        type: type as any,
         categoryId,
-        sort,
+        sort: sort as any,
         themePreview,
       }),
     );
   }
 
-  return (
-    <div className="tenant-property-browser">
-      <form
-        onSubmit={applyFilters}
-        className="tenant-filter grid gap-3 border border-ink/10 bg-white p-3 md:grid-cols-2 xl:grid-cols-[1fr_180px_180px_180px_auto]"
-      >
-        <label className="relative">
-          <span className="sr-only">Tìm kiếm bất động sản</span>
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" size={18} />
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Tìm theo tên, khu vực..."
-            className="h-12 w-full bg-cream/70 pl-12 pr-4 text-sm"
-          />
-        </label>
-        <label>
-          <span className="sr-only">Danh mục bất động sản</span>
-          <select
-            value={categoryId}
-            onChange={(event) => setCategoryId(event.target.value)}
-            className="h-12 w-full bg-cream/70 px-4 text-sm font-semibold"
-          >
-            <option value="">Tất cả danh mục</option>
-            {categories.map((category) => (
-              <option value={category.id} key={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          <span className="sr-only">Loại bất động sản</span>
-          <select
-            value={type}
-            onChange={(event) => setType(event.target.value as "ALL" | PropertyType)}
-            className="h-12 w-full bg-cream/70 px-4 text-sm font-semibold"
-          >
-            <option value="ALL">Tất cả loại hình</option>
-            {Object.entries(propertyTypeLabels).map(([value, label]) => (
-              <option value={value} key={value}>{label}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          <span className="sr-only">Sắp xếp</span>
-          <select
-            value={sort}
-            onChange={(event) =>
-              setSort(
-                event.target.value as "newest" | "price_asc" | "price_desc",
-              )
-            }
-            className="h-12 w-full bg-cream/70 px-4 text-sm font-semibold"
-          >
-            <option value="newest">Mới nhất</option>
-            <option value="price_asc">Giá thấp đến cao</option>
-            <option value="price_desc">Giá cao đến thấp</option>
-          </select>
-        </label>
-        <button
-          type="submit"
-          className="flex h-12 items-center justify-center gap-2 bg-[var(--tenant-color)] px-5 text-sm font-bold text-white"
-        >
-          <SlidersHorizontal size={16} />
-          Áp dụng
-        </button>
-      </form>
+  // --- MOCK UI 8 ITEMS FOR VISUALIZATION ---
+  const displayPosts = useMemo(() => {
+    if (posts.length === 0) return posts;
+    const mocked = [...posts];
+    while (mocked.length < 8) {
+      mocked.push({
+        ...mocked[mocked.length % posts.length],
+        id: `mock-${mocked.length}`,
+      });
+    }
+    return mocked;
+  }, [posts]);
 
-      <div className="mt-7 flex items-center justify-between">
-        <p className="text-sm text-ink/55">
-          Tìm thấy <strong className="tabular-nums text-ink">{total}</strong> bất động sản
-        </p>
-      </div>
+  const props: BrowserVariantProps = {
+    query, setQuery,
+    type, setType,
+    categoryId, setCategoryId,
+    sort, setSort,
+    categories,
+    applyFilters,
+    posts: displayPosts, 
+    slug, 
+    total: Math.max(total, displayPosts.length), 
+    page, totalPages,
+    initialQuery, initialType, initialCategoryId, initialSort,
+    themePreview,
+  };
 
-      {posts.length > 0 ? (
-        <div className="tenant-property-grid mt-6 grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4" data-reveal-group>
-          {posts.map((post) => (
-            <PropertyCard
-              key={post.id}
-              post={post}
-              slug={slug}
-              themePreview={themePreview}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="mt-6 border border-dashed border-ink/20 bg-white py-20 text-center">
-          <Search className="mx-auto text-ink/25" size={34} />
-          <h3 className="mt-4 font-display text-2xl">Chưa tìm thấy bất động sản phù hợp</h3>
-          <p className="mt-2 text-sm text-ink/50">Thử thay đổi từ khóa hoặc loại hình đang chọn.</p>
-        </div>
-      )}
-
-      {totalPages > 1 && (
-        <nav
-          className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-ink/10 pt-6 sm:flex-row"
-          aria-label="Phân trang bất động sản"
-        >
-          <p className="text-sm text-ink/50">
-            Trang <strong className="tabular-nums text-ink">{page}</strong> /{" "}
-            <strong className="tabular-nums text-ink">{totalPages}</strong>
-          </p>
-          <div className="flex gap-2">
-            {page > 1 ? (
-              <Link
-                href={buildPublicPostsHref(slug, { page: page - 1, q: initialQuery, type: initialType, categoryId: initialCategoryId, sort: initialSort, themePreview })}
-                className="button-secondary min-h-11 px-4"
-              >
-                <ChevronLeft size={17} aria-hidden="true" />
-                Trang trước
-              </Link>
-            ) : (
-              <span className="button-secondary min-h-11 px-4 opacity-40" aria-disabled="true">
-                <ChevronLeft size={17} aria-hidden="true" />
-                Trang trước
-              </span>
-            )}
-            {page < totalPages ? (
-              <Link
-                href={buildPublicPostsHref(slug, { page: page + 1, q: initialQuery, type: initialType, categoryId: initialCategoryId, sort: initialSort, themePreview })}
-                className="button-secondary min-h-11 px-4"
-              >
-                Trang sau
-                <ChevronRight size={17} aria-hidden="true" />
-              </Link>
-            ) : (
-              <span className="button-secondary min-h-11 px-4 opacity-40" aria-disabled="true">
-                Trang sau
-                <ChevronRight size={17} aria-hidden="true" />
-              </span>
-            )}
-          </div>
-        </nav>
-      )}
-    </div>
-  );
+  switch (variant) {
+    case "classic":
+      return <ClassicBrowser {...props} />;
+    case "modern":
+      return <ModernBrowser {...props} />;
+    case "editorial":
+      return <EditorialBrowser {...props} />;
+    case "warm":
+      return <WarmBrowser {...props} />;
+    case "default":
+    default:
+      return <DefaultBrowser {...props} />;
+  }
 }

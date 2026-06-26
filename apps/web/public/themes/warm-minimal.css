@@ -130,48 +130,30 @@
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter input:focus,
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter select:focus {
-  border-color: #b25e43;
-  background: #ffffff;
-  outline: none;
+  color: #4a3c31;
 }
 
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter button[type="submit"] {
-  border-radius: 14px;
-  background: #b25e43;
-  color: #ffffff;
-  font-weight: 700;
-  transition: background 0.2s, transform 0.15s;
+/* ── Global Typography ── */
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-section-title {
+  color: #2d241e !important;
+  font-family: var(--tenant-display-font);
 }
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-about-copy h2 { color: #2d241e !important; }
 
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-filter button[type="submit"]:hover {
-  background: #9a4e38;
-  transform: translateY(-1px);
-}
-
-/* ── Property Grid ── */
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.75rem;
-}
-
-/* ── Property Card — sandstone, NOT white ── */
+/* ── Property Card Interactive States ── */
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-card {
   border-radius: var(--tenant-card-radius);
   overflow: hidden;
-  background: #f4efe8;           /* warm sandstone — distinct from white themes */
-  border: 1px solid rgba(178, 94, 67, 0.08);
-  box-shadow: 0 2px 16px rgba(178, 94, 67, 0.04);
+  background: var(--tenant-card-bg);
+  border: var(--tenant-card-border);
+  box-shadow: var(--tenant-card-shadow);
   transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1),
               box-shadow 0.35s ease;
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 40px rgba(178, 94, 67, 0.1);
-}
-
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-property-card a > div:first-child {
-  border-radius: var(--tenant-card-radius) var(--tenant-card-radius) 0 0;
+  transform: translateY(-4px);
+  box-shadow: var(--tenant-card-hover-shadow);
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-card-media {

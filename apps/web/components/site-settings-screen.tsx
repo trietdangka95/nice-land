@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Check, ExternalLink, Palette, Save } from "lucide-react";
 import type { SiteSettingsInput } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
+import { revalidateTenant } from "@/app/actions";
 
 const colors = ["#315c45", "#8b5a3c", "#24405e", "#6b4f7d", "#9a6d22"];
 
@@ -78,6 +79,7 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
     try {
       const updated = await client.updateSiteSettings(form);
       setForm(updated);
+      await revalidateTenant(slug);
       setMessage("Đã cập nhật website. Trang khách sẽ dùng cấu hình mới.");
     } catch (requestError) {
       setError(
@@ -101,7 +103,7 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
       <p className="mt-2 text-sm text-ink/50">Cập nhật nội dung hiển thị với khách hàng và xem trước trước khi lưu.</p>
 
       <form onSubmit={save} className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <section className="border border-ink/10 bg-white p-5 sm:p-7">
+        <section className="glass-panel rounded-3xl p-6 sm:p-8">
           <h2 className="font-display text-2xl">Thông tin thương hiệu</h2>
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
             <TextField label="Tên website" value={form.name} onChange={(value) => setField("name", value)} required />
@@ -122,7 +124,7 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
         </section>
 
         <aside className="space-y-6">
-          <section className="border border-ink/10 bg-white p-6">
+          <section className="glass-panel rounded-3xl p-6 sm:p-8">
             <Palette className="text-moss" />
             <h2 className="mt-4 font-display text-2xl">Màu chủ đạo</h2>
             <div className="mt-6 grid grid-cols-5 gap-3">
@@ -140,13 +142,13 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
                 </button>
               ))}
             </div>
-            <label className="mt-5 grid gap-2 text-sm font-bold">
+            <label className="mt-5 grid gap-2 text-sm font-bold text-ink/80">
               Mã màu tùy chỉnh
-              <input type="color" value={form.themeColor} onChange={(event) => setField("themeColor", event.target.value)} className="h-11 w-full border border-ink/15 bg-white p-1" />
+              <input type="color" value={form.themeColor} onChange={(event) => setField("themeColor", event.target.value)} className="h-11 w-full rounded-xl bg-white/50 border border-ink/5 p-1 cursor-pointer" />
             </label>
           </section>
 
-          <section className="overflow-hidden border border-ink/10 bg-white">
+          <section className="glass-panel rounded-3xl overflow-hidden">
             <div className="h-28 bg-cover bg-center" style={{ backgroundColor: form.themeColor, backgroundImage: form.banner ? `url("${form.banner}")` : undefined }} />
             <div className="p-5">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: form.themeColor }}>Xem trước website</p>
@@ -179,9 +181,9 @@ function TextField({
   wide?: boolean;
 }) {
   return (
-    <label className={`grid gap-2 text-sm font-bold ${wide ? "sm:col-span-2" : ""}`}>
+    <label className={`grid gap-2 text-sm font-bold text-ink/80 ${wide ? "sm:col-span-2" : ""}`}>
       {label}
-      <input type={type} value={value} onChange={(event) => onChange(event.target.value)} required={required} className="h-12 min-w-0 border border-ink/15 px-4 font-normal" />
+      <input type={type} value={value} onChange={(event) => onChange(event.target.value)} required={required} className="h-12 min-w-0 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" />
     </label>
   );
 }

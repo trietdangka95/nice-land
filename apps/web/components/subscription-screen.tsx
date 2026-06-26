@@ -68,7 +68,7 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-moss">Tài khoản & dịch vụ</p>
       <h1 className="mt-2 font-display text-4xl font-medium">Gói dịch vụ</h1>
       <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <section className="border border-ink/10 bg-white p-5 sm:p-7">
+        <section className="glass-panel rounded-3xl p-6 sm:p-8">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-moss">Gói hiện tại</span>
@@ -83,13 +83,15 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
             <Feature text={plan ? `${plan.price.toLocaleString("vi-VN")}đ / chu kỳ` : "Liên hệ quản trị viên"} />
           </div>
 
-          <div className="mt-8 grid gap-4 border-t border-ink/10 pt-7 sm:grid-cols-2">
+          <div className="mt-8 grid gap-4 border-t border-ink/5 pt-7 sm:grid-cols-2">
             <Usage icon={Gauge} label="Tin đang dùng" value={`${subscription.usage.posts} / ${plan?.maxPosts ?? 0}`} />
             <Usage icon={ImageIcon} label="Tổng ảnh đã lưu" value={subscription.usage.images.toLocaleString("vi-VN")} />
           </div>
         </section>
 
-        <aside className="border border-ink/10 bg-ink p-6 text-white sm:p-7">
+        <aside className="glass-dark rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden group">
+          <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-gold/20 rounded-full blur-3xl group-hover:bg-gold/30 transition-all duration-700 pointer-events-none"></div>
+          <div className="relative z-10">
           <CalendarDays className="text-gold" />
           <p className="mt-5 text-xs uppercase tracking-widest text-white/45">Ngày hết hạn</p>
           <strong className="mt-2 block font-display text-3xl">
@@ -98,24 +100,25 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
           <p className="mt-3 text-sm text-white/60">Còn khả dụng {remainingPosts.toLocaleString("vi-VN")} tin đăng.</p>
 
           {pending ? (
-            <div className="mt-7 border border-white/15 bg-white/5 p-4">
+            <div className="mt-7 rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm">
               <p className="text-sm font-bold text-gold">Yêu cầu đang được xử lý</p>
-              <p className="mt-2 text-xs leading-5 text-white/55">
+              <p className="mt-2 text-xs leading-5 text-white/70">
                 Đã gửi ngày {new Date(subscription.latestRenewalRequest!.requestedAt).toLocaleDateString("vi-VN")}.
               </p>
             </div>
           ) : (
             <form onSubmit={requestRenewal} className="mt-7">
-              <label className="grid gap-2 text-sm font-bold">
+              <label className="grid gap-2 text-sm font-bold text-white/90">
                 Ghi chú gia hạn
-                <textarea value={note} onChange={(event) => setNote(event.target.value)} maxLength={1000} placeholder="Ví dụ: Tôi muốn gia hạn thêm 12 tháng" className="min-h-24 border border-white/20 bg-white/10 p-3 font-normal text-white placeholder:text-white/35" />
+                <textarea value={note} onChange={(event) => setNote(event.target.value)} maxLength={1000} placeholder="Ví dụ: Tôi muốn gia hạn thêm 12 tháng" className="min-h-24 rounded-xl border border-white/20 bg-white/10 p-4 font-normal text-white placeholder:text-white/35 focus:bg-white/20 transition-colors" />
               </label>
-              <button disabled={sending} className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-gold px-5 text-sm font-bold text-ink disabled:opacity-60">
+              <button disabled={sending} className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-gold px-5 text-sm font-bold text-ink hover:bg-gold/90 transition-colors disabled:opacity-60">
                 <Send size={16} /> {sending ? "Đang gửi..." : "Gửi yêu cầu gia hạn"}
               </button>
             </form>
           )}
           {error && <p className="mt-4 text-sm text-red-300" role="alert">{error}</p>}
+          </div>
         </aside>
       </div>
     </>
@@ -127,5 +130,5 @@ function Feature({ text }: { text: string }) {
 }
 
 function Usage({ icon: Icon, label, value }: { icon: typeof Gauge; label: string; value: string }) {
-  return <div className="flex items-center gap-3"><span className="grid size-10 place-items-center bg-moss/10 text-moss"><Icon size={18} /></span><div><p className="text-xs text-ink/45">{label}</p><strong className="mt-1 block">{value}</strong></div></div>;
+  return <div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-moss/10 text-moss"><Icon size={18} /></span><div><p className="text-xs font-medium text-ink/60">{label}</p><strong className="mt-1 block">{value}</strong></div></div>;
 }

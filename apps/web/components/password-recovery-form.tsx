@@ -46,8 +46,8 @@ export function ForgotPasswordForm({
   }
 
   return (
-    <div className="w-full max-w-md bg-white p-8">
-      <span className="grid size-12 place-items-center bg-moss text-white">
+    <div className="w-full glass-panel rounded-3xl p-8 sm:p-10 shadow-2xl">
+      <span className="grid size-12 place-items-center rounded-2xl bg-moss text-white shadow-lg shadow-moss/20">
         <MailCheck size={22} />
       </span>
       <h1 className="mt-6 font-display text-4xl">Quên mật khẩu</h1>
@@ -59,14 +59,14 @@ export function ForgotPasswordForm({
         <label className="grid gap-2 text-sm font-bold">
           Tên đăng nhập hoặc email
           <input
-            className="h-12 border border-ink/15 px-4 font-normal"
+            className="h-12 w-full rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
             name="identifier"
             autoComplete="username"
             required
             minLength={3}
           />
         </label>
-        <button className="button-primary mt-2" disabled={loading}>
+        <button className="button-primary mt-2 w-full" disabled={loading}>
           {loading ? "Đang gửi..." : "Gửi liên kết đặt lại"}
         </button>
         {message && (
@@ -133,8 +133,8 @@ export function ResetPasswordForm({
   }
 
   return (
-    <div className="w-full max-w-md bg-white p-8">
-      <span className="grid size-12 place-items-center bg-moss text-white">
+    <div className="w-full glass-panel rounded-3xl p-8 sm:p-10 shadow-2xl">
+      <span className="grid size-12 place-items-center rounded-2xl bg-moss text-white shadow-lg shadow-moss/20">
         <KeyRound size={22} />
       </span>
       <h1 className="mt-6 font-display text-4xl">Tạo mật khẩu mới</h1>
@@ -145,7 +145,7 @@ export function ResetPasswordForm({
             hồi.
           </p>
           <Link
-            className="button-primary mt-6 inline-flex"
+            className="button-primary mt-6 inline-flex w-full"
             href={loginHref(slug, superAdmin)}
           >
             Đăng nhập
@@ -156,7 +156,7 @@ export function ResetPasswordForm({
           <label className="grid gap-2 text-sm font-bold">
             Mật khẩu mới
             <input
-              className="h-12 border border-ink/15 px-4 font-normal"
+              className="h-12 w-full rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
               name="password"
               type="password"
               autoComplete="new-password"
@@ -167,7 +167,7 @@ export function ResetPasswordForm({
           <label className="grid gap-2 text-sm font-bold">
             Xác nhận mật khẩu
             <input
-              className="h-12 border border-ink/15 px-4 font-normal"
+              className="h-12 w-full rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
               name="confirmation"
               type="password"
               autoComplete="new-password"
@@ -175,7 +175,7 @@ export function ResetPasswordForm({
               minLength={8}
             />
           </label>
-          <button className="button-primary mt-2" disabled={loading}>
+          <button className="button-primary mt-2 w-full" disabled={loading}>
             {loading ? "Đang cập nhật..." : "Cập nhật mật khẩu"}
           </button>
           {error && (

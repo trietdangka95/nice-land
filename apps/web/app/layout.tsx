@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "@/app/globals.css";
 import { ScrollReveal } from "@/components/scroll-reveal";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin", "vietnamese"],
+  display: "swap",
+  variable: "--font-plus-jakarta-sans",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -14,7 +21,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi" data-scroll-behavior="smooth">
-      <body className="font-sans antialiased">
+      <body className={`${plusJakartaSans.variable} font-sans antialiased`}>
         <ScrollReveal />
         {children}
       </body>
