@@ -57,9 +57,12 @@ ENV NODE_ENV=production
 
 # Copy the entire pnpm node_modules from builder.
 # This includes the pnpm virtual store (.pnpm/) with real package files
-# and all workspace symlinks. Copying everything avoids broken symlinks
-# and ensures @prisma/client and all transitive deps resolve correctly.
+# plus workspace package node_modules symlinks. Copying these avoids broken
+# workspace imports and ensures @prisma/client and transitive deps resolve.
 COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=builder /usr/src/app/packages/contracts/node_modules ./packages/contracts/node_modules
+COPY --from=builder /usr/src/app/packages/database/node_modules ./packages/database/node_modules
 
 # Copy built workspace packages (dist files only — no source code)
 COPY --from=builder /usr/src/app/packages/contracts/dist ./packages/contracts/dist
