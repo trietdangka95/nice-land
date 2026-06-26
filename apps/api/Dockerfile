@@ -66,6 +66,7 @@ COPY --from=builder /usr/src/app/packages/contracts/dist ./packages/contracts/di
 COPY --from=builder /usr/src/app/packages/contracts/package.json ./packages/contracts/package.json
 COPY --from=builder /usr/src/app/packages/database/dist ./packages/database/dist
 COPY --from=builder /usr/src/app/packages/database/package.json ./packages/database/package.json
+COPY --from=builder /usr/src/app/packages/database/prisma ./packages/database/prisma
 
 # Copy the compiled API application
 COPY --from=builder /usr/src/app/apps/api/dist ./apps/api/dist

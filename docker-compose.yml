@@ -3,13 +3,14 @@ version: '3.8'
 services:
   db:
     image: postgres:16-alpine
+    container_name: nice-land-db
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: change_this_to_a_strong_prod_password
       POSTGRES_DB: nice_land
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - nice_land_pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d nice_land"]
       interval: 5s
@@ -20,9 +21,18 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
+    container_name: nice-land-api
     restart: always
-    ports:
-      - "4000:4000"
+    networks:
+      - default
+      - proxy-tier
+    entrypoint: >
+      sh -c "
+        echo 'Running database migrations...' &&
+        npx prisma migrate deploy --schema ../../packages/database/prisma/schema.prisma &&
+        echo 'Starting application...' &&
+        node dist/server.js
+      "
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
@@ -32,8 +42,8 @@ services:
       ACCESS_TOKEN_TTL_SECONDS: ${ACCESS_TOKEN_TTL_SECONDS:-900}
       REFRESH_TOKEN_TTL_DAYS: ${REFRESH_TOKEN_TTL_DAYS:-30}
       REFRESH_COOKIE_NAME: ${REFRESH_COOKIE_NAME:-nice_land_refresh}
-      ROOT_DOMAIN: ${ROOT_DOMAIN:-localhost}
-      CORS_ORIGINS: ${CORS_ORIGINS:-https://nice-land.vn}
+      ROOT_DOMAIN: ${ROOT_DOMAIN:-nice-land.id.vn}
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://nice-land.id.vn,https://*.nice-land.id.vn,http://localhost:3002}
       AWS_REGION: ${AWS_REGION}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET}
       AWS_S3_PUBLIC_URL: ${AWS_S3_PUBLIC_URL}
@@ -45,5 +55,9 @@ services:
       db:
         condition: service_healthy
 
+networks:
+  proxy-tier:
+    external: true
+
 volumes:
-  pgdata:
+  nice_land_pgdata:
