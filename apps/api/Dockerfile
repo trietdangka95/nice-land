@@ -61,6 +61,10 @@ ENV NODE_ENV=production
 # and ensures @prisma/client and all transitive deps resolve correctly.
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
+# pnpm does not always expose dependency binaries at root node_modules/.bin for
+# filtered workspaces. Provide a stable Prisma CLI path for startup migrations.
+RUN ln -s /usr/src/app/node_modules/.pnpm/node_modules/.bin/prisma /usr/local/bin/prisma
+
 # Copy built workspace packages (dist files only — no source code)
 COPY --from=builder /usr/src/app/packages/contracts/dist ./packages/contracts/dist
 COPY --from=builder /usr/src/app/packages/contracts/package.json ./packages/contracts/package.json

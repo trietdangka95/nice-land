@@ -29,7 +29,7 @@ services:
     entrypoint: >
       sh -c "
         echo 'Running database migrations...' &&
-        ../../node_modules/.bin/prisma migrate deploy --schema ../../packages/database/prisma/schema.prisma &&
+        prisma migrate deploy --schema ../../packages/database/prisma/schema.prisma &&
         echo 'Starting application...' &&
         exec node dist/server.js
       "
