@@ -14,11 +14,9 @@ export function AuthGuard({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const requireAuth = process.env.NEXT_PUBLIC_REQUIRE_AUTH === "true";
-  const [ready, setReady] = useState(!requireAuth);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!requireAuth) return;
     let active = true;
     const client = slug ? createTenantApi(slug) : api;
 
@@ -49,7 +47,7 @@ export function AuthGuard({
     return () => {
       active = false;
     };
-  }, [requireAuth, router, slug, superAdmin]);
+  }, [router, slug, superAdmin]);
 
   if (!ready) {
     return (
