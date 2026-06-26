@@ -107,6 +107,7 @@ export function AdminShell({
               <Link
                 key={label as string}
                 href={href as string}
+                prefetch={false}
                 className={`flex items-center gap-3 px-3 py-3 text-sm font-semibold transition-all rounded-xl mx-2 ${active ? "bg-moss/20 text-gold border border-gold/10 shadow-inner" : "text-white/60 hover:bg-white/5 hover:text-white"
                   }`}
               >
@@ -118,7 +119,7 @@ export function AdminShell({
         </nav>
         <div className="border-t border-white/10 p-4">
           {!superAdmin && site && (
-            <Link href={`/${site.slug}`} className="flex items-center gap-3 px-3 py-3 text-sm text-white/55 hover:text-white">
+            <Link href={`/${site.slug}`} prefetch={false} className="flex items-center gap-3 px-3 py-3 text-sm text-white/55 hover:text-white">
               <ExternalLink size={17} />
               Xem website
             </Link>
@@ -152,6 +153,7 @@ export function AdminShell({
                     <Link
                       key={label as string}
                       href={href as string}
+                      prefetch={false}
                       className={`flex items-center gap-3 px-3 py-3 text-sm font-semibold transition-all rounded-xl mx-2 ${active
                           ? "bg-moss/20 text-gold border border-gold/10 shadow-inner"
                           : "text-white/65 hover:bg-white/5 hover:text-white"
@@ -167,6 +169,7 @@ export function AdminShell({
                 {!superAdmin && site && (
                   <Link
                     href={`/${site.slug}`}
+                    prefetch={false}
                     className="flex items-center gap-3 px-3 py-3 text-sm text-white/60"
                   >
                     <ExternalLink size={17} aria-hidden="true" />

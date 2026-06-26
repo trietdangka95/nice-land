@@ -103,6 +103,7 @@ export function LoginForm({
               ? "/superadmin/forgot-password"
               : `/${slug}/admin/forgot-password`
           }
+          prefetch={false}
         >
           Quên mật khẩu?
         </Link>

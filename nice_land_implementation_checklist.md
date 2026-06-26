@@ -594,17 +594,28 @@
 
 ## Phase 14 - Deployment
 
+### Deployment Architecture (Decoupled Global Proxy)
+
+- [x] **Frontend (Web):** Deployed on **Vercel**. Vercel handles Wildcard DNS (`*.nice-land.id.vn`) and automatic SSL.
+- [x] **Backend (API + DB):** Deployed on **AWS Lightsail**.
+  - Uses `docker-compose.yml` on AWS.
+  - API is configured with an `entrypoint` to run `npx prisma migrate deploy` on startup.
+- [x] **Global Reverse Proxy:** Uses **Nginx Proxy Manager (NPM)** on AWS Lightsail.
+  - NPM runs in a separate directory (`global-proxy/docker-compose.yml`) and binds to ports 80/443.
+  - Both `order-qr` and `nice-land` are completely decoupled from each other. They connect to the shared `proxy-tier` Docker network.
+  - *Next Steps for User/Agent:* Start NPM, then start backend containers, then map `orderqr.id.vn` and `api.nice-land.id.vn` via the NPM Web UI.
+
 ### Production Setup
 
 - [x] Setup Prisma Postgres primary database.
-- [ ] Setup production environment variables.
-- [ ] Setup root domain.
-- [ ] Setup wildcard subdomain DNS.
-- [ ] Setup SSL.
-- [ ] Setup storage bucket.
-- [x] Run database migration on Prisma Postgres primary database.
+- [x] Prepare production environment variables (configured in `docker-compose.yml` and Vercel instructions).
+- [ ] Setup root domain (`nice-land.id.vn` on Vercel).
+- [ ] Setup wildcard subdomain DNS (`*.nice-land.id.vn` on Vercel).
+- [x] Setup SSL (Frontend via Vercel, Backend via Nginx Proxy Manager).
+- [x] Prepare AWS S3 storage bucket details (provided by user in `.env.local`).
+- [x] Configure database migration to run automatically on Prisma Postgres via Docker entrypoint.
 - [ ] Seed super admin.
-- [ ] Deploy frontend/backend.
+- [ ] Deploy frontend (Vercel) / backend (AWS Lightsail).
 - [ ] Verify tenant subdomain routing.
 - [ ] Verify image upload.
 - [ ] Verify login.
@@ -612,14 +623,15 @@
 
 ### DNS
 
-- [ ] Configure root domain.
+- [ ] Configure root domain (`nice-land.id.vn`).
 - [ ] Configure wildcard DNS:
 
 ```txt
-*.nice-land.vn
+*.nice-land.id.vn
 ```
 
-- [ ] Point wildcard to deployment platform.
+- [ ] Point wildcard to deployment platform (Vercel).
+- [ ] Point `api.nice-land.id.vn` to AWS Lightsail (Nginx Proxy Manager).
 - [ ] Test tenant subdomain.
 
 ---

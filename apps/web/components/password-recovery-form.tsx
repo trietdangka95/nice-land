@@ -82,6 +82,7 @@ export function ForgotPasswordForm({
         <Link
           className="text-center text-sm font-semibold text-moss hover:underline"
           href={loginHref(slug, superAdmin)}
+          prefetch={false}
         >
           Quay lại đăng nhập
         </Link>
@@ -147,6 +148,7 @@ export function ResetPasswordForm({
           <Link
             className="button-primary mt-6 inline-flex w-full"
             href={loginHref(slug, superAdmin)}
+            prefetch={false}
           >
             Đăng nhập
           </Link>
@@ -193,6 +195,7 @@ export function ResetPasswordForm({
         <Link
           className="mt-6 block text-center text-sm font-semibold text-moss hover:underline"
           href={loginHref(slug, superAdmin)}
+          prefetch={false}
         >
           Quay lại đăng nhập
         </Link>
