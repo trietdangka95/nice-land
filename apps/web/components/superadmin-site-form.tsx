@@ -8,9 +8,12 @@ import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { revalidateTenant } from "@/app/actions";
 import { PublicThemePicker } from "@/components/public-theme-picker";
+import { getValidationFieldMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
   const router = useRouter();
+  const toast = useToast();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [form, setForm] = useState({
     name: "", slug: "", phone: "", email: "", address: "", planId: "",
@@ -56,9 +59,10 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
         });
       }
       await revalidateTenant(form.slug);
+      toast.success("Website khách hàng đã được lưu.", "Lưu thành công");
       router.push("/superadmin/sites"); router.refresh();
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Không thể lưu website.");
+      toast.error(formatSiteFormError(requestError), "Không thể lưu website");
     } finally { setSaving(false); }
   }
 
@@ -94,6 +98,29 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
         </section>{error && <p className="border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}<button disabled={saving} className="button-primary w-full disabled:opacity-60"><Save size={17} /> {saving ? "Đang lưu..." : "Lưu website"}</button></aside>
       </form>
     </>
+  );
+}
+
+const fieldLabels: Record<string, string> = {
+  name: "Tên website",
+  slug: "Subdomain",
+  phone: "Số điện thoại",
+  email: "Email",
+  address: "Địa chỉ",
+  themeKey: "Giao diện",
+  planId: "Gói dịch vụ",
+  subscriptionEnd: "Ngày hết hạn",
+  subscriptionStatus: "Trạng thái",
+  adminName: "Tên quản trị viên",
+  adminUsername: "Tên đăng nhập",
+  adminPassword: "Mật khẩu ban đầu",
+};
+
+function formatSiteFormError(error: unknown) {
+  return getValidationFieldMessage(
+    error,
+    fieldLabels,
+    "Không thể lưu website.",
   );
 }
 

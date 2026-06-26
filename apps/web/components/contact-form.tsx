@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { api } from "@/lib/api";
+import { useToast } from "@/components/toast-provider";
 
 export function ContactForm({
   selectedTheme,
@@ -11,14 +12,13 @@ export function ContactForm({
   selectedTheme?: string;
   selectedPlan?: string;
 }) {
+  const toast = useToast();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
-    setError("");
     const form = new FormData(event.currentTarget);
     const selection = [
       selectedPlan ? `Gói quan tâm: ${selectedPlan}` : "",
@@ -36,9 +36,16 @@ export function ContactForm({
         message: selection,
       });
       setSubmitted(true);
+      toast.success(
+        "Đội ngũ Nice Land sẽ liên hệ trong giờ làm việc.",
+        "Đã nhận thông tin",
+      );
       event.currentTarget.reset();
     } catch {
-      setError("Chưa thể gửi yêu cầu. Vui lòng thử lại sau.");
+      toast.error(
+        "Chưa thể gửi yêu cầu. Vui lòng thử lại sau.",
+        "Không thể gửi yêu cầu",
+      );
     } finally {
       setLoading(false);
     }
@@ -109,7 +116,6 @@ export function ContactForm({
         {loading ? "Đang gửi..." : "Nhận tư vấn miễn phí"}
         {!loading && <ArrowRight size={17} aria-hidden="true" />}
       </button>
-      {error && <p role="alert" className="text-sm font-semibold text-red-200">{error}</p>}
     </form>
   );
 }

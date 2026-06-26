@@ -7,12 +7,14 @@ import type { SuperAdminRenewalRequest, SuperAdminSite } from "@nice-land/contra
 import { api } from "@/lib/api";
 import { DashboardStat } from "@/components/dashboard-stat";
 import { StatusPill } from "@/components/status-pill";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 export function SuperAdminDashboardScreen() {
+  const toast = useToast();
   const [sites, setSites] = useState<SuperAdminSite[]>([]);
   const [renewals, setRenewals] = useState<SuperAdminRenewalRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     Promise.all([
@@ -24,14 +26,13 @@ export function SuperAdminDashboardScreen() {
         setRenewals(renewalItems);
       })
       .catch((requestError) =>
-        setError(
-          requestError instanceof Error
-            ? requestError.message
-            : "Không thể tải tổng quan.",
+        toast.error(
+          getErrorMessage(requestError, "Không thể tải tổng quan."),
+          "Không thể tải tổng quan",
         ),
       )
       .finally(() => setLoading(false));
-  }, []);
+  }, [toast]);
 
   const activeSites = sites.filter((site) => site.isActive).length;
   const postCount = sites.reduce((total, site) => total + site.usage.posts, 0);
@@ -49,7 +50,6 @@ export function SuperAdminDashboardScreen() {
         </div>
         <Link href="/superadmin/sites/create" className="button-primary"><Plus size={17} /> Tạo website mới</Link>
       </div>
-      {error && <p className="mt-5 border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
       {loading ? <div className="mt-8 h-36 animate-pulse bg-white" /> : <>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <DashboardStat label="Website khách hàng" value={`${sites.length}`} detail={`${activeSites} đang hoạt động`} icon={Building2} />

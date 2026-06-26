@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { KeyRound, MailCheck } from "lucide-react";
-import { ApiClientError } from "@nice-land/api-client";
 import { api, createTenantApi } from "@/lib/api";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 function loginHref(slug?: string, superAdmin?: boolean) {
   return superAdmin ? "/superadmin/login" : `/${slug}/admin/login`;
@@ -17,15 +18,12 @@ export function ForgotPasswordForm({
   slug?: string;
   superAdmin?: boolean;
 }) {
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
-    setMessage("");
-    setError("");
     const form = new FormData(event.currentTarget);
 
     try {
@@ -33,12 +31,11 @@ export function ForgotPasswordForm({
       const result = await client.forgotPassword({
         identifier: String(form.get("identifier") ?? ""),
       });
-      setMessage(result.message);
+      toast.success(result.message, "Đã gửi yêu cầu");
     } catch (requestError) {
-      setError(
-        requestError instanceof ApiClientError
-          ? requestError.message
-          : "Không thể gửi yêu cầu. Vui lòng thử lại.",
+      toast.error(
+        getErrorMessage(requestError, "Không thể gửi yêu cầu. Vui lòng thử lại."),
+        "Không thể gửi yêu cầu",
       );
     } finally {
       setLoading(false);
@@ -69,16 +66,6 @@ export function ForgotPasswordForm({
         <button className="button-primary mt-2 w-full" disabled={loading}>
           {loading ? "Đang gửi..." : "Gửi liên kết đặt lại"}
         </button>
-        {message && (
-          <p role="status" className="text-sm font-semibold text-moss">
-            {message}
-          </p>
-        )}
-        {error && (
-          <p role="alert" className="text-sm font-semibold text-red-700">
-            {error}
-          </p>
-        )}
         <Link
           className="text-center text-sm font-semibold text-moss hover:underline"
           href={loginHref(slug, superAdmin)}
@@ -100,19 +87,18 @@ export function ResetPasswordForm({
   slug?: string;
   superAdmin?: boolean;
 }) {
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [completed, setCompleted] = useState(false);
-  const [error, setError] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
-    setError("");
     const form = new FormData(event.currentTarget);
     const password = String(form.get("password") ?? "");
     const confirmation = String(form.get("confirmation") ?? "");
     if (password !== confirmation) {
-      setError("Mật khẩu xác nhận chưa trùng khớp.");
+      toast.warning("Mật khẩu xác nhận chưa trùng khớp.", "Kiểm tra mật khẩu");
       setLoading(false);
       return;
     }
@@ -122,11 +108,14 @@ export function ResetPasswordForm({
       await client.resetPassword({ token, password });
       window.sessionStorage.removeItem("nice_land_access_token");
       setCompleted(true);
+      toast.success("Mật khẩu đã được cập nhật.", "Đặt lại mật khẩu");
     } catch (requestError) {
-      setError(
-        requestError instanceof ApiClientError
-          ? requestError.message
-          : "Không thể đặt lại mật khẩu. Vui lòng thử lại.",
+      toast.error(
+        getErrorMessage(
+          requestError,
+          "Không thể đặt lại mật khẩu. Vui lòng thử lại.",
+        ),
+        "Không thể đặt lại mật khẩu",
       );
     } finally {
       setLoading(false);
@@ -180,11 +169,6 @@ export function ResetPasswordForm({
           <button className="button-primary mt-2 w-full" disabled={loading}>
             {loading ? "Đang cập nhật..." : "Cập nhật mật khẩu"}
           </button>
-          {error && (
-            <p role="alert" className="text-sm font-semibold text-red-700">
-              {error}
-            </p>
-          )}
         </form>
       ) : (
         <p role="alert" className="mt-6 text-sm font-semibold text-red-700">

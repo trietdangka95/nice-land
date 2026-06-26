@@ -4,6 +4,8 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { CalendarDays, Check, Gauge, ImageIcon, Send } from "lucide-react";
 import type { AdminSubscription } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 const statusLabels: Record<AdminSubscription["status"], string> = {
   TRIAL: "Dùng thử",
@@ -15,6 +17,7 @@ const statusLabels: Record<AdminSubscription["status"], string> = {
 
 export function SubscriptionScreen({ slug }: { slug: string }) {
   const client = useMemo(() => createTenantApi(slug), [slug]);
+  const toast = useToast();
   const [subscription, setSubscription] = useState<AdminSubscription | null>(null);
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(true);
@@ -37,7 +40,6 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
     event.preventDefault();
     if (!subscription) return;
     setSending(true);
-    setError("");
     try {
       const request = await client.createRenewalRequest({
         planId: subscription.plan?.id ?? null,
@@ -45,8 +47,15 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
       });
       setSubscription({ ...subscription, latestRenewalRequest: request });
       setNote("");
+      toast.success(
+        "Yêu cầu gia hạn đã được gửi tới quản trị hệ thống.",
+        "Đã gửi yêu cầu",
+      );
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Không thể gửi yêu cầu gia hạn.");
+      toast.error(
+        getErrorMessage(requestError, "Không thể gửi yêu cầu gia hạn."),
+        "Không thể gửi yêu cầu",
+      );
     } finally {
       setSending(false);
     }
@@ -117,7 +126,6 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
               </button>
             </form>
           )}
-          {error && <p className="mt-4 text-sm text-red-300" role="alert">{error}</p>}
           </div>
         </aside>
       </div>

@@ -5,6 +5,8 @@ import { Check, ExternalLink, Palette, Save } from "lucide-react";
 import type { SiteSettingsInput } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 import { revalidateTenant } from "@/app/actions";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 const colors = ["#315c45", "#8b5a3c", "#24405e", "#6b4f7d", "#9a6d22"];
 
@@ -23,10 +25,10 @@ const emptySettings: SiteSettingsInput = {
 
 export function SiteSettingsScreen({ slug }: { slug: string }) {
   const client = useMemo(() => createTenantApi(slug), [slug]);
+  const toast = useToast();
   const [form, setForm] = useState<SiteSettingsInput>(emptySettings);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -68,24 +70,24 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
     value: SiteSettingsInput[K],
   ) {
     setForm((current) => ({ ...current, [key]: value }));
-    setMessage("");
   }
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSaving(true);
     setError("");
-    setMessage("");
     try {
       const updated = await client.updateSiteSettings(form);
       setForm(updated);
       await revalidateTenant(slug);
-      setMessage("Đã cập nhật website. Trang khách sẽ dùng cấu hình mới.");
+      toast.success(
+        "Trang khách sẽ dùng cấu hình mới.",
+        "Đã cập nhật website",
+      );
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Không thể lưu cấu hình.",
+      toast.error(
+        getErrorMessage(requestError, "Không thể lưu cấu hình."),
+        "Không thể lưu cấu hình",
       );
     } finally {
       setSaving(false);
@@ -117,7 +119,6 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
             <TextField label="Ảnh banner URL" type="url" value={form.banner ?? ""} onChange={(value) => setField("banner", value)} wide />
           </div>
           {error && <p className="mt-5 border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}
-          {message && <p className="mt-5 border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800" role="status">{message}</p>}
           <button className="button-primary mt-7 disabled:opacity-60" disabled={saving}>
             <Save size={17} /> {saving ? "Đang lưu..." : "Lưu thay đổi"}
           </button>

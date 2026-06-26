@@ -8,6 +8,8 @@ import { StatusPill } from "@/components/status-pill";
 import { createTenantApi } from "@/lib/api";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
 import { revalidateTenant } from "@/app/actions";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 const statusLabels: Record<PostStatus, string> = {
   DRAFT: "Bản nháp",
@@ -19,6 +21,7 @@ const statusLabels: Record<PostStatus, string> = {
 
 export function AdminPostsTable({ slug }: { slug: string }) {
   const client = useMemo(() => createTenantApi(slug), [slug]);
+  const toast = useToast();
   const [posts, setPosts] = useState<AdminPost[]>([]);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<PostStatus | "">("");
@@ -28,13 +31,11 @@ export function AdminPostsTable({ slug }: { slug: string }) {
   const [totalPages, setTotalPages] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
     const timeout = window.setTimeout(() => {
       setLoading(true);
-      setError("");
       void client
         .listAdminPosts({
           q: query || undefined,
@@ -51,7 +52,12 @@ export function AdminPostsTable({ slug }: { slug: string }) {
           }
         })
         .catch((requestError: Error) => {
-          if (active) setError(requestError.message);
+          if (active) {
+            toast.error(
+              getErrorMessage(requestError, "Không thể tải tin đăng."),
+              "Không thể tải tin đăng",
+            );
+          }
         })
         .finally(() => {
           if (active) setLoading(false);
@@ -65,7 +71,6 @@ export function AdminPostsTable({ slug }: { slug: string }) {
 
   async function archive(post: AdminPost) {
     if (!window.confirm(`Lưu trữ tin “${post.title}”?`)) return;
-    setError("");
     try {
       await client.archiveAdminPost(post.id, post.version);
       await revalidateTenant(slug);
@@ -74,8 +79,12 @@ export function AdminPostsTable({ slug }: { slug: string }) {
       } else {
         setRefreshKey((value) => value + 1);
       }
+      toast.success("Tin đã được lưu trữ.", "Đã lưu trữ tin");
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Không thể lưu trữ tin.");
+      toast.error(
+        getErrorMessage(requestError, "Không thể lưu trữ tin."),
+        "Không thể lưu trữ tin",
+      );
     }
   }
 
@@ -140,8 +149,6 @@ export function AdminPostsTable({ slug }: { slug: string }) {
             ))}
           </select>
         </div>
-
-        {error && <p role="alert" className="border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700">{error}</p>}
 
         {loading ? (
           <div className="space-y-3 p-6" aria-busy="true" aria-label="Đang tải tin đăng">

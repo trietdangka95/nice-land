@@ -3,6 +3,8 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Send } from "lucide-react";
 import { createTenantApi } from "@/lib/api";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 export function PropertyEngagement({
   slug,
@@ -12,9 +14,9 @@ export function PropertyEngagement({
   postId: string;
 }) {
   const client = useMemo(() => createTenantApi(slug), [slug]);
+  const toast = useToast();
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     void client.trackPostView(postId).catch(() => undefined);
@@ -23,7 +25,6 @@ export function PropertyEngagement({
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSending(true);
-    setError("");
     const data = new FormData(event.currentTarget);
     try {
       await client.createPropertyLead(postId, {
@@ -34,12 +35,15 @@ export function PropertyEngagement({
         source: "PROPERTY_FORM",
       });
       setSent(true);
+      toast.success(
+        "Chuyên viên sẽ liên hệ với bạn sớm.",
+        "Đã gửi yêu cầu",
+      );
       event.currentTarget.reset();
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Không thể gửi yêu cầu.",
+      toast.error(
+        getErrorMessage(requestError, "Không thể gửi yêu cầu."),
+        "Không thể gửi yêu cầu",
       );
     } finally {
       setSending(false);
@@ -61,7 +65,6 @@ export function PropertyEngagement({
       <input name="phone" required minLength={8} placeholder="Số điện thoại" className="h-11 w-full border border-ink/15 px-3 text-sm" />
       <input name="email" type="email" placeholder="Email (không bắt buộc)" className="h-11 w-full border border-ink/15 px-3 text-sm" />
       <textarea name="message" placeholder="Nội dung cần tư vấn" className="min-h-20 w-full border border-ink/15 p-3 text-sm" />
-      {error && <p className="text-sm text-red-700" role="alert">{error}</p>}
       <button disabled={sending} className="flex min-h-11 w-full items-center justify-center gap-2 bg-[var(--tenant-color)] px-4 text-sm font-bold text-white disabled:opacity-60">
         <Send size={15} /> {sending ? "Đang gửi..." : "Gửi yêu cầu"}
       </button>

@@ -7,8 +7,11 @@ import type { SuperAdminSite } from "@nice-land/contracts";
 import { api } from "@/lib/api";
 import { revalidateTenant } from "@/app/actions";
 import { StatusPill } from "@/components/status-pill";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 export function SuperAdminSitesScreen() {
+  const toast = useToast();
   const [items, setItems] = useState<SuperAdminSite[]>([]);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState("");
@@ -16,7 +19,6 @@ export function SuperAdminSitesScreen() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [temporaryPassword, setTemporaryPassword] = useState("");
 
   const load = useCallback(async () => {
@@ -32,11 +34,14 @@ export function SuperAdminSitesScreen() {
       setItems(result.items);
       setTotalPages(result.totalPages);
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Không thể tải website.");
+      toast.error(
+        getErrorMessage(requestError, "Không thể tải website."),
+        "Không thể tải website",
+      );
     } finally {
       setLoading(false);
     }
-  }, [active, page, query, status]);
+  }, [active, page, query, status, toast]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => void load(), 250);
@@ -44,21 +49,54 @@ export function SuperAdminSitesScreen() {
   }, [load]);
 
   async function toggle(site: SuperAdminSite) {
-    await api.setSuperAdminSiteActive(site.id, { isActive: !site.isActive });
-    await revalidateTenant(site.slug);
-    setItems((current) => current.map((item) => item.id === site.id ? { ...item, isActive: !item.isActive } : item));
+    try {
+      await api.setSuperAdminSiteActive(site.id, { isActive: !site.isActive });
+      await revalidateTenant(site.slug);
+      setItems((current) => current.map((item) => item.id === site.id ? { ...item, isActive: !item.isActive } : item));
+      toast.success(
+        site.isActive ? "Website đã được tạm ngưng." : "Website đã được kích hoạt.",
+        "Đã cập nhật website",
+      );
+    } catch (requestError) {
+      toast.error(
+        getErrorMessage(requestError, "Không thể cập nhật website."),
+        "Không thể cập nhật website",
+      );
+    }
   }
 
   async function resetPassword(site: SuperAdminSite) {
     if (!window.confirm(`Tạo mật khẩu tạm mới cho ${site.name}? Các phiên cũ sẽ bị đăng xuất.`)) return;
-    const result = await api.resetSuperAdminSitePassword(site.id);
-    setTemporaryPassword(result.temporaryPassword);
+    try {
+      const result = await api.resetSuperAdminSitePassword(site.id);
+      setTemporaryPassword(result.temporaryPassword);
+      toast.warning(
+        "Mật khẩu tạm chỉ hiển thị một lần. Hãy lưu lại ngay.",
+        "Đã tạo mật khẩu tạm",
+      );
+    } catch (requestError) {
+      toast.error(
+        getErrorMessage(requestError, "Không thể reset mật khẩu."),
+        "Không thể reset mật khẩu",
+      );
+    }
   }
 
   async function toggleAdmin(site: SuperAdminSite) {
     if (!site.admin) return;
-    await api.setSuperAdminAdminActive(site.id, { isActive: !site.admin.isActive });
-    setItems((current) => current.map((item) => item.id === site.id && item.admin ? { ...item, admin: { ...item.admin, isActive: !item.admin.isActive } } : item));
+    try {
+      await api.setSuperAdminAdminActive(site.id, { isActive: !site.admin.isActive });
+      setItems((current) => current.map((item) => item.id === site.id && item.admin ? { ...item, admin: { ...item.admin, isActive: !item.admin.isActive } } : item));
+      toast.success(
+        site.admin.isActive ? "Tài khoản admin đã bị khóa." : "Tài khoản admin đã được mở.",
+        "Đã cập nhật admin",
+      );
+    } catch (requestError) {
+      toast.error(
+        getErrorMessage(requestError, "Không thể cập nhật admin."),
+        "Không thể cập nhật admin",
+      );
+    }
   }
 
   return (
@@ -85,7 +123,6 @@ export function SuperAdminSitesScreen() {
             {["TRIAL","ACTIVE","GRACE_PERIOD","EXPIRED","SUSPENDED"].map((value) => <option key={value}>{value}</option>)}
           </select>
         </div>
-        {error && <p className="p-4 text-sm text-red-700" role="alert">{error}</p>}
         {loading ? <div className="h-52 animate-pulse bg-white/20" /> : (
           <div className="overflow-x-auto"><table className="w-full min-w-[980px] text-left"><thead className="bg-ink/5 text-[10px] font-bold uppercase tracking-widest text-ink/50"><tr><th className="px-6 py-4">Website</th><th className="px-6 py-4">Admin</th><th className="px-6 py-4">Gói</th><th className="px-6 py-4">Sử dụng</th><th className="px-6 py-4">Trạng thái</th><th className="px-6 py-4">Thao tác</th></tr></thead>
           <tbody className="divide-y divide-ink/5">{items.map((site) => <tr key={site.id} className="hover:bg-white/40 transition-colors">

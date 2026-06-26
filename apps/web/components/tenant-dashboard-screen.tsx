@@ -17,6 +17,8 @@ import { createTenantApi } from "@/lib/api";
 import { DashboardStat } from "@/components/dashboard-stat";
 import { StatusPill } from "@/components/status-pill";
 import { formatPrice } from "@/lib/format";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 const statusLabels = {
   DRAFT: "Bản nháp",
@@ -28,9 +30,9 @@ const statusLabels = {
 
 export function TenantDashboardScreen({ slug }: { slug: string }) {
   const client = useMemo(() => createTenantApi(slug), [slug]);
+  const toast = useToast();
   const [dashboard, setDashboard] = useState<TenantDashboard | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -42,10 +44,9 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
       })
       .catch((requestError) => {
         if (active) {
-          setError(
-            requestError instanceof Error
-              ? requestError.message
-              : "Không thể tải dữ liệu tổng quan.",
+          toast.error(
+            getErrorMessage(requestError, "Không thể tải dữ liệu tổng quan."),
+            "Không thể tải tổng quan",
           );
         }
       })
@@ -54,7 +55,7 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
     return () => {
       active = false;
     };
-  }, [client]);
+  }, [client, toast]);
 
   const recentPosts = dashboard?.recentPosts ?? [];
   const totalPosts = dashboard?.postCounts.total ?? 0;
@@ -96,15 +97,6 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
           Đăng tin mới
         </Link>
       </div>
-
-      {error && (
-        <p
-          className="mt-5 border border-red-200 bg-red-50 p-3 text-sm text-red-700"
-          role="alert"
-        >
-          {error}
-        </p>
-      )}
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <DashboardStat

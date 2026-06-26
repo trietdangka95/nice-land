@@ -8,6 +8,8 @@ import type {
 } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 import { revalidateTenant } from "@/app/actions";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 function slugify(value: string) {
   return value
@@ -22,6 +24,7 @@ function slugify(value: string) {
 
 export function AdminCategoriesScreen({ slug }: { slug: string }) {
   const client = useMemo(() => createTenantApi(slug), [slug]);
+  const toast = useToast();
   const [categories, setCategories] = useState<PropertyCategory[]>([]);
   const [editing, setEditing] = useState<PropertyCategory | null>(null);
   const [name, setName] = useState("");
@@ -29,18 +32,15 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
   const [slugTouched, setSlugTouched] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
-    setError("");
     try {
       setCategories(await client.listAdminCategories());
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Không thể tải danh mục.",
+      toast.error(
+        getErrorMessage(requestError, "Không thể tải danh mục."),
+        "Không thể tải danh mục",
       );
     } finally {
       setLoading(false);
@@ -68,7 +68,6 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSaving(true);
-    setError("");
     const input: PropertyCategoryInput = {
       name,
       slug: categorySlug || slugify(name),
@@ -82,11 +81,11 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
       await revalidateTenant(slug);
       resetForm();
       await load();
+      toast.success("Danh mục đã được lưu.", "Lưu thành công");
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Không thể lưu danh mục.",
+      toast.error(
+        getErrorMessage(requestError, "Không thể lưu danh mục."),
+        "Không thể lưu danh mục",
       );
     } finally {
       setSaving(false);
@@ -100,16 +99,15 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
     ) {
       return;
     }
-    setError("");
     try {
       await client.deleteAdminCategory(category.id);
       await revalidateTenant(slug);
       await load();
+      toast.success("Danh mục đã được xóa.", "Đã xóa danh mục");
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Không thể xóa danh mục.",
+      toast.error(
+        getErrorMessage(requestError, "Không thể xóa danh mục."),
+        "Không thể xóa danh mục",
       );
     }
   }
@@ -127,15 +125,6 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
           Tạo nhóm nội dung để quản lý tin và giúp khách hàng tìm kiếm dễ hơn.
         </p>
       </div>
-
-      {error && (
-        <p
-          role="alert"
-          className="mt-6 border border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700"
-        >
-          {error}
-        </p>
-      )}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[360px_1fr]">
         <form

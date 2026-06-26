@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
-  CheckCircle2,
   ImagePlus,
   Save,
   Star,
@@ -22,6 +21,8 @@ import type {
 } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 import { revalidateTenant } from "@/app/actions";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 type FormState = {
   title: string;
@@ -62,10 +63,9 @@ function initialState(post?: AdminPost): FormState {
 export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost }) {
   const router = useRouter();
   const client = useMemo(() => createTenantApi(slug), [slug]);
+  const toast = useToast();
   const [form, setForm] = useState<FormState>(() => initialState(post));
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [managingImage, setManagingImage] = useState<string | null>(null);
   const [images, setImages] = useState(post?.images ?? []);
@@ -88,14 +88,11 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
 
   function field<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((current) => ({ ...current, [key]: value }));
-    setSaved(false);
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSaving(true);
-    setError("");
-    setSaved(false);
     const input: AdminPostInput = {
       title: form.title,
       description: form.description,
@@ -119,12 +116,15 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
       } else {
         await client.createAdminPost(input);
       }
-      setSaved(true);
+      toast.success("Đã lưu tin đăng.", "Lưu thành công");
       await revalidateTenant(slug);
       router.push(`/${slug}/admin/posts`);
       router.refresh();
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Không thể lưu tin đăng.");
+      toast.error(
+        getErrorMessage(requestError, "Không thể lưu tin đăng."),
+        "Không thể lưu tin",
+      );
     } finally {
       setSaving(false);
     }
@@ -133,7 +133,6 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
   async function handleImages(event: ChangeEvent<HTMLInputElement>) {
     if (!post || !event.target.files?.length) return;
     setUploading(true);
-    setError("");
     try {
       for (const file of Array.from(event.target.files)) {
         if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
@@ -170,11 +169,11 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
         ]);
         await revalidateTenant(slug);
       }
+      toast.success("Ảnh đã được tải lên và tối ưu.", "Upload thành công");
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Không thể upload ảnh.",
+      toast.error(
+        getErrorMessage(requestError, "Không thể upload ảnh."),
+        "Không thể upload ảnh",
       );
     } finally {
       setUploading(false);
@@ -184,7 +183,6 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
 
   async function persistImageOrder(nextImages: typeof images) {
     if (!post) return;
-    setError("");
     setManagingImage("reorder");
     try {
       await client.reorderPostImages(post.id, {
@@ -194,11 +192,11 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
         nextImages.map((image, sortOrder) => ({ ...image, sortOrder })),
       );
       await revalidateTenant(slug);
+      toast.success("Thứ tự ảnh đã được cập nhật.", "Đã sắp xếp ảnh");
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Không thể sắp xếp ảnh.",
+      toast.error(
+        getErrorMessage(requestError, "Không thể sắp xếp ảnh."),
+        "Không thể sắp xếp ảnh",
       );
     } finally {
       setManagingImage(null);
@@ -225,7 +223,6 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
   async function deleteImage(imageId: string) {
     if (!post || !window.confirm("Xóa ảnh này khỏi tin đăng?")) return;
     setManagingImage(imageId);
-    setError("");
     try {
       await client.deletePostImage(post.id, imageId);
       setImages((current) =>
@@ -234,11 +231,11 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
           .map((image, sortOrder) => ({ ...image, sortOrder })),
       );
       await revalidateTenant(slug);
+      toast.success("Ảnh đã được xóa khỏi tin đăng.", "Đã xóa ảnh");
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Không thể xóa ảnh.",
+      toast.error(
+        getErrorMessage(requestError, "Không thể xóa ảnh."),
+        "Không thể xóa ảnh",
       );
     } finally {
       setManagingImage(null);
@@ -414,13 +411,6 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
             <Save size={17} />
             {saving ? "Đang lưu..." : post ? "Lưu thay đổi" : "Lưu tin đăng"}
           </button>
-          {error && <p role="alert" className="mt-4 text-sm text-red-700">{error}</p>}
-          {saved && (
-            <p role="status" className="mt-4 flex items-center gap-2 text-xs font-semibold text-emerald-700">
-              <CheckCircle2 size={15} />
-              Đã lưu thành công.
-            </p>
-          )}
         </section>
       </aside>
     </form>

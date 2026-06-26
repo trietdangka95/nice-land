@@ -4,8 +4,9 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LockKeyhole, Eye, EyeOff } from "lucide-react";
-import { ApiClientError } from "@nice-land/api-client";
 import { api, createTenantApi } from "@/lib/api";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 export function LoginForm({
   slug,
@@ -15,14 +16,13 @@ export function LoginForm({
   superAdmin?: boolean;
 }) {
   const router = useRouter();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
-    setError("");
     const form = new FormData(event.currentTarget);
 
     try {
@@ -38,10 +38,9 @@ export function LoginForm({
       router.replace(superAdmin ? "/superadmin" : `/${slug}/admin`);
       router.refresh();
     } catch (requestError) {
-      setError(
-        requestError instanceof ApiClientError
-          ? requestError.message
-          : "Không thể đăng nhập. Vui lòng thử lại.",
+      toast.error(
+        getErrorMessage(requestError, "Không thể đăng nhập. Vui lòng thử lại."),
+        "Đăng nhập thất bại",
       );
     } finally {
       setLoading(false);
@@ -107,11 +106,6 @@ export function LoginForm({
         >
           Quên mật khẩu?
         </Link>
-        {error && (
-          <p role="alert" className="text-sm font-semibold text-red-700">
-            {error}
-          </p>
-        )}
       </form>
     </div>
   );

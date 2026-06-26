@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "@/app/globals.css";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { ToastProvider } from "@/components/toast-provider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin", "vietnamese"],
@@ -22,8 +23,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="vi" data-scroll-behavior="smooth">
       <body className={`${plusJakartaSans.variable} font-sans antialiased`}>
-        <ScrollReveal />
-        {children}
+        <ToastProvider>
+          <ScrollReveal />
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );

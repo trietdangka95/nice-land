@@ -59,6 +59,32 @@ export class ApiClientError extends Error {
   }
 }
 
+function formatApiErrorMessage(payload: ApiError | undefined) {
+  if (!payload) return "API request failed";
+
+  const details = payload.details;
+  if (
+    details &&
+    typeof details === "object" &&
+    "fieldErrors" in details &&
+    details.fieldErrors &&
+    typeof details.fieldErrors === "object"
+  ) {
+    const fieldErrors = Object.entries(details.fieldErrors)
+      .flatMap(([field, messages]) =>
+        Array.isArray(messages)
+          ? messages.map((message) => `${field}: ${String(message)}`)
+          : [],
+      );
+
+    if (fieldErrors.length > 0) {
+      return `${payload.message} ${fieldErrors.join("; ")}`;
+    }
+  }
+
+  return payload.message;
+}
+
 export function createApiClient(options: ApiClientOptions) {
   async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     const headers = new Headers(init.headers);
@@ -82,7 +108,7 @@ export function createApiClient(options: ApiClientOptions) {
 
     if (!response.ok) {
       const payload = (await response.json().catch(() => undefined)) as ApiError | undefined;
-      throw new ApiClientError(payload?.message ?? "API request failed", response.status, payload);
+      throw new ApiClientError(formatApiErrorMessage(payload), response.status, payload);
     }
 
     if (response.status === 204) {

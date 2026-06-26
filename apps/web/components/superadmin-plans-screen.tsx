@@ -4,38 +4,47 @@ import { FormEvent, useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import type { SubscriptionPlan, SubscriptionPlanInput } from "@nice-land/contracts";
 import { api } from "@/lib/api";
+import { getErrorMessage } from "@/lib/notifications";
+import { useToast } from "@/components/toast-provider";
 
 const empty: SubscriptionPlanInput = { name: "", code: "", maxPosts: 30, maxImagesPerPost: 10, price: 0, durationDays: 30, isActive: true };
 
 export function SuperAdminPlansScreen() {
+  const toast = useToast();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [form, setForm] = useState<SubscriptionPlanInput>(empty);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState("");
-  const load = () => api.listSubscriptionPlans().then(setPlans).catch((e) => setError(e.message));
+  const load = () => api.listSubscriptionPlans().then(setPlans).catch((e) => toast.error(getErrorMessage(e, "Không thể tải gói dịch vụ."), "Không thể tải gói"));
   useEffect(() => { void load(); }, []);
 
   function edit(plan: SubscriptionPlan) {
     setEditingId(plan.id); setForm({ name: plan.name, code: plan.code, maxPosts: plan.maxPosts, maxImagesPerPost: plan.maxImagesPerPost, price: plan.price, durationDays: plan.durationDays, isActive: plan.isActive }); setOpen(true);
   }
   async function save(event: FormEvent) {
-    event.preventDefault(); setError("");
+    event.preventDefault();
     try {
       if (editingId) await api.updateSubscriptionPlan(editingId, form);
       else await api.createSubscriptionPlan(form);
       setOpen(false); setEditingId(null); setForm(empty); await load();
-    } catch (e) { setError(e instanceof Error ? e.message : "Không thể lưu gói."); }
+      toast.success("Gói dịch vụ đã được lưu.", "Lưu thành công");
+    } catch (e) {
+      toast.error(getErrorMessage(e, "Không thể lưu gói."), "Không thể lưu gói");
+    }
   }
   async function remove(plan: SubscriptionPlan) {
     if (!window.confirm(`Xóa gói ${plan.name}?`)) return;
-    try { await api.deleteSubscriptionPlan(plan.id); await load(); }
-    catch (e) { setError(e instanceof Error ? e.message : "Không thể xóa gói."); }
+    try {
+      await api.deleteSubscriptionPlan(plan.id);
+      await load();
+      toast.success("Gói dịch vụ đã được xóa.", "Đã xóa gói");
+    } catch (e) {
+      toast.error(getErrorMessage(e, "Không thể xóa gói."), "Không thể xóa gói");
+    }
   }
   const number = (key: keyof SubscriptionPlanInput, value: string) => setForm((current) => ({ ...current, [key]: Number(value) }));
   return <>
     <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-moss">Thương mại</p><h1 className="mt-2 font-display text-4xl font-medium">Gói dịch vụ</h1><p className="mt-2 text-sm text-ink/50">Thay đổi gói chỉ áp dụng khi tenant được gán hoặc gia hạn.</p></div><button onClick={() => { setOpen(true); setEditingId(null); setForm(empty); }} className="button-primary"><Plus size={17} /> Thêm gói mới</button></div>
-    {error && <p className="mt-5 border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}
     {open && <form onSubmit={save} className="mt-8 grid gap-4 glass-panel rounded-3xl p-8 sm:grid-cols-2 lg:grid-cols-4">
       <Input label="Tên gói" value={form.name} onChange={(v) => setForm({ ...form, name: v })} /><Input label="Mã gói" value={form.code} onChange={(v) => setForm({ ...form, code: v.toUpperCase() })} />
       <Input label="Giá" type="number" value={String(form.price)} onChange={(v) => number("price", v)} /><Input label="Chu kỳ (ngày)" type="number" value={String(form.durationDays)} onChange={(v) => number("durationDays", v)} />
