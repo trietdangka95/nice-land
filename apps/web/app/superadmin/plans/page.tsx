@@ -1,4 +1,4 @@
-import { SuperAdminPlansScreen } from "@/components/superadmin-plans-screen";
+import { SuperAdminPlansScreen } from "@/components/superadmin/superadmin-plans-screen";
 
 export default function PlansPage() {
   return <SuperAdminPlansScreen />;

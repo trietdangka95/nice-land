@@ -1,4 +1,4 @@
-import { TenantAnalyticsScreen } from "@/components/tenant-analytics-screen";
+import { TenantAnalyticsScreen } from "@/components/admin/tenant-analytics-screen";
 
 export default async function AnalyticsPage({
   params,

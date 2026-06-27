@@ -1,4 +1,4 @@
-import { AdminCategoriesScreen } from "@/components/admin-categories-screen";
+import { AdminCategoriesScreen } from "@/components/admin/admin-categories-screen";
 
 export default async function AdminCategoriesPage({
   params,

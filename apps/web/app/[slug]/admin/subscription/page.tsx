@@ -1,4 +1,4 @@
-import { SubscriptionScreen } from "@/components/subscription-screen";
+import { SubscriptionScreen } from "@/components/admin/subscription-screen";
 
 export default async function SubscriptionPage({
   params,

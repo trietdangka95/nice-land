@@ -1,4 +1,4 @@
-import { TenantDashboardScreen } from "@/components/tenant-dashboard-screen";
+import { TenantDashboardScreen } from "@/components/admin/tenant-dashboard-screen";
 
 export default async function TenantDashboard({
   params,

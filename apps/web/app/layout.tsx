@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "@/app/globals.css";
-import { ScrollReveal } from "@/components/scroll-reveal";
-import { ToastProvider } from "@/components/toast-provider";
+import { ScrollReveal } from "@/components/shared/scroll-reveal";
+import { ToastProvider } from "@/components/shared/toast-provider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin", "vietnamese"],

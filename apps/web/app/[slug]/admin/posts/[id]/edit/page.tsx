@@ -1,4 +1,4 @@
-import { EditPostScreen } from "@/components/edit-post-screen";
+import { EditPostScreen } from "@/components/admin/edit-post-screen";
 
 export default async function EditPostPage({
   params,

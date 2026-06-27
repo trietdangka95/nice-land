@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Logo } from "@/components/logo";
-import { ThemeShowcase } from "@/components/theme-showcase";
+import { Logo } from "@/components/marketing/logo";
+import { ThemeShowcase } from "@/components/marketing/theme-showcase";
 
 export default async function ThemeGalleryPage({
   searchParams,

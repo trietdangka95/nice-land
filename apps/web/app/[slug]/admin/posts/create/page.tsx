@@ -1,4 +1,4 @@
-import { PropertyForm } from "@/components/property-form";
+import { PropertyForm } from "@/components/admin/property-form";
 
 export default async function CreatePostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

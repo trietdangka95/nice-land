@@ -1,4 +1,4 @@
-import { SiteSettingsScreen } from "@/components/site-settings-screen";
+import { SiteSettingsScreen } from "@/components/admin/site-settings-screen";
 
 export default async function SiteSettingsPage({
   params,

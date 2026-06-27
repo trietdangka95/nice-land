@@ -1,4 +1,4 @@
-import { ForgotPasswordForm } from "@/components/password-recovery-form";
+import { ForgotPasswordForm } from "@/components/shared/password-recovery-form";
 
 export default function SuperAdminForgotPasswordPage() {
   return (

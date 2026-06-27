@@ -14,14 +14,14 @@ import {
   Sparkles,
   LayoutDashboard
 } from "lucide-react";
-import { Logo } from "@/components/logo";
-import { SectionHeading } from "@/components/section-heading";
-import { ContactForm } from "@/components/contact-form";
-import { Faq } from "@/components/faq";
-import { MobileNavigation } from "@/components/mobile-navigation";
+import { Logo } from "@/components/marketing/logo";
+import { SectionHeading } from "@/components/marketing/section-heading";
+import { ContactForm } from "@/components/marketing/contact-form";
+import { Faq } from "@/components/marketing/faq";
+import { MobileNavigation } from "@/components/shared/mobile-navigation";
 import { plans, properties } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
-import { ThemeShowcase } from "@/components/theme-showcase";
+import { ThemeShowcase } from "@/components/marketing/theme-showcase";
 import { publicThemes } from "@/lib/public-themes";
 
 export default async function LandingPage({

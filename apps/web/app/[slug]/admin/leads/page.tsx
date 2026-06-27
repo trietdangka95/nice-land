@@ -1,4 +1,4 @@
-import { TenantLeadsScreen } from "@/components/tenant-leads-screen";
+import { TenantLeadsScreen } from "@/components/admin/tenant-leads-screen";
 
 export default async function LeadsPage({
   params,

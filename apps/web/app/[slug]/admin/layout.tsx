@@ -1,4 +1,4 @@
-import { ProtectedAdminShell } from "@/components/protected-admin-shell";
+import { ProtectedAdminShell } from "@/components/admin/protected-admin-shell";
 
 export default async function TenantAdminLayout({
   children,

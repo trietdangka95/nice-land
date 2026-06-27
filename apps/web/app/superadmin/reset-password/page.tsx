@@ -1,4 +1,4 @@
-import { ResetPasswordForm } from "@/components/password-recovery-form";
+import { ResetPasswordForm } from "@/components/shared/password-recovery-form";
 
 export default async function SuperAdminResetPasswordPage({
   searchParams,

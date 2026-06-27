@@ -1,4 +1,4 @@
-import { LoginForm } from "@/components/login-form";
+import { LoginForm } from "@/components/shared/login-form";
 
 export default async function AdminLoginPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

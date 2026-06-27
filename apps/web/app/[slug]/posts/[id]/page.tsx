@@ -3,13 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Facebook, Mail, MapPin, Maximize2, Phone, Share2 } from "lucide-react";
 import { notFound } from "next/navigation";
-import { TenantHeader } from "@/components/tenant-header";
+import { TenantHeader } from "@/components/site/tenant-header";
 import { getTenantPost, getTenantSite } from "@/lib/server-api";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
-import { PropertyEngagement } from "@/components/property-engagement";
-import { TrackedContactLink } from "@/components/tracked-contact-link";
+import { PropertyEngagement } from "@/components/site/property-engagement";
+import { TrackedContactLink } from "@/components/site/tracked-contact-link";
 import { resolvePublicTheme } from "@/lib/public-themes";
-import { PublicThemeStylesheet } from "@/components/public-theme-stylesheet";
+import { PublicThemeStylesheet } from "@/components/site/public-theme-stylesheet";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3002";
 
