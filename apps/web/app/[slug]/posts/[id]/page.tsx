@@ -52,7 +52,7 @@ export default async function PropertyDetailPage({
     image: post.images,
     address: {
       "@type": "PostalAddress",
-      streetAddress: post.address,
+      streetAddress: "",
       addressLocality: post.district,
       addressRegion: post.province,
       addressCountry: "VN",
@@ -117,7 +117,7 @@ export default async function PropertyDetailPage({
           </h1>
           <p className="mt-4 flex items-center gap-2 text-sm text-ink/55">
             <MapPin size={17} className="text-[var(--tenant-color)]" />
-            {post.address}, {post.district}, {post.province}
+            {post.ward && `${post.ward}, `}{post.district}, {post.province}
           </p>
           <div className="tenant-detail-facts mt-8 flex flex-wrap gap-8 border-y border-ink/10 py-6">
             <div>
@@ -154,7 +154,7 @@ export default async function PropertyDetailPage({
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
                 src={`https://www.google.com/maps?q=${encodeURIComponent(
-                  `${post.address}, ${post.ward}, ${post.district}, ${post.province}`
+                  `${post.ward}, ${post.district}, ${post.province}`
                 )}&output=embed`}
               />
             </div>

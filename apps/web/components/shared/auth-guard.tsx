@@ -1,8 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api, createTenantApi } from "@/lib/api";
+import type { AuthUser } from "@nice-land/contracts";
+
+export const AuthContext = createContext<AuthUser | null>(null);
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within AuthGuard");
+  return context;
+}
 
 export function AuthGuard({
   slug,
@@ -15,6 +23,7 @@ export function AuthGuard({
 }) {
   const router = useRouter();
   const [ready, setReady] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -29,12 +38,15 @@ export function AuthGuard({
           window.sessionStorage.setItem("nice_land_access_token", token);
         }
 
-        const user = await client.me();
+        const fetchedUser = await client.me();
         const validRole = superAdmin
-          ? user.role === "SUPER_ADMIN"
-          : user.role === "ADMIN" && user.siteId !== null;
+          ? fetchedUser.role === "SUPER_ADMIN"
+          : fetchedUser.role === "ADMIN" && fetchedUser.siteId !== null;
         if (!validRole) throw new Error("Invalid role");
-        if (active) setReady(true);
+        if (active) {
+          setUser(fetchedUser);
+          setReady(true);
+        }
       } catch {
         window.sessionStorage.removeItem("nice_land_access_token");
         router.replace(
@@ -49,7 +61,7 @@ export function AuthGuard({
     };
   }, [router, slug, superAdmin]);
 
-  if (!ready) {
+  if (!ready || !user) {
     return (
       <main className="grid min-h-screen place-items-center bg-[#f4f5f2]">
         <p className="text-sm font-semibold text-ink/50">
@@ -59,5 +71,5 @@ export function AuthGuard({
     );
   }
 
-  return children;
+  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 }

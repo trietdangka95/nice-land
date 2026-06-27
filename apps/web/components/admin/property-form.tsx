@@ -24,6 +24,14 @@ import { revalidateTenant } from "@/app/actions";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
 
+const PROVINCES = [
+  "Hà Nội", "Huế", "Hải Phòng", "Đà Nẵng", "TP. Hồ Chí Minh", "Cần Thơ",
+  "Cao Bằng", "Điện Biên", "Hà Tĩnh", "Lai Châu", "Lạng Sơn", "Nghệ An", "Quảng Ninh", "Thanh Hóa", "Sơn La",
+  "Tuyên Quang", "Lào Cai", "Thái Nguyên", "Phú Thọ", "Bắc Ninh", "Hưng Yên", "Ninh Bình",
+  "Quảng Trị", "Quảng Ngãi", "Gia Lai", "Khánh Hòa", "Lâm Đồng", "Đắk Lắk",
+  "Đồng Nai", "Tây Ninh", "Vĩnh Long", "Đồng Tháp", "Cà Mau", "An Giang"
+];
+
 type FormState = {
   title: string;
   description: string;
@@ -292,9 +300,13 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
                 <input value={form.area} onChange={(e) => field("area", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" step="0.1" />
               </label>
             </div>
-            <div className="grid gap-5 sm:grid-cols-3">
-              <label className="grid gap-2 text-sm font-bold text-ink/80">Phòng ngủ<input value={form.bedrooms} onChange={(e) => field("bedrooms", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" /></label>
-              <label className="grid gap-2 text-sm font-bold text-ink/80">Phòng tắm<input value={form.bathrooms} onChange={(e) => field("bathrooms", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" /></label>
+            <div className={`grid gap-5 ${form.type === "LAND" ? "sm:grid-cols-1" : "sm:grid-cols-3"}`}>
+              {form.type !== "LAND" && (
+                <>
+                  <label className="grid gap-2 text-sm font-bold text-ink/80">Phòng ngủ<input value={form.bedrooms} onChange={(e) => field("bedrooms", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" /></label>
+                  <label className="grid gap-2 text-sm font-bold text-ink/80">Phòng tắm<input value={form.bathrooms} onChange={(e) => field("bathrooms", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" /></label>
+                </>
+              )}
               <label className="grid gap-2 text-sm font-bold text-ink/80">Pháp lý<input value={form.legalStatus} onChange={(e) => field("legalStatus", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" /></label>
             </div>
           </div>
@@ -302,7 +314,13 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
         <section className="glass-panel rounded-3xl p-6 sm:p-8">
           <h2 className="font-display text-2xl">Vị trí</h2>
           <div className="mt-8 grid gap-5 sm:grid-cols-2">
-            <label className="grid gap-2 text-sm font-bold text-ink/80">Tỉnh / thành phố<input value={form.province} onChange={(e) => field("province", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" /></label>
+            <label className="grid gap-2 text-sm font-bold text-ink/80">
+              Tỉnh / thành phố
+              <input list="provinces-list" placeholder="Chọn hoặc nhập tên tỉnh..." value={form.province} onChange={(e) => field("province", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" />
+              <datalist id="provinces-list">
+                {PROVINCES.map(p => <option key={p} value={p} />)}
+              </datalist>
+            </label>
             <label className="grid gap-2 text-sm font-bold text-ink/80">Quận / huyện<input value={form.district} onChange={(e) => field("district", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" /></label>
             <label className="grid gap-2 text-sm font-bold text-ink/80">Phường / xã<input value={form.ward} onChange={(e) => field("ward", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" /></label>
             <label className="grid gap-2 text-sm font-bold text-ink/80">Địa chỉ chi tiết<input value={form.address} onChange={(e) => field("address", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" /></label>

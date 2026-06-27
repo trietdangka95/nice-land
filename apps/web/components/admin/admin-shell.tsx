@@ -22,6 +22,7 @@ import { api, createTenantApi } from "@/lib/api";
 import type { AdminSiteIdentity } from "@/lib/admin-site";
 import { findActiveNavigationHref } from "@/lib/navigation";
 import { MobileNavigation } from "@/components/shared/mobile-navigation";
+import { useAuth } from "@/components/shared/auth-guard";
 
 export function AdminShell({
   site,
@@ -34,6 +35,13 @@ export function AdminShell({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const user = useAuth();
+  
+  const displayName = user.fullName || user.username;
+  const initials = user.fullName
+    ? user.fullName.split(/\s+/).filter(Boolean).slice(-2).map(p => p[0]).join("").toUpperCase()
+    : user.username.slice(0, 2).toUpperCase();
+
   const base = superAdmin ? "/superadmin" : `/${site?.slug}/admin`;
   const nav = superAdmin
     ? [
@@ -203,10 +211,10 @@ export function AdminShell({
             </button>
             <div className="hidden items-center gap-3 sm:flex">
               <span className="grid size-10 place-items-center rounded-full bg-gradient-to-br from-moss to-ink shadow-md text-sm font-bold text-white border border-white/20">
-                {superAdmin ? "SA" : "MP"}
+                {superAdmin ? "SA" : initials}
               </span>
               <div>
-                <strong className="block text-xs font-semibold">{superAdmin ? "Quản trị hệ thống" : "Nguyễn Minh Phát"}</strong>
+                <strong className="block text-xs font-semibold truncate max-w-[150px]" title={displayName}>{superAdmin ? "Quản trị hệ thống" : displayName}</strong>
                 <span className="text-[10px] text-ink/50 font-medium tracking-wide">{superAdmin ? "SUPER_ADMIN" : "ADMIN"}</span>
               </div>
             </div>
