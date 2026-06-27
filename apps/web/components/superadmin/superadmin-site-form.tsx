@@ -50,6 +50,7 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
           address: form.address || null, planId: form.planId,
           subscriptionEnd: new Date(form.subscriptionEnd), adminName: form.adminName,
           adminUsername: form.adminUsername, adminPassword: form.adminPassword,
+          themeKey: "WARM_MINIMAL",
         });
       }
       await revalidateTenant(form.slug);

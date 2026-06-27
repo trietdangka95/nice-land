@@ -44,9 +44,6 @@ export default async function LandingPage({
             <a href="#faq" className="hover:text-moss transition-colors">Hỏi đáp</a>
           </nav>
           <div className="hidden items-center gap-3 sm:flex">
-            <Link href="/superadmin" className="px-5 py-2.5 text-sm font-bold text-ink hover:text-moss transition-colors">
-              Đăng nhập
-            </Link>
             <a href="#contact" className="button-primary !py-2.5 !min-h-0">
               Tạo website
               <ArrowRight size={16} aria-hidden="true" />
@@ -65,9 +62,6 @@ export default async function LandingPage({
               <a href="#faq" className="border-b border-ink/5 px-3 py-4">Hỏi đáp</a>
             </nav>
             <div className="mt-auto space-y-3 border-t border-ink/5 p-4 bg-cream/30">
-              <Link href="/superadmin" className="flex min-h-12 items-center justify-center rounded-xl border-2 border-ink/10 px-5 text-sm font-bold">
-                Đăng nhập
-              </Link>
               <a href="#contact" className="button-primary w-full">
                 Tạo website
               </a>
@@ -88,16 +82,16 @@ export default async function LandingPage({
             <Sparkles size={14} aria-hidden="true" />
             <span>Nền tảng website cho người làm địa ốc</span>
           </div>
-          
+
           <h1 className="mt-8 text-balance font-display text-5xl font-medium leading-[1.05] min-[420px]:text-6xl sm:text-7xl lg:text-[86px] tracking-tight">
-            Website bất động sản <br className="hidden sm:block"/>
+            Website bất động sản <br className="hidden sm:block" />
             <span className="text-gradient font-bold drop-shadow-sm">mang tên bạn.</span>
           </h1>
-          
+
           <p className="mt-8 max-w-2xl mx-auto text-base leading-relaxed text-ink/70 sm:text-lg">
             Xây thương hiệu riêng, quản lý tin đăng thông minh và biến mỗi lượt xem thành một cơ hội kết nối với giao diện hiện đại.
           </p>
-          
+
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a href="#contact" className="button-primary group w-full sm:w-auto">
               Bắt đầu website của bạn
@@ -108,7 +102,7 @@ export default async function LandingPage({
               <LayoutDashboard size={17} aria-hidden="true" />
             </Link>
           </div>
-          
+
           <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ink/60 font-medium">
             {["Dùng thử 14 ngày", "Không cần thẻ", "Hỗ trợ thiết lập"].map((item) => (
               <span key={item} className="flex items-center gap-2">
@@ -157,7 +151,7 @@ export default async function LandingPage({
               cho nhịp làm việc thực tế của môi giới.
             </p>
           </div>
-          
+
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[auto]" data-reveal-group>
             {/* Large Bento Box 1 */}
             <div className="glass-card md:col-span-2 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden relative group">
@@ -195,7 +189,7 @@ export default async function LandingPage({
 
             {/* Large Bento Box 2 */}
             <div className="glass-card md:col-span-2 rounded-3xl p-8 sm:p-10 flex flex-col justify-between group relative overflow-hidden">
-               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-gold/5 rounded-full blur-3xl group-hover:bg-gold/15 transition-all duration-700"></div>
+              <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-gold/5 rounded-full blur-3xl group-hover:bg-gold/15 transition-all duration-700"></div>
               <div className="relative z-10">
                 <div className="inline-flex size-14 items-center justify-center rounded-2xl bg-white shadow-sm border border-ink/5 mb-8">
                   <MousePointerClick className="text-moss" size={28} strokeWidth={1.5} />
@@ -212,7 +206,7 @@ export default async function LandingPage({
       <section id="process" className="relative py-24 sm:py-32 overflow-hidden bg-ink">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-moss/20 blur-[120px] rounded-full mix-blend-screen pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold/10 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
-        
+
         <div className="page-shell relative z-10 text-white">
           <SectionHeading
             eyebrow="Đơn giản từ ngày đầu"
@@ -250,16 +244,15 @@ export default async function LandingPage({
             {plans.map((plan) => (
               <article
                 key={plan.name}
-                className={`motion-card relative flex flex-col rounded-3xl p-8 sm:p-10 ${
-                  plan.popular 
-                  ? "bg-gradient-to-b from-moss to-ink text-white border-none shadow-[0_20px_50px_rgba(49,92,69,0.3)] transform lg:-translate-y-4 lg:hover:-translate-y-6" 
+                className={`motion-card relative flex flex-col rounded-3xl p-8 sm:p-10 ${plan.popular
+                  ? "bg-gradient-to-b from-moss to-ink text-white border-none shadow-[0_20px_50px_rgba(49,92,69,0.3)] transform lg:-translate-y-4 lg:hover:-translate-y-6"
                   : "glass-card bg-white/70"
-                }`}
+                  }`}
               >
                 {plan.popular && (
                   <div className="absolute inset-0 bg-gold/10 rounded-3xl blur-2xl z-0 pointer-events-none"></div>
                 )}
-                
+
                 <div className="relative z-10 flex-1">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-display text-3xl font-medium">{plan.name}</h3>
@@ -272,16 +265,16 @@ export default async function LandingPage({
                   <p className={`min-h-[3rem] text-sm leading-relaxed ${plan.popular ? "text-white/70" : "text-ink/60"}`}>
                     {plan.description}
                   </p>
-                  
+
                   <div className="mt-8 flex items-baseline gap-1">
                     <strong className="font-display text-5xl font-semibold tracking-tight">
                       {new Intl.NumberFormat("vi-VN").format(plan.price)}
                     </strong>
                     <span className={`text-sm font-medium ${plan.popular ? "text-white/60" : "text-ink/50"}`}>đ/tháng</span>
                   </div>
-                  
+
                   <div className={`my-8 h-px w-full ${plan.popular ? "bg-white/20" : "bg-ink/10"}`} />
-                  
+
                   <ul className="space-y-5 text-sm font-medium">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3">
@@ -294,11 +287,10 @@ export default async function LandingPage({
 
                 <Link
                   href={`/themes?plan=${encodeURIComponent(plan.name)}`}
-                  className={`mt-10 relative z-10 w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-6 text-sm font-bold transition-all ${
-                    plan.popular 
-                    ? "bg-gold text-ink hover:bg-white hover:shadow-lg hover:-translate-y-0.5" 
+                  className={`mt-10 relative z-10 w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-6 text-sm font-bold transition-all ${plan.popular
+                    ? "bg-gold text-ink hover:bg-white hover:shadow-lg hover:-translate-y-0.5"
                     : "bg-white border-2 border-ink/5 text-ink hover:bg-moss hover:text-white hover:border-moss shadow-sm hover:-translate-y-0.5"
-                  }`}
+                    }`}
                 >
                   Chọn gói {plan.name}
                   <ArrowRight size={16} />
@@ -312,14 +304,10 @@ export default async function LandingPage({
       <section className="border-y border-ink/5 bg-white/50 backdrop-blur-sm py-24 sm:py-32">
         <div className="page-shell">
           <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end mb-12">
-            <SectionHeading eyebrow="Giao diện website" title="Một giao diện chuẩn cho môi giới bất động sản vận hành hằng ngày." />
             <Link href="/themes" className="inline-flex items-center gap-2 text-sm font-bold text-moss hover:text-leaf transition-colors">
               Xem website mẫu
               <ArrowRight size={16} />
             </Link>
-          </div>
-          <div data-reveal-group>
-            <ThemeShowcase compact />
           </div>
         </div>
       </section>
