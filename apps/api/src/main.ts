@@ -60,7 +60,7 @@ const app = buildApp(config, {
   adminCategoryRepository: new PrismaAdminCategoryRepository(),
   adminDashboardRepository: new PrismaAdminDashboardRepository(),
   adminSiteRepository: new PrismaAdminSiteRepository(),
-  superAdminRepository: new PrismaSuperAdminRepository(),
+  superAdminRepository: new PrismaSuperAdminRepository(config.ROOT_DOMAIN),
   engagementRepository: new PrismaEngagementRepository(),
   leadNotifier,
   postImageDependencies,

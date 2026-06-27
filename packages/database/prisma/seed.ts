@@ -10,6 +10,7 @@ import { hash } from "bcryptjs";
 const prisma = new PrismaClient();
 
 const DAY = 24 * 60 * 60 * 1000;
+const rootDomain = process.env.ROOT_DOMAIN ?? "nice-land.id.vn";
 
 async function main() {
   const now = new Date();
@@ -165,8 +166,9 @@ async function main() {
   });
 
   for (const site of [demoSite, minhPhat, anLand]) {
+    const hostname = `${site.slug}.${rootDomain}`;
     await prisma.siteDomain.upsert({
-      where: { hostname: `${site.slug}.nice-land.vn` },
+      where: { hostname },
       update: {
         siteId: site.id,
         status: "VERIFIED",
@@ -176,7 +178,7 @@ async function main() {
       },
       create: {
         siteId: site.id,
-        hostname: `${site.slug}.nice-land.vn`,
+        hostname,
         status: "VERIFIED",
         isPrimary: true,
         isPlatform: true,

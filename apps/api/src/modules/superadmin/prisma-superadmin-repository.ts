@@ -125,7 +125,13 @@ function mapRenewal(item: Prisma.RenewalRequestGetPayload<{ select: typeof renew
   };
 }
 
+function platformHostname(slug: string, rootDomain: string) {
+  return `${slug}.${rootDomain.toLowerCase().split(":")[0]}`;
+}
+
 export class PrismaSuperAdminRepository implements SuperAdminRepository {
+  constructor(private readonly rootDomain = "nice-land.id.vn") {}
+
   async listSites(input: SuperAdminSiteListQuery) {
     const where: Prisma.SiteWhereInput = {
       deletedAt: null,
@@ -184,7 +190,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
         await tx.siteDomain.create({
           data: {
             siteId: site.id,
-            hostname: `${input.slug}.nice-land.vn`,
+            hostname: platformHostname(input.slug, this.rootDomain),
             isPrimary: true,
             isPlatform: true,
             status: "VERIFIED",
@@ -257,7 +263,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
         if (exists.slug !== input.slug) {
           await tx.siteDomain.updateMany({
             where: { siteId: id, isPlatform: true },
-            data: { hostname: `${input.slug}.nice-land.vn` },
+            data: { hostname: platformHostname(input.slug, this.rootDomain) },
           });
         }
         await writeAuditLog(tx, {

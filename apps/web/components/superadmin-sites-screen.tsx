@@ -10,6 +10,8 @@ import { StatusPill } from "@/components/status-pill";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/toast-provider";
 
+const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "nice-land.id.vn";
+
 export function SuperAdminSitesScreen() {
   const toast = useToast();
   const [items, setItems] = useState<SuperAdminSite[]>([]);
@@ -126,7 +128,7 @@ export function SuperAdminSitesScreen() {
         {loading ? <div className="h-52 animate-pulse bg-white/20" /> : (
           <div className="overflow-x-auto"><table className="w-full min-w-[980px] text-left"><thead className="bg-ink/5 text-[10px] font-bold uppercase tracking-widest text-ink/50"><tr><th className="px-6 py-4">Website</th><th className="px-6 py-4">Admin</th><th className="px-6 py-4">Gói</th><th className="px-6 py-4">Sử dụng</th><th className="px-6 py-4">Trạng thái</th><th className="px-6 py-4">Thao tác</th></tr></thead>
           <tbody className="divide-y divide-ink/5">{items.map((site) => <tr key={site.id} className="hover:bg-white/40 transition-colors">
-            <td className="px-6 py-4"><strong className="block text-sm font-semibold">{site.name}</strong><a href={`/${site.slug}`} target="_blank" className="mt-1 inline-flex items-center gap-1 text-xs text-moss">{site.slug}.nice-land.vn <ExternalLink size={11} /></a></td>
+            <td className="px-6 py-4"><strong className="block text-sm font-semibold">{site.name}</strong><a href={`https://${site.slug}.${rootDomain}`} target="_blank" className="mt-1 inline-flex items-center gap-1 text-xs text-moss">{site.slug}.{rootDomain} <ExternalLink size={11} /></a></td>
             <td className="px-6 py-4 text-xs"><strong>{site.admin?.username ?? "Chưa có"}</strong><p className="mt-1 text-ink/50 font-medium">{site.admin ? (site.admin.isActive ? "Tài khoản hoạt động" : "Tài khoản bị khóa") : "Chưa có tài khoản"}</p></td>
             <td className="px-6 py-4 text-sm font-medium">{site.plan?.name ?? "Chưa gán"}</td>
             <td className="px-6 py-4 text-xs font-medium text-ink/60">{site.usage.posts} tin · {site.usage.images} ảnh</td>

@@ -13,7 +13,7 @@ const configSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   HOST: z.string().default("0.0.0.0"),
   PORT: z.coerce.number().int().positive().default(4000),
-  ROOT_DOMAIN: z.string().default("nice-land.vn"),
+  ROOT_DOMAIN: z.string().default("nice-land.id.vn"),
   CORS_ORIGINS: z.string().default("http://localhost:3002"),
   DATABASE_URL: z.string().min(1).optional(),
   JWT_ACCESS_SECRET: z

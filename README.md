@@ -71,13 +71,13 @@ Production dự kiến:
 
 ```env
 # Vercel
-NEXT_PUBLIC_API_URL=https://api.nice-land.vn
-NEXT_PUBLIC_APP_URL=https://nice-land.vn
-NEXT_PUBLIC_ROOT_DOMAIN=nice-land.vn
+NEXT_PUBLIC_API_URL=https://api.nice-land.id.vn
+NEXT_PUBLIC_APP_URL=https://nice-land.id.vn
+NEXT_PUBLIC_ROOT_DOMAIN=nice-land.id.vn
 
 # AWS Lightsail API
-ROOT_DOMAIN=nice-land.vn
-CORS_ORIGINS=https://nice-land.vn,https://*.nice-land.vn
+ROOT_DOMAIN=nice-land.id.vn
+CORS_ORIGINS=https://nice-land.id.vn,https://*.nice-land.id.vn
 DATABASE_URL=postgresql://...
 ```
 
@@ -146,7 +146,7 @@ AWS S3 bucket cần CORS cho frontend Vercel:
 ```json
 [
   {
-    "AllowedOrigins": ["https://nice-land.vn", "http://localhost:3002"],
+    "AllowedOrigins": ["https://nice-land.id.vn", "http://localhost:3002"],
     "AllowedMethods": ["PUT", "GET", "HEAD"],
     "AllowedHeaders": ["*"],
     "ExposeHeaders": ["ETag"],

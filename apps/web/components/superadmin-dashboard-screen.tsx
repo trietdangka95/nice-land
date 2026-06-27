@@ -10,6 +10,8 @@ import { StatusPill } from "@/components/status-pill";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/toast-provider";
 
+const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "nice-land.id.vn";
+
 export function SuperAdminDashboardScreen() {
   const toast = useToast();
   const [sites, setSites] = useState<SuperAdminSite[]>([]);
@@ -81,7 +83,7 @@ export function SuperAdminDashboardScreen() {
                   <tr key={site.id} className="hover:bg-white/40 transition-colors">
                     <td className="px-6 py-4">
                       <strong className="block text-sm font-semibold">{site.name}</strong>
-                      <span className="text-xs text-ink/50">{site.slug}.nice-land.vn</span>
+                      <span className="text-xs text-ink/50">{site.slug}.{rootDomain}</span>
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">{site.plan?.name ?? "Chưa gán"}</td>
                     <td className="px-6 py-4 text-xs font-medium text-ink/60">{site.usage.posts} tin · {site.usage.images} ảnh</td>

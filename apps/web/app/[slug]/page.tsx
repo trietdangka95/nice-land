@@ -6,6 +6,32 @@ import { PublicThemeStylesheet } from "@/components/public-theme-stylesheet";
 import { getPublicThemeHomeRenderer } from "@/components/public-theme-home";
 import { getTenantPosts, getTenantSite } from "@/lib/server-api";
 import { resolvePublicTheme } from "@/lib/public-themes";
+import type { PropertyPost, Site } from "@/lib/types";
+
+function createEmptyFeaturedPost(site: Site): PropertyPost {
+  return {
+    id: `${site.id}-empty-featured`,
+    slug: "coming-soon",
+    siteId: site.id,
+    title: site.name,
+    description:
+      site.tagline || "Website đang được cập nhật danh sách bất động sản.",
+    type: "HOUSE",
+    price: 0,
+    area: 0,
+    address: site.address,
+    province: "",
+    district: "",
+    ward: "",
+    status: "PUBLISHED",
+    images: site.banner
+      ? [site.banner]
+      : [
+          "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
+        ],
+    createdAt: site.createdAt,
+  };
+}
 
 export async function generateMetadata({
   params,
@@ -117,8 +143,7 @@ export default async function TenantHomePage({
     }),
     getTenantPosts(slug, site.id, { page: 1, limit: 1 }),
   ]);
-  const featured = featuredListing.items[0];
-  if (!featured) notFound();
+  const featured = featuredListing.items[0] ?? createEmptyFeaturedPost(site);
 
   const ThemeHome = getPublicThemeHomeRenderer(renderedTheme);
 

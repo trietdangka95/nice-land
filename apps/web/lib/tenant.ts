@@ -2,7 +2,7 @@ const RESERVED_SUBDOMAINS = new Set(["www", "api", "admin", "superadmin"]);
 
 export function parseTenantSlug(
   hostname: string,
-  rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "nice-land.vn",
+  rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "nice-land.id.vn",
 ) {
   const cleanHost = hostname.toLowerCase().split(":")[0];
   const cleanRoot = rootDomain.toLowerCase().split(":")[0];
