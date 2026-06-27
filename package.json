@@ -12,6 +12,7 @@
     "test": "corepack pnpm -r test",
     "typecheck": "corepack pnpm -r typecheck",
     "lint": "corepack pnpm -r lint",
-    "format": "corepack pnpm -w exec prettier --write ."
+    "format": "corepack pnpm -w exec prettier --write .",
+    "vercel:ignore-web": "bash scripts/vercel-ignore-web.sh"
   }
 }

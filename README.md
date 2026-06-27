@@ -81,6 +81,18 @@ CORS_ORIGINS=https://nice-land.id.vn,https://*.nice-land.id.vn
 DATABASE_URL=postgresql://...
 ```
 
+## Vercel Monorepo Deploy Guard
+
+Vercel chỉ cần deploy frontend khi thay đổi chạm `apps/web` hoặc package dùng
+cho frontend. Trong Vercel Project Settings, đặt **Ignored Build Step**:
+
+```bash
+corepack pnpm vercel:ignore-web
+```
+
+Script này sẽ skip deployment nếu commit chỉ thay đổi backend, database,
+Docker hoặc tài liệu không ảnh hưởng frontend.
+
 API tự nạp biến môi trường từ root `.env`, sau đó
 `packages/database/.env` và `apps/api/.env`. Biến do Vercel/Lightsail cung cấp
 vẫn được giữ nguyên.
