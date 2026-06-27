@@ -3,6 +3,17 @@ import { parseTenantSlug } from "@/lib/tenant";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const rootDomain =
+    process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "nice-land.id.vn";
+  const host = request.headers.get("host") ?? "";
+  const hostname = host.toLowerCase().split(":")[0];
+  const cleanRootDomain = rootDomain.toLowerCase().split(":")[0];
+
+  if (hostname === `www.${cleanRootDomain}`) {
+    const url = request.nextUrl.clone();
+    url.hostname = cleanRootDomain;
+    return NextResponse.redirect(url, 308);
+  }
 
   if (
     pathname.startsWith("/_next") ||
@@ -13,7 +24,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const slug = parseTenantSlug(request.headers.get("host") ?? "");
+  const slug = parseTenantSlug(host);
   if (!slug || pathname.startsWith(`/${slug}`)) {
     return NextResponse.next();
   }
