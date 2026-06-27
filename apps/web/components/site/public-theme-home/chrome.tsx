@@ -99,25 +99,25 @@ export function LuxuryHeader({ site }: { site: Site }) {
 
 export function SearchHeader({ site }: { site: Site }) {
   return (
-    <header className="tenant-header bg-white text-[#0f172a]" style={{ borderBottom: '1px solid #e2e8f0' }}>
+    <header className="tenant-header bg-[#0f172a] text-white">
       <div className="page-shell flex h-16 items-center justify-between">
         <Link href={`/${site.slug}`} className="flex items-center gap-3">
-          <BrandMark site={site} className="size-10 rounded-md bg-[#1e293b] text-xs font-extrabold text-white" />
+          <BrandMark site={site} className="tenant-brand-mark size-10 rounded-md bg-[#1d4ed8] text-xs font-extrabold text-white" />
           <strong className="text-base font-extrabold tracking-[-0.03em]">{site.name}</strong>
         </Link>
-        <nav className="hidden items-center gap-7 text-xs font-bold uppercase tracking-[0.09em] text-[#475569] lg:flex" aria-label="Điều hướng Search First">
+        <nav className="tenant-navigation hidden items-center gap-7 text-xs font-bold uppercase tracking-[0.09em] text-slate-300 lg:flex" aria-label="Điều hướng Search First">
           <Link href={`/${site.slug}#properties`}>Nhà đất bán</Link>
           <Link href={`/${site.slug}#properties`}>Nhà đất thuê</Link>
           <Link href={`/${site.slug}#about`}>Khu vực</Link>
           <Link href={`/${site.slug}#contact`}>Tư vấn</Link>
         </nav>
         <div className="hidden items-center gap-4 text-xs lg:flex">
-          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-bold text-[#1e293b]">{site.phone}</a>
-          <a href="#contact" className="rounded bg-[#1e293b] px-5 py-3 font-bold text-white">Liên hệ môi giới</a>
+          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-bold text-slate-100">{site.phone}</a>
+          <a href="#contact" className="rounded bg-blue-600 px-5 py-3 font-bold text-white hover:bg-blue-500">Liên hệ môi giới</a>
         </div>
-        <MobileMenu site={site} triggerClassName="grid size-10 place-items-center rounded border border-slate-200 lg:hidden" />
+        <MobileMenu site={site} triggerClassName="grid size-10 place-items-center rounded border border-white/20 lg:hidden" />
       </div>
-      <div className="bg-[#1e293b] text-white">
+      <div className="tenant-quick-nav bg-[#172033] text-white">
         <div className="page-shell flex min-h-10 items-center gap-7 overflow-x-auto text-[11px] font-semibold">
           <span className="shrink-0 text-white/50">Tìm nhanh:</span>
           <a href="#properties" className="shrink-0">Căn hộ</a>

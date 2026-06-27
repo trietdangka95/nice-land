@@ -98,19 +98,6 @@ export function PropertyBrowser({
     );
   }
 
-  // --- MOCK UI 8 ITEMS FOR VISUALIZATION ---
-  const displayPosts = useMemo(() => {
-    if (posts.length === 0) return posts;
-    const mocked = [...posts];
-    while (mocked.length < 8) {
-      mocked.push({
-        ...mocked[mocked.length % posts.length],
-        id: `mock-${mocked.length}`,
-      });
-    }
-    return mocked;
-  }, [posts]);
-
   const props: BrowserVariantProps = {
     query, setQuery,
     type, setType,
@@ -118,9 +105,9 @@ export function PropertyBrowser({
     sort, setSort,
     categories,
     applyFilters,
-    posts: displayPosts, 
+    posts, 
     slug, 
-    total: Math.max(total, displayPosts.length), 
+    total, 
     page, totalPages,
     initialQuery, initialType, initialCategoryId, initialSort,
     themePreview,
