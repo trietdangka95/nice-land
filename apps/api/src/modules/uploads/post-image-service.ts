@@ -176,7 +176,10 @@ export class S3PostImageStorage implements PostImageStorage {
     region: string,
     private readonly bucket: string,
   ) {
-    this.client = new S3Client({ region });
+    this.client = new S3Client({
+      region,
+      requestChecksumCalculation: "WHEN_REQUIRED",
+    });
   }
 
   async createUploadUrl(input: {
@@ -191,7 +194,6 @@ export class S3PostImageStorage implements PostImageStorage {
         Bucket: this.bucket,
         Key: input.objectKey,
         ContentType: input.mimeType,
-        ContentLength: input.size,
       }),
       { expiresIn },
     );

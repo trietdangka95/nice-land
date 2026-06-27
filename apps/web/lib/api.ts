@@ -1,7 +1,8 @@
 import { createApiClient } from "@nice-land/api-client";
+import { getApiBaseUrl } from "@/lib/api-url";
 
 export const api = createApiClient({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000",
+  baseUrl: getApiBaseUrl(),
   getTenantHost: () =>
     typeof window === "undefined" ? undefined : window.location.hostname,
   getAccessToken: () =>
@@ -12,7 +13,7 @@ export const api = createApiClient({
 
 export function createTenantApi(slug: string) {
   return createApiClient({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000",
+    baseUrl: getApiBaseUrl(),
     getTenantHost: () => {
       if (typeof window === "undefined") return undefined;
       return window.location.hostname === "localhost"

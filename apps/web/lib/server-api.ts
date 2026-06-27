@@ -5,8 +5,9 @@ import {
   getPublicPosts as getMockPosts,
   getSiteBySlug as getMockSite,
 } from "@/lib/data";
+import { getApiBaseUrl } from "@/lib/api-url";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+const apiUrl = getApiBaseUrl();
 const allowMockFallback =
   process.env.NODE_ENV !== "production" ||
   process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";

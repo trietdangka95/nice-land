@@ -6,6 +6,7 @@ import type {
   PostImageRepository,
   PostImageStorage,
 } from "../src/modules/uploads/post-image-service.js";
+import { S3PostImageStorage } from "../src/modules/uploads/post-image-service.js";
 import type { AppConfig } from "../src/config.js";
 
 const config: AppConfig = {
@@ -237,5 +238,40 @@ describe("post image upload routes", () => {
     });
 
     expect(response.statusCode).toBe(404);
+  });
+
+  it("creates browser-compatible S3 PUT URLs without fixed payload metadata", async () => {
+    const previousAccessKeyId = process.env.AWS_ACCESS_KEY_ID;
+    const previousSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+    process.env.AWS_ACCESS_KEY_ID = "test";
+    process.env.AWS_SECRET_ACCESS_KEY = "test";
+
+    try {
+      const storage = new S3PostImageStorage(
+        "ap-southeast-2",
+        "upload-nice-land-bucket",
+      );
+      const result = await storage.createUploadUrl({
+        objectKey: "sites/site-a/posts/post-a/front.jpg",
+        mimeType: "image/jpeg",
+        size: 200_000,
+      });
+      const url = new URL(result.uploadUrl);
+
+      expect(url.searchParams.get("X-Amz-SignedHeaders")).toBe("host");
+      expect(url.searchParams.has("x-amz-checksum-crc32")).toBe(false);
+      expect(url.searchParams.has("x-amz-sdk-checksum-algorithm")).toBe(false);
+    } finally {
+      if (previousAccessKeyId === undefined) {
+        delete process.env.AWS_ACCESS_KEY_ID;
+      } else {
+        process.env.AWS_ACCESS_KEY_ID = previousAccessKeyId;
+      }
+      if (previousSecretAccessKey === undefined) {
+        delete process.env.AWS_SECRET_ACCESS_KEY;
+      } else {
+        process.env.AWS_SECRET_ACCESS_KEY = previousSecretAccessKey;
+      }
+    }
   });
 });
