@@ -13,7 +13,7 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
       <PersonalHeader site={site} />
 
       <section className="tenant-hero bg-[#fdf6ee] text-[#2d1f18]">
-        <div className="page-shell grid min-h-[78dvh] gap-10 py-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+        <div className="page-shell grid min-h-[48dvh] gap-10 py-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
           <div className="max-w-xl">
             <p className="inline-flex items-center rounded-full bg-white px-4 py-2 text-xs font-extrabold text-[var(--tenant-color)] shadow-[0_8px_24px_rgba(124,58,36,0.08)]">
               Người bạn đồng hành
@@ -22,7 +22,7 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
               {site.name}
             </h1>
             <p className="mt-5 max-w-lg text-base leading-8 text-[#7a5a4e]">
-              {site.tagline || "Không cần đọc quá nhiều. Mỗi tin được gom thành các thông tin dễ hiểu để bạn biết căn nào đáng đi xem trước."}
+              {site.tagline || "Tìm kiếm bất động sản ưng ý chưa bao giờ dễ dàng đến thế. Chúng tôi ở đây để giúp bạn. Khám phá ngay"}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link href={`/${site.slug}#properties`} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--tenant-color)] px-6 text-sm font-extrabold text-white transition-transform active:scale-[0.98]">
@@ -35,48 +35,58 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
               </a>
             </div>
           </div>
-          <div className="w-full rounded-[2.5rem] bg-white p-4 shadow-[0_28px_70px_rgba(124,58,36,0.08)]">
-            <div className="flex flex-col sm:flex-row gap-6">
-              <div className="w-full sm:w-[45%] shrink-0 flex flex-col">
-                <div className="relative aspect-[4/5] sm:aspect-square w-full overflow-hidden rounded-[2rem] bg-[#ead5c4]">
-                  <Image src={featured.images[0]} alt={featured.title} fill priority className="object-cover" sizes="(max-width: 768px) 100vw, 420px" />
-                </div>
-                <div className="mt-6 grid gap-4 text-sm sm:grid-cols-2">
-                  <div className="flex items-center gap-3 text-[#4a3c31] font-medium"><div className="grid size-10 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><Phone size={16} /></div>{site.phone}</div>
-                  <div className="flex items-center gap-3 text-[#4a3c31] font-medium"><div className="grid size-10 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><Mail size={16} /></div>{site.email}</div>
-                  <div className="flex items-center gap-3 sm:col-span-2 text-[#4a3c31] font-medium"><div className="grid size-10 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><MapPin size={16} /></div>{site.address}</div>
-                </div>
-              </div>
-
-              <div className="flex-1 flex flex-col py-2 sm:py-4 pr-2 sm:pr-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-extrabold text-[#7a5a4e]">Gợi ý hôm nay</span>
-                  <span className="rounded-full bg-[#f1ebd9] px-4 py-1.5 text-xs font-bold text-[var(--tenant-color)]">{total} tin</span>
-                </div>
-
-                <div className="mt-8 mb-8 sm:mt-auto sm:mb-auto">
-                  <h2 className="text-3xl sm:text-4xl lg:text-[2.2rem] font-extrabold leading-[1.15] text-[#2d1f18] tracking-tight">{featured.title}</h2>
-                  <p className="mt-4 text-3xl font-extrabold text-[var(--tenant-color)]">{formatPrice(featured.price, featured.type)}</p>
-                </div>
-
-                <div className="mt-auto grid grid-cols-3 gap-3">
-                  <div className="rounded-2xl bg-[#f8f6f0] p-3 lg:p-4 flex flex-col justify-center">
-                    <strong className="block text-lg lg:text-xl font-extrabold text-[#2d1f18]">{featured.area}m²</strong>
-                    <small className="text-[#7a5a4e] font-medium mt-1">Diện tích</small>
+          {total > 0 ? (
+            <div className="w-full rounded-[2.5rem] bg-white p-4 shadow-[0_28px_70px_rgba(124,58,36,0.08)]">
+              <div className="flex flex-col sm:flex-row gap-6">
+                <div className="w-full sm:w-[45%] shrink-0 flex flex-col">
+                  <div className="relative aspect-[4/5] sm:aspect-square w-full overflow-hidden rounded-[2rem] bg-[#ead5c4]">
+                    <Image src={featured.images[0]} alt={featured.title} fill priority className="object-cover" sizes="(max-width: 768px) 100vw, 420px" />
                   </div>
-                  <div className="rounded-2xl bg-[#f8f6f0] p-3 lg:p-4 flex flex-col justify-center">
-                    <strong className="block truncate text-lg lg:text-xl font-extrabold text-[#2d1f18]">{featured.district}</strong>
-                    <small className="text-[#7a5a4e] font-medium mt-1">Khu vực</small>
+                  <div className="mt-6 grid grid-cols-3 gap-2">
+                    <div className="rounded-2xl bg-[#f8f6f0] p-3 flex flex-col justify-center items-center text-center min-w-0">
+                      <strong className="block text-[15px] font-extrabold text-[#2d1f18] truncate">{featured.area}m²</strong>
+                      <small className="text-[#7a5a4e] text-xs font-medium mt-1 truncate">Diện tích</small>
+                    </div>
+                    <div className="rounded-2xl bg-[#f8f6f0] p-3 flex flex-col justify-center items-center text-center min-w-0">
+                      <strong className="block text-[15px] font-extrabold text-[#2d1f18] truncate">{featured.district}</strong>
+                      <small className="text-[#7a5a4e] text-xs font-medium mt-1 truncate">Khu vực</small>
+                    </div>
+                    <div className="flex flex-col items-center justify-center gap-1 min-w-0">
+                      <Map className="text-[#7a5a4e] shrink-0" strokeWidth={1.5} size={24} />
+                      <button className="mt-1 w-full rounded-full bg-[#f1ebd9] text-[var(--tenant-color)] px-2 py-1.5 text-[10px] font-bold truncate">Lưu tin</button>
+                    </div>
                   </div>
-                  <div className="flex flex-col items-center justify-center gap-1.5 px-1">
-                    <Map className="text-[#7a5a4e]" strokeWidth={1.5} size={28} />
-                    <small className="text-[#7a5a4e] font-medium">Vị trí</small>
-                    <button className="mt-1 w-full rounded-full bg-[#f1ebd9] text-[var(--tenant-color)] px-2 py-2 text-[11px] font-bold">Lưu tin</button>
+                </div>
+
+                <div className="flex-1 flex flex-col py-2 sm:py-4 pr-2 sm:pr-4 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-extrabold text-[#7a5a4e]">Gợi ý hôm nay</span>
+                    <span className="shrink-0 ml-2 rounded-full bg-[#f1ebd9] px-4 py-1.5 text-xs font-bold text-[var(--tenant-color)]">{total} tin</span>
+                  </div>
+
+                  <div className="mt-8 mb-8 sm:mt-auto sm:mb-auto min-w-0">
+                    <h2 className="text-3xl sm:text-4xl lg:text-[2.2rem] font-extrabold leading-[1.15] text-[#2d1f18] tracking-tight line-clamp-2">{featured.title}</h2>
+                    <p className="mt-4 text-3xl font-extrabold text-[var(--tenant-color)]">{formatPrice(featured.price, featured.type)}</p>
+                  </div>
+
+                  <div className="mt-auto flex flex-col gap-4 text-sm">
+                    <div className="flex items-center gap-3 text-[#4a3c31] font-medium min-w-0"><div className="grid shrink-0 size-10 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><Phone size={16} /></div><span className="truncate">{site.phone}</span></div>
+                    <div className="flex items-center gap-3 text-[#4a3c31] font-medium min-w-0"><div className="grid shrink-0 size-10 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><Mail size={16} /></div><span className="truncate">{site.email}</span></div>
+                    <div className="flex items-center gap-3 text-[#4a3c31] font-medium min-w-0"><div className="grid shrink-0 size-10 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><MapPin size={16} /></div><span className="truncate">{site.address}</span></div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="w-full max-w-md mx-auto rounded-[2.5rem] bg-white p-8 shadow-[0_28px_70px_rgba(124,58,36,0.08)] flex flex-col justify-center">
+              <h3 className="text-2xl font-display font-semibold mb-6 text-[#2d1f18]">Thông tin liên hệ</h3>
+              <div className="grid gap-6 text-sm">
+                <div className="flex items-center gap-4 text-[#4a3c31] font-medium min-w-0"><div className="grid shrink-0 size-12 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><Phone size={20} /></div><span className="truncate text-base">{site.phone}</span></div>
+                <div className="flex items-center gap-4 text-[#4a3c31] font-medium min-w-0"><div className="grid shrink-0 size-12 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><Mail size={20} /></div><span className="truncate text-base">{site.email}</span></div>
+                <div className="flex items-center gap-4 text-[#4a3c31] font-medium min-w-0"><div className="grid shrink-0 size-12 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><MapPin size={20} /></div><span className="line-clamp-2 text-base leading-relaxed">{site.address}</span></div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
