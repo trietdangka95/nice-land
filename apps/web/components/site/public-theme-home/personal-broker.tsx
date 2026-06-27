@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Award, HeartHandshake, Phone, ShieldCheck } from "lucide-react";
+import { ArrowRight, Award, HeartHandshake, Phone, ShieldCheck, Map, Mail, MapPin } from "lucide-react";
 import { PersonalFooter, PersonalHeader } from "./chrome";
 import { PropertyBrowser } from "@/components/site/property-browser";
 import { formatPrice } from "@/lib/format";
@@ -13,7 +13,7 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
       <PersonalHeader site={site} />
 
       <section className="tenant-hero bg-[#fdf6ee] text-[#2d1f18]">
-        <div className="page-shell grid min-h-[78dvh] gap-10 py-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+        <div className="page-shell grid min-h-[78dvh] gap-10 py-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
           <div className="max-w-xl">
             <p className="inline-flex items-center rounded-full bg-white px-4 py-2 text-xs font-extrabold text-[var(--tenant-color)] shadow-[0_8px_24px_rgba(124,58,36,0.08)]">
               Người bạn đồng hành
@@ -35,21 +35,44 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
               </a>
             </div>
           </div>
-          <div className="mx-auto w-full max-w-[420px] rounded-[2.4rem] border border-[#b25e43]/15 bg-[#2d1f18] p-3 shadow-[0_28px_70px_rgba(124,58,36,0.22)]">
-            <div className="rounded-[2rem] bg-[#fcfbf9] p-4">
-              <div className="mb-4 flex items-center justify-between">
-                <span className="text-xs font-extrabold text-[#7a5a4e]">Gợi ý hôm nay</span>
-                <span className="rounded-full bg-[#f1ebd9] px-3 py-1 text-[11px] font-bold text-[var(--tenant-color)]">{total} tin</span>
+          <div className="w-full rounded-[2.5rem] bg-white p-4 shadow-[0_28px_70px_rgba(124,58,36,0.08)]">
+            <div className="flex flex-col sm:flex-row gap-6">
+              <div className="w-full sm:w-[45%] shrink-0 flex flex-col">
+                <div className="relative aspect-[4/5] sm:aspect-square w-full overflow-hidden rounded-[2rem] bg-[#ead5c4]">
+                  <Image src={featured.images[0]} alt={featured.title} fill priority className="object-cover" sizes="(max-width: 768px) 100vw, 420px" />
+                </div>
+                <div className="mt-6 grid gap-4 text-sm sm:grid-cols-2">
+                  <div className="flex items-center gap-3 text-[#4a3c31] font-medium"><div className="grid size-10 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><Phone size={16} /></div>{site.phone}</div>
+                  <div className="flex items-center gap-3 text-[#4a3c31] font-medium"><div className="grid size-10 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><Mail size={16} /></div>{site.email}</div>
+                  <div className="flex items-center gap-3 sm:col-span-2 text-[#4a3c31] font-medium"><div className="grid size-10 place-items-center rounded-full bg-[#f1ebd9] text-[var(--tenant-color)]"><MapPin size={16} /></div>{site.address}</div>
+                </div>
               </div>
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-[#ead5c4]">
-                <Image src={featured.images[0]} alt={featured.title} fill priority className="object-cover" sizes="420px" />
-              </div>
-              <div className="p-2 pt-5">
-                <p className="text-xl font-extrabold text-[var(--tenant-color)]">{formatPrice(featured.price, featured.type)}</p>
-                <h2 className="mt-2 line-clamp-2 text-lg font-extrabold leading-snug text-[#2d1f18]">{featured.title}</h2>
-                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                  <span className="rounded-2xl bg-[#f1ebd9] p-3"><strong className="block">{featured.area}m²</strong><small className="text-[#7a5a4e]">Diện tích</small></span>
-                  <span className="rounded-2xl bg-[#f1ebd9] p-3"><strong className="block truncate">{featured.district}</strong><small className="text-[#7a5a4e]">Khu vực</small></span>
+
+              <div className="flex-1 flex flex-col py-2 sm:py-4 pr-2 sm:pr-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-extrabold text-[#7a5a4e]">Gợi ý hôm nay</span>
+                  <span className="rounded-full bg-[#f1ebd9] px-4 py-1.5 text-xs font-bold text-[var(--tenant-color)]">{total} tin</span>
+                </div>
+
+                <div className="mt-8 mb-8 sm:mt-auto sm:mb-auto">
+                  <h2 className="text-3xl sm:text-4xl lg:text-[2.2rem] font-extrabold leading-[1.15] text-[#2d1f18] tracking-tight">{featured.title}</h2>
+                  <p className="mt-4 text-3xl font-extrabold text-[var(--tenant-color)]">{formatPrice(featured.price, featured.type)}</p>
+                </div>
+
+                <div className="mt-auto grid grid-cols-3 gap-3">
+                  <div className="rounded-2xl bg-[#f8f6f0] p-3 lg:p-4 flex flex-col justify-center">
+                    <strong className="block text-lg lg:text-xl font-extrabold text-[#2d1f18]">{featured.area}m²</strong>
+                    <small className="text-[#7a5a4e] font-medium mt-1">Diện tích</small>
+                  </div>
+                  <div className="rounded-2xl bg-[#f8f6f0] p-3 lg:p-4 flex flex-col justify-center">
+                    <strong className="block truncate text-lg lg:text-xl font-extrabold text-[#2d1f18]">{featured.district}</strong>
+                    <small className="text-[#7a5a4e] font-medium mt-1">Khu vực</small>
+                  </div>
+                  <div className="flex flex-col items-center justify-center gap-1.5 px-1">
+                    <Map className="text-[#7a5a4e]" strokeWidth={1.5} size={28} />
+                    <small className="text-[#7a5a4e] font-medium">Vị trí</small>
+                    <button className="mt-1 w-full rounded-full bg-[#f1ebd9] text-[var(--tenant-color)] px-2 py-2 text-[11px] font-bold">Lưu tin</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -60,14 +83,12 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
 
       {/* 2. Custom Property Listing (Spacious, breathing room) */}
       <section id="properties" className="tenant-listing bg-[#fcfbf9] text-[#4a3c31] py-16 sm:py-20">
-        <div className="page-shell max-w-[1200px]">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-4xl sm:text-5xl font-medium text-[#2d241e]">Danh mục nhà tôi chọn</h2>
-            <p className="mt-4 text-[#8c7d70] max-w-2xl mx-auto">
-              Không phải mọi ngôi nhà đều phù hợp với tất cả mọi người. Dưới đây là những bất động sản tôi đã tự tay đi xem, kiểm tra pháp lý và đánh giá tiềm năng.
-            </p>
+        <div className="page-shell">
+          <div className="mb-10 text-center">
+            <h2 className="font-display text-4xl sm:text-5xl font-medium text-[#2d1f18]">Bất động sản</h2>
+            <p className="my-2 text-[#7a5a4e]">Những lựa chọn phù hợp nhất, được chắt lọc dành riêng cho bạn.</p>
           </div>
-          
+
           <PropertyBrowser
             variant="warm"
             posts={posts}
@@ -91,14 +112,14 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
             <div className="absolute top-12 right-12 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg hidden md:block">
               <Image src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=85" alt={site.name} fill className="object-cover" />
             </div>
-            
+
             <p className="inline-block bg-[#f8f6f3] text-[var(--tenant-color)] px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
               Người bạn đồng hành
             </p>
             <h2 className="font-display text-3xl md:text-5xl text-[#2d241e] font-medium leading-tight max-w-2xl">
               Tôi giúp bạn nhìn rõ giá trị, <br />trước khi đưa ra quyết định.
             </h2>
-            
+
             <div className="mt-12 grid gap-6 md:grid-cols-3 border-t border-[#f1ebd9] pt-12">
               {[
                 [HeartHandshake, "Trực tiếp", "Không qua trợ lý hay tổng đài, tôi trực tiếp lắng nghe bạn."],

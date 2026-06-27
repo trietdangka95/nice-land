@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, Facebook, Mail, MapPin, Maximize2, Phone, Share2 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { TenantHeader } from "@/components/site/tenant-header";
+import { PersonalHeader, PersonalFooter } from "@/components/site/public-theme-home/chrome";
 import { getTenantPost, getTenantSite } from "@/lib/server-api";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
 import { PropertyEngagement } from "@/components/site/property-engagement";
@@ -71,7 +72,7 @@ export default async function PropertyDetailPage({
     >
       <PublicThemeStylesheet theme={renderedTheme} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <TenantHeader site={site} />
+      {renderedTheme === "WARM_MINIMAL" ? <PersonalHeader site={site} /> : <TenantHeader site={site} />}
       <div className="tenant-detail-back page-shell py-7">
         <Link href={`/${slug}#properties`} className="inline-flex items-center gap-2 text-sm font-bold text-ink/60 hover:text-ink">
           <ArrowLeft size={16} />
@@ -183,16 +184,16 @@ export default async function PropertyDetailPage({
                 </p>
               </div>
             </div>
-            <TrackedContactLink slug={slug} postId={post.id} source="PHONE_CLICK" href={`tel:${site.phone.replace(/\s/g, "")}`} className="mt-6 flex min-h-13 items-center justify-center gap-2 bg-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-white">
+            <TrackedContactLink slug={slug} postId={post.id} source="PHONE_CLICK" href={`tel:${site.phone.replace(/\s/g, "")}`} className={`mt-6 flex min-h-13 items-center justify-center gap-2 px-5 py-4 text-sm font-bold text-white transition-transform active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full bg-[var(--tenant-color)]" : "bg-[var(--tenant-color)]"}`}>
               <Phone size={17} />
               Gọi {site.phone}
             </TrackedContactLink>
             {site.zaloPhone && (
-              <TrackedContactLink slug={slug} postId={post.id} source="ZALO_CLICK" href={`https://zalo.me/${site.zaloPhone.replace(/\D/g, "")}`} className="mt-3 flex min-h-13 items-center justify-center gap-2 border border-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-[var(--tenant-color)]">
+              <TrackedContactLink slug={slug} postId={post.id} source="ZALO_CLICK" href={`https://zalo.me/${site.zaloPhone.replace(/\D/g, "")}`} className={`mt-3 flex min-h-13 items-center justify-center gap-2 border border-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-[var(--tenant-color)] transition-transform active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full" : ""}`}>
                 Nhắn Zalo
               </TrackedContactLink>
             )}
-            <a href={`mailto:${site.email}`} className="mt-3 flex min-h-13 items-center justify-center gap-2 border border-ink/15 px-5 py-4 text-sm font-bold">
+            <a href={`mailto:${site.email}`} className={`mt-3 flex min-h-13 items-center justify-center gap-2 border px-5 py-4 text-sm font-bold transition-transform active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full border-black/5 bg-[#f8f6f0]" : "border-ink/15"}`}>
               <Mail size={17} />
               Gửi email
             </a>
@@ -204,6 +205,7 @@ export default async function PropertyDetailPage({
           </div>
         </aside>
       </section>
+      {renderedTheme === "WARM_MINIMAL" && <PersonalFooter site={site} />}
     </main>
   );
 }

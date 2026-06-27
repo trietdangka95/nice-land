@@ -35,8 +35,8 @@ export function WarmBrowser({
 
   return (
     <div className="variant-warm mx-auto max-w-[1180px]">
-      <form onSubmit={applyFilters} className="mx-auto max-w-[620px] rounded-[2rem] border border-[#b25e43]/10 bg-white p-4 shadow-[0_18px_45px_rgba(124,58,36,0.08)]">
-        <label className="relative block">
+      <form onSubmit={applyFilters} className="mx-auto flex flex-col md:flex-row items-center gap-3 rounded-3xl md:rounded-full border border-black/5 bg-white p-2 shadow-sm w-full max-w-4xl">
+        <label className="relative flex-1 w-full min-w-[200px]">
           <span className="sr-only">Từ khóa</span>
           <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[#a78a7a]" size={19} />
           <input
@@ -44,38 +44,37 @@ export function WarmBrowser({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Bạn muốn tìm gì hôm nay?"
-            className="h-14 w-full rounded-full bg-[#fcfbf9] pl-14 pr-5 text-base font-bold text-[#2d1f18] outline-none ring-1 ring-[#b25e43]/10 transition focus:ring-[var(--tenant-color)]"
+            className="h-12 w-full rounded-full bg-transparent pl-12 pr-4 text-sm font-bold text-[#2d1f18] outline-none"
           />
         </label>
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <label className="grid gap-1.5">
-            <span className="px-2 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#a78a7a]">Khu vực</span>
-            <select value={categoryId} onChange={(event) => setCategoryId(event.target.value)} className="h-12 rounded-2xl bg-[#fcfbf9] px-4 text-sm font-bold text-[#4a3c31] outline-none ring-1 ring-[#b25e43]/10 focus:ring-[var(--tenant-color)]">
-              <option value="">Mọi khu vực</option>
-              {categories.map((category) => (
-                <option value={category.id} key={category.id}>{category.name}</option>
-              ))}
-            </select>
-          </label>
-          <label className="grid gap-1.5">
-            <span className="px-2 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#a78a7a]">Loại hình</span>
-            <select value={type} onChange={(event) => setType(event.target.value)} className="h-12 rounded-2xl bg-[#fcfbf9] px-4 text-sm font-bold text-[#4a3c31] outline-none ring-1 ring-[#b25e43]/10 focus:ring-[var(--tenant-color)]">
-              <option value="ALL">Mọi loại hình</option>
-              {Object.entries(propertyTypeLabels).map(([value, label]) => (
-                <option value={value} key={value}>{label}</option>
-              ))}
-            </select>
-          </label>
-          <label className="grid gap-1.5">
-            <span className="px-2 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#a78a7a]">Sắp xếp</span>
-            <select value={sort} onChange={(event) => setSort(event.target.value)} className="h-12 rounded-2xl bg-[#fcfbf9] px-4 text-sm font-bold text-[#4a3c31] outline-none ring-1 ring-[#b25e43]/10 focus:ring-[var(--tenant-color)]">
-              <option value="newest">Mới nhất</option>
-              <option value="price_asc">Giá thấp đến cao</option>
-              <option value="price_desc">Giá cao đến thấp</option>
-            </select>
-          </label>
-        </div>
-        <button type="submit" className="mt-4 h-[3.25rem] w-full rounded-full bg-[var(--tenant-color)] px-6 text-base font-extrabold text-white shadow-[0_12px_30px_rgba(124,58,36,0.16)] transition-transform active:scale-[0.98]">
+
+        <div className="h-8 w-px bg-black/5 hidden md:block"></div>
+
+        <select value={categoryId} onChange={(event) => setCategoryId(event.target.value)} className="h-12 w-full md:w-auto min-w-[140px] bg-transparent px-4 text-sm font-bold text-[#4a3c31] outline-none cursor-pointer">
+          <option value="">Khu vực</option>
+          {categories.map((category) => (
+            <option value={category.id} key={category.id}>{category.name}</option>
+          ))}
+        </select>
+
+        <div className="h-8 w-px bg-black/5 hidden md:block"></div>
+
+        <select value={type} onChange={(event) => setType(event.target.value)} className="h-12 w-full md:w-auto min-w-[140px] bg-transparent px-4 text-sm font-bold text-[#4a3c31] outline-none cursor-pointer">
+          <option value="ALL">Loại hình</option>
+          {Object.entries(propertyTypeLabels).map(([value, label]) => (
+            <option value={value} key={value}>{label}</option>
+          ))}
+        </select>
+
+        <div className="h-8 w-px bg-black/5 hidden md:block"></div>
+
+        <select value={sort} onChange={(event) => setSort(event.target.value)} className="h-12 w-full md:w-auto min-w-[140px] bg-transparent px-4 text-sm font-bold text-[#4a3c31] outline-none cursor-pointer">
+          <option value="newest">Mới nhất</option>
+          <option value="price_asc">Giá thấp đến cao</option>
+          <option value="price_desc">Giá cao đến thấp</option>
+        </select>
+
+        <button type="submit" className="h-12 w-full md:w-auto whitespace-nowrap rounded-full bg-[var(--tenant-color)] px-8 text-sm font-extrabold text-white shadow-[0_12px_30px_rgba(124,58,36,0.16)] transition-transform active:scale-[0.98]">
           Tìm Kiếm
         </button>
       </form>
@@ -100,13 +99,13 @@ export function WarmBrowser({
       </div>
 
       <p className="mt-8 text-center text-sm font-bold text-[#a78a7a]">
-        Đã tìm thấy <strong className="text-[#2d1f18]">{total}</strong> tổ ấm phù hợp
+        Đã tìm thấy <strong className="text-[#2d1f18]">{total}</strong> sản phầm phù hợp
       </p>
 
       {posts.length > 0 ? (
         <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {posts.map((post) => (
-            <Link href={propertyHref(slug, post)} key={post.id} className="group rounded-[2rem] border border-[#b25e43]/10 bg-white p-3 shadow-[0_12px_35px_rgba(124,58,36,0.06)] transition-transform hover:-translate-y-1">
+            <Link href={propertyHref(slug, post)} key={post.id} className="group rounded-[2rem] border border-black/5 bg-white p-3 shadow-[0_12px_35px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-1">
               <div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] bg-[#ead5c4]">
                 <Image src={post.images[0]} alt={post.title} fill className="object-cover transition duration-500 group-hover:scale-[1.04]" sizes="(max-width: 768px) 100vw, 33vw" />
                 <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-extrabold text-[#2d1f18] shadow-sm">

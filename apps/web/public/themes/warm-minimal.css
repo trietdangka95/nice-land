@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] {
-  --tenant-surface: #f0e9df;
-  --tenant-card-radius: 24px;
+  --tenant-surface: #fcfbf9;
+  --tenant-card-radius: 2.5rem;
   --tenant-body-font: 'Plus Jakarta Sans', "Trebuchet MS", Arial, sans-serif;
   --tenant-display-font: 'Plus Jakarta Sans', "Trebuchet MS", Arial, sans-serif;
   --tenant-content-width: 1320px;
@@ -12,9 +12,7 @@
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-header {
-  background: #fdf6ee !important;
-  color: #2d1f18 !important;
-  border-bottom: 1px solid rgba(178, 94, 67, 0.1) !important;
+  /* Let Tailwind utility classes handle background and color */
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-brand-mark {
@@ -33,22 +31,22 @@
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-footer {
-  background: #7c3a24 !important;
-  color: #ffffff !important;
+  /* Let Tailwind utility classes handle background and color */
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-gallery-grid,
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-main-image,
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-thumbnails > div,
-.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-contact-card {
-  border-radius: 20px;
+.tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-thumbnails > div {
+  border-radius: 2rem;
   overflow: hidden;
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-contact-card {
-  border: 1px solid rgba(178, 94, 67, 0.1);
-  background: #fdf6ee;
-  box-shadow: 0 8px 32px rgba(178, 94, 67, 0.06);
+  border-radius: 2.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
 }
 
 .tenant-public[data-public-theme="WARM_MINIMAL"] .tenant-detail-layout {

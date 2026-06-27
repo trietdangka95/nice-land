@@ -163,22 +163,22 @@ export function PersonalHeader({ site }: { site: Site }) {
     <header className="tenant-header bg-[#fdf6ee] text-[#2d1f18]" style={{ borderBottom: '1px solid rgba(178,94,67,0.1)' }}>
       <div className="page-shell flex min-h-24 items-center justify-between gap-5">
         <Link href={`/${site.slug}`} className="flex items-center gap-4">
-          <BrandMark site={site} className="size-14 rounded-full bg-[#b25e43] font-serif text-sm italic text-white" />
+          <BrandMark site={site} className="size-14 rounded-full bg-[var(--tenant-color)] font-serif text-sm italic text-white" />
           <span>
             <strong className="block font-display text-2xl font-normal italic">{site.name}</strong>
-            <small className="mt-1 block text-[8px] uppercase tracking-[0.24em] text-[#b25e43]/60">Your local property partner</small>
+            <small className="mt-1 block text-[8px] uppercase tracking-[0.24em] text-[var(--tenant-color)] opacity-60">Your local property partner</small>
           </span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-semibold text-[#5c3d2e] lg:flex" aria-label="Điều hướng Personal Broker">
-          <Link href={`/${site.slug}#properties`}>Nhà tôi chọn</Link>
+          <Link href={`/${site.slug}#properties`}>Bất động sản</Link>
           <Link href={`/${site.slug}#about`}>Câu chuyện của tôi</Link>
-          <Link href={`/${site.slug}#contact`}>Trò chuyện</Link>
+          <Link href={`/${site.slug}#contact`}>Liên hệ</Link>
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
-          <a href={site.facebookUrl ?? "#"} aria-label="Facebook" className="grid size-10 place-items-center rounded-full border border-[#b25e43]/20"><Facebook size={15} /></a>
-          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="rounded-full bg-[#b25e43] px-6 py-3 text-xs font-bold text-white">Gọi trực tiếp</a>
+          <a href={site.facebookUrl ?? "#"} aria-label="Facebook" className="grid size-10 place-items-center rounded-full border border-black/10 text-[var(--tenant-color)]"><Facebook size={15} /></a>
+          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="rounded-full bg-[var(--tenant-color)] px-6 py-3 text-xs font-bold text-white">Gọi trực tiếp</a>
         </div>
-        <MobileMenu site={site} triggerClassName="grid size-11 place-items-center rounded-full border border-[#b25e43]/25 lg:hidden" />
+        <MobileMenu site={site} triggerClassName="grid size-11 place-items-center rounded-full border border-black/10 text-[var(--tenant-color)] lg:hidden" />
       </div>
     </header>
   );
@@ -243,22 +243,32 @@ export function EditorialFooter({ site }: { site: Site }) {
 
 export function PersonalFooter({ site }: { site: Site }) {
   return (
-    <footer id="contact" className="tenant-footer bg-[#7c3a24] py-16 text-white">
-      <div className="page-shell grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+    <footer id="contact" className="tenant-footer bg-[#f4ebe1] py-8 text-[#2d1f18] overflow-hidden">
+      <div className="page-shell grid gap-8 lg:gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div>
-          <p className="text-xs uppercase tracking-[0.25em] text-[#f4d4c2]">Nói chuyện trực tiếp với tôi</p>
-          <h2 className="mt-4 font-display text-5xl font-normal italic">Bạn đang tìm một nơi để bắt đầu chương mới?</h2>
+          <p className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#7a5a4e]">Liên hệ trực tiếp</p>
+          <h2 className="mt-3 font-display text-2xl sm:text-3xl font-medium leading-[1.4] text-[#2d1f18]">Khởi đầu hành trình sở hữu tổ ấm hoàn hảo</h2>
+          <p className="mt-3 text-[#5c463d] leading-relaxed max-w-md text-sm">Hãy để lại thông tin hoặc liên hệ trực tiếp. Tôi luôn sẵn sàng lắng nghe và đồng hành cùng bạn trên hành trình tìm kiếm không gian sống lý tưởng.</p>
         </div>
-        <div className="bg-[#fdf6ee] p-7 text-[#2d1f18] sm:p-9" style={{ borderRadius: '16px' }}>
-          <strong className="font-display text-3xl font-normal italic">{site.name}</strong>
-          <div className="mt-6 grid gap-4 text-sm sm:grid-cols-2">
-            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="flex items-center gap-3"><Phone size={17} />{site.phone}</a>
-            <a href={`mailto:${site.email}`} className="flex items-center gap-3"><Mail size={17} />{site.email}</a>
-            <p className="flex items-start gap-3 sm:col-span-2"><MapPin size={17} className="mt-0.5 shrink-0" />{site.address}</p>
-          </div>
-          <div className="mt-7 flex gap-3 border-t border-[#b25e43]/15 pt-5">
-            <a href={site.facebookUrl ?? "#"} aria-label="Facebook"><Facebook size={17} /></a>
-            <a href="#" aria-label="Instagram"><Instagram size={17} /></a>
+        <div className="relative">
+          <div className="absolute inset-0 -translate-y-3 translate-x-3 rounded-[2rem] bg-[#ead5c4] opacity-50 sm:-translate-y-4 sm:translate-x-4"></div>
+          <div className="relative rounded-[2rem] bg-white p-6 shadow-[0_20px_60px_rgba(124,58,36,0.06)] border border-black/5 flex flex-col justify-between">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <strong className="font-display text-xl font-medium text-[#2d1f18]">{site.name}</strong>
+                <p className="text-xs text-[#7a5a4e] font-medium mt-1">Đối tác bất động sản của bạn</p>
+              </div>
+              <div className="flex gap-2">
+                <a href={site.facebookUrl ?? "#"} aria-label="Facebook" className="grid size-8 place-items-center rounded-full border border-black/5 text-[#7a5a4e] hover:bg-[var(--tenant-color)] hover:text-white transition-colors"><Facebook size={14} /></a>
+                <a href="#" aria-label="Instagram" className="grid size-8 place-items-center rounded-full border border-black/5 text-[#7a5a4e] hover:bg-[var(--tenant-color)] hover:text-white transition-colors"><Instagram size={14} /></a>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-y-3 gap-x-4 text-xs sm:grid-cols-2 text-[#4a3c31]">
+              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="flex items-center gap-2.5 font-bold hover:text-[var(--tenant-color)] transition-colors"><div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#f8f6f0] text-[var(--tenant-color)]"><Phone size={13} /></div>{site.phone}</a>
+              <a href={`mailto:${site.email}`} className="flex items-center gap-2.5 font-bold hover:text-[var(--tenant-color)] transition-colors"><div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#f8f6f0] text-[var(--tenant-color)]"><Mail size={13} /></div><span className="truncate">{site.email}</span></a>
+              <div className="flex items-center gap-2.5 sm:col-span-2 font-medium"><div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#f8f6f0] text-[var(--tenant-color)]"><MapPin size={13} /></div><span className="truncate">{site.address}</span></div>
+            </div>
           </div>
         </div>
       </div>
