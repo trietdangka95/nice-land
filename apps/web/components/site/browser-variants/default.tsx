@@ -7,8 +7,7 @@ import type { BrowserVariantProps } from "../property-browser";
 
 export function DefaultBrowser({
   query, setQuery, type, setType, categoryId, setCategoryId, sort, setSort, categories, applyFilters,
-  posts, slug, total, page, totalPages, initialQuery, initialType, initialCategoryId, initialSort, themePreview
-}: BrowserVariantProps) {
+  posts, slug, total, page, totalPages, initialQuery, initialType, initialCategoryId, initialSort}: BrowserVariantProps) {
   return (
     <div className="tenant-property-browser">
       <form
@@ -88,7 +87,6 @@ export function DefaultBrowser({
               key={post.id}
               post={post}
               slug={slug}
-              themePreview={themePreview}
             />
           ))}
         </div>
@@ -112,7 +110,7 @@ export function DefaultBrowser({
           <div className="flex gap-2">
             {page > 1 ? (
               <Link
-                href={buildPublicPostsHref(slug, { page: page - 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, sort: initialSort as any, themePreview })}
+                href={buildPublicPostsHref(slug, { page: page - 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, sort: initialSort as any })}
                 className="button-secondary min-h-11 px-4"
               >
                 <ChevronLeft size={17} aria-hidden="true" />
@@ -126,7 +124,7 @@ export function DefaultBrowser({
             )}
             {page < totalPages ? (
               <Link
-                href={buildPublicPostsHref(slug, { page: page + 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, sort: initialSort as any, themePreview })}
+                href={buildPublicPostsHref(slug, { page: page + 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, sort: initialSort as any })}
                 className="button-secondary min-h-11 px-4"
               >
                 Trang sau

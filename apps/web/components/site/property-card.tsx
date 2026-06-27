@@ -3,21 +3,15 @@ import Link from "next/link";
 import { Heart, MapPin } from "lucide-react";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
 import type { PropertyPost } from "@/lib/types";
-import type { PublicTheme } from "@nice-land/contracts";
 
 export function PropertyCard({
   post,
   slug,
-  themePreview,
 }: {
   post: PropertyPost;
   slug: string;
-  themePreview?: PublicTheme;
 }) {
-  const previewSuffix = themePreview
-    ? `?themePreview=${encodeURIComponent(themePreview)}`
-    : "";
-  const href = `/${slug}/posts/${post.slug ?? post.id}${previewSuffix}`;
+  const href = `/${slug}/posts/${post.slug ?? post.id}`;
   return (
     <article 
       className="tenant-property-card group flex h-full flex-col overflow-hidden transition-all duration-300"

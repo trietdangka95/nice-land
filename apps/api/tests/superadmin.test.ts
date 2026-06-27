@@ -19,7 +19,7 @@ const site = {
   id: "11111111-1111-4111-8111-111111111111",
   name: "Minh Phát", slug: "minhphat", phone: "0903868979",
   email: "hello@minhphat.vn", address: "Đà Nẵng", isActive: true,
-  themeKey: "CLASSIC_ESTATE" as const,
+  themeKey: "WARM_MINIMAL" as const,
   subscriptionStatus: "ACTIVE" as const, subscriptionStart: null, subscriptionEnd: null,
   plan: { id: "22222222-2222-4222-8222-222222222222", name: "Pro", code: "PRO" },
   usage: { posts: 10, images: 30, users: 1 }, admin: null,
@@ -34,7 +34,7 @@ function repository(): SuperAdminRepository {
       ...site,
       name: input.name,
       slug: input.slug,
-      themeKey: input.themeKey,
+      themeKey: "WARM_MINIMAL" as const,
     }),
     updateSite: async (_id, input) => ({ ...site, ...input, subscriptionEnd: input.subscriptionEnd?.toISOString() ?? null }),
     setSiteActive: async () => true,
@@ -77,17 +77,15 @@ describe("super admin routes", () => {
   });
 
   it("creates a site and admin account through one input", async () => {
-    let receivedTheme: string | undefined;
     let receivedActor: string | undefined;
     const repo = repository();
     repo.createSite = async (input, actorId) => {
-      receivedTheme = input.themeKey;
       receivedActor = actorId;
       return {
         ...site,
         name: input.name,
         slug: input.slug,
-        themeKey: input.themeKey,
+        themeKey: "WARM_MINIMAL" as const,
       };
     };
 
@@ -95,7 +93,6 @@ describe("super admin routes", () => {
       method: "POST", url: "/v1/superadmin/sites", headers,
       payload: {
         name: "An Land", slug: "an-land", phone: "0912333558", email: "admin@anland.vn",
-        themeKey: "WARM_MINIMAL",
         planId: site.plan.id, subscriptionEnd: "2027-06-20T00:00:00.000Z",
         adminName: "Quản trị An Land", adminUsername: "admin.anland", adminPassword: "Secure123!",
       },
@@ -103,16 +100,13 @@ describe("super admin routes", () => {
     expect(response.statusCode).toBe(201);
     expect(response.json().slug).toBe("an-land");
     expect(response.json().themeKey).toBe("WARM_MINIMAL");
-    expect(receivedTheme).toBe("WARM_MINIMAL");
     expect(receivedActor).toBe("super-user");
   });
 
-  it("updates a tenant theme as the authenticated super admin actor", async () => {
-    let receivedTheme: string | undefined;
+  it("updates a tenant without accepting theme changes", async () => {
     let receivedActor: string | undefined;
     const repo = repository();
     repo.updateSite = async (_id, input, actorId) => {
-      receivedTheme = input.themeKey;
       receivedActor = actorId;
       return {
         ...site,
@@ -131,7 +125,6 @@ describe("super admin routes", () => {
         phone: site.phone,
         email: site.email,
         address: site.address,
-        themeKey: "EDITORIAL",
         planId: site.plan.id,
         subscriptionStatus: "ACTIVE",
         subscriptionEnd: "2027-06-20T00:00:00.000Z",
@@ -139,12 +132,11 @@ describe("super admin routes", () => {
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().themeKey).toBe("EDITORIAL");
-    expect(receivedTheme).toBe("EDITORIAL");
+    expect(response.json().themeKey).toBe("WARM_MINIMAL");
     expect(receivedActor).toBe("super-user");
   });
 
-  it("rejects an unsupported public theme before creating a site", async () => {
+  it("ignores unsupported public theme fields from older clients", async () => {
     const response = await createApp().inject({
       method: "POST",
       url: "/v1/superadmin/sites",
@@ -163,8 +155,8 @@ describe("super admin routes", () => {
       },
     });
 
-    expect(response.statusCode).toBe(400);
-    expect(response.json().code).toBe("VALIDATION_ERROR");
+    expect(response.statusCode).toBe(201);
+    expect(response.json().themeKey).toBe("WARM_MINIMAL");
   });
 
   it("returns a password only once after reset", async () => {

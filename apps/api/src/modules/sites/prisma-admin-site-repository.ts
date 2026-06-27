@@ -31,6 +31,7 @@ function serializeSettings(
 ) {
   return {
     ...site,
+    themeKey: "WARM_MINIMAL" as const,
     themeColor: site.themeColor ?? "#315c45",
     phone: site.phone ?? "",
     email: site.email ?? "",

@@ -6,10 +6,8 @@ import { api } from "@/lib/api";
 import { useToast } from "@/components/shared/toast-provider";
 
 export function ContactForm({
-  selectedTheme,
   selectedPlan,
 }: {
-  selectedTheme?: string;
   selectedPlan?: string;
 }) {
   const toast = useToast();
@@ -22,7 +20,6 @@ export function ContactForm({
     const form = new FormData(event.currentTarget);
     const selection = [
       selectedPlan ? `Gói quan tâm: ${selectedPlan}` : "",
-      selectedTheme ? `Giao diện đã chọn: ${selectedTheme}` : "",
       String(form.get("message") ?? ""),
     ]
       .filter(Boolean)
@@ -68,10 +65,9 @@ export function ContactForm({
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4 border border-white/15 bg-white/5 p-6 sm:p-8">
-      {(selectedTheme || selectedPlan) && (
+      {selectedPlan && (
         <div className="border border-gold/30 bg-gold/10 p-4 text-sm text-white/80">
-          {selectedPlan && <p>Gói quan tâm: <strong>{selectedPlan}</strong></p>}
-          {selectedTheme && <p className={selectedPlan ? "mt-1" : ""}>Giao diện: <strong>{selectedTheme}</strong></p>}
+          <p>Gói quan tâm: <strong>{selectedPlan}</strong></p>
         </div>
       )}
       <div className="grid gap-4 sm:grid-cols-2">

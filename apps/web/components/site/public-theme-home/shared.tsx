@@ -43,7 +43,6 @@ export function PropertyCollection({
             initialType={model.type ?? "ALL"}
             initialCategoryId={model.categoryId ?? ""}
             initialSort={model.sort}
-            themePreview={model.themePreview}
           />
         </div>
       </div>

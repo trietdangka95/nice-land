@@ -3,7 +3,7 @@ import type { PublicSiteRepository } from "./public-site-repository.js";
 
 export class PrismaPublicSiteRepository implements PublicSiteRepository {
   async findPublicConfig(siteId: string) {
-    return prisma.site.findFirst({
+    const site = await prisma.site.findFirst({
       where: {
         id: siteId,
         deletedAt: null,
@@ -25,5 +25,6 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
         zaloPhone: true,
       },
     });
+    return site ? { ...site, themeKey: "WARM_MINIMAL" as const } : null;
   }
 }

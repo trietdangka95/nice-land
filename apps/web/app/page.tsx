@@ -22,17 +22,13 @@ import { MobileNavigation } from "@/components/shared/mobile-navigation";
 import { plans, properties } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
 import { ThemeShowcase } from "@/components/marketing/theme-showcase";
-import { publicThemes } from "@/lib/public-themes";
 
 export default async function LandingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ theme?: string; plan?: string }>;
+  searchParams: Promise<{ plan?: string }>;
 }) {
   const query = await searchParams;
-  const selectedTheme = publicThemes.find(
-    (theme) => theme.key === query.theme,
-  )?.name;
   const selectedPlan = query.plan?.slice(0, 120);
 
   return (
@@ -316,9 +312,9 @@ export default async function LandingPage({
       <section className="border-y border-ink/5 bg-white/50 backdrop-blur-sm py-24 sm:py-32">
         <div className="page-shell">
           <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end mb-12">
-            <SectionHeading eyebrow="Bốn giao diện website" title="Cùng công cụ vận hành, khác biệt trong cách thương hiệu xuất hiện." />
+            <SectionHeading eyebrow="Giao diện website" title="Một giao diện chuẩn cho môi giới bất động sản vận hành hằng ngày." />
             <Link href="/themes" className="inline-flex items-center gap-2 text-sm font-bold text-moss hover:text-leaf transition-colors">
-              Xem đủ 4 website mẫu
+              Xem website mẫu
               <ArrowRight size={16} />
             </Link>
           </div>
@@ -352,7 +348,6 @@ export default async function LandingPage({
           </div>
           <div className="glass-dark rounded-3xl p-6 sm:p-10">
             <ContactForm
-              selectedTheme={selectedTheme}
               selectedPlan={selectedPlan}
             />
           </div>

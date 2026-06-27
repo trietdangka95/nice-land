@@ -5,12 +5,8 @@ import { useRouter } from "next/navigation";
 import { buildPublicPostsHref } from "@/lib/pagination";
 import type { PropertyPost, PropertyType } from "@/lib/types";
 import type { PropertyCategory } from "@nice-land/contracts";
-import type { PublicTheme } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 
-import { ClassicBrowser } from "./browser-variants/classic";
-import { ModernBrowser } from "./browser-variants/modern";
-import { EditorialBrowser } from "./browser-variants/editorial";
 import { WarmBrowser } from "./browser-variants/warm";
 import { DefaultBrowser } from "./browser-variants/default";
 
@@ -34,7 +30,6 @@ export interface BrowserVariantProps {
   initialType: string;
   initialCategoryId: string;
   initialSort: string;
-  themePreview?: PublicTheme;
 }
 
 export function PropertyBrowser({
@@ -47,7 +42,6 @@ export function PropertyBrowser({
   initialType = "ALL",
   initialCategoryId = "",
   initialSort = "newest",
-  themePreview,
   variant = "default",
 }: {
   posts: PropertyPost[];
@@ -59,8 +53,7 @@ export function PropertyBrowser({
   initialType?: "ALL" | PropertyType;
   initialCategoryId?: string;
   initialSort?: "newest" | "price_asc" | "price_desc";
-  themePreview?: PublicTheme;
-  variant?: "classic" | "modern" | "editorial" | "warm" | "default";
+  variant?: "warm" | "default";
 }) {
   const router = useRouter();
   const client = useMemo(() => createTenantApi(slug), [slug]);
@@ -93,7 +86,6 @@ export function PropertyBrowser({
         type: type as any,
         categoryId,
         sort: sort as any,
-        themePreview,
       }),
     );
   }
@@ -110,16 +102,9 @@ export function PropertyBrowser({
     total, 
     page, totalPages,
     initialQuery, initialType, initialCategoryId, initialSort,
-    themePreview,
   };
 
   switch (variant) {
-    case "classic":
-      return <ClassicBrowser {...props} />;
-    case "modern":
-      return <ModernBrowser {...props} />;
-    case "editorial":
-      return <EditorialBrowser {...props} />;
     case "warm":
       return <WarmBrowser {...props} />;
     case "default":

@@ -17,7 +17,7 @@ export default async function TenantLayout({
     <div
       style={{ "--tenant-color": site.themeColor } as React.CSSProperties}
       data-public-theme={resolvePublicTheme(site.themeKey)}
-      className="tenant-public min-h-screen"
+      className="tenant-public min-h-[100dvh]"
     >
       {children}
     </div>

@@ -9,9 +9,9 @@ import {
 } from "@/lib/public-themes";
 
 describe("public theme registry", () => {
-  it("exposes four unique supported themes", () => {
-    expect(publicThemes).toHaveLength(4);
-    expect(new Set(publicThemes.map((theme) => theme.key)).size).toBe(4);
+  it("exposes only the default warm minimal theme", () => {
+    expect(publicThemes).toHaveLength(1);
+    expect(publicThemes[0]?.key).toBe("WARM_MINIMAL");
   });
 
   it("falls back safely for unknown or missing theme keys", () => {
@@ -19,8 +19,8 @@ describe("public theme registry", () => {
     expect(resolvePublicTheme(undefined)).toBe(DEFAULT_PUBLIC_THEME);
   });
 
-  it("preserves a supported theme key", () => {
-    expect(resolvePublicTheme("EDITORIAL")).toBe("EDITORIAL");
+  it("always resolves supported legacy theme keys to the default theme", () => {
+    expect(resolvePublicTheme("EDITORIAL")).toBe(DEFAULT_PUBLIC_THEME);
   });
 
   it("requires feature-parity surfaces from every theme", () => {
@@ -29,61 +29,42 @@ describe("public theme registry", () => {
     }
   });
 
-  it("gives every theme a distinct typography and density direction", () => {
-    expect(new Set(publicThemes.map((theme) => theme.fontStyle)).size).toBe(4);
-    expect(new Set(publicThemes.map((theme) => theme.density)).size).toBe(4);
+  it("documents the supported typography and density direction", () => {
+    expect(publicThemes[0]?.fontStyle).toBe("friendly");
+    expect(publicThemes[0]?.density).toBe("airy");
   });
 
-  it("gives every theme a distinct homepage and thumbnail composition", () => {
-    expect(new Set(publicThemes.map((theme) => theme.homeRenderer)).size).toBe(
-      4,
-    );
-    expect(
-      new Set(publicThemes.map((theme) => theme.thumbnailRenderer)).size,
-    ).toBe(4);
+  it("uses the personal broker homepage and thumbnail composition", () => {
+    expect(publicThemes[0]?.homeRenderer).toBe("personal-broker");
+    expect(publicThemes[0]?.thumbnailRenderer).toBe("personal-broker");
   });
 
-  it("gives every theme a distinct header and footer composition", () => {
-    expect(
-      new Set(publicThemes.map((theme) => theme.headerComposition)).size,
-    ).toBe(4);
-    expect(
-      new Set(publicThemes.map((theme) => theme.footerComposition)).size,
-    ).toBe(4);
+  it("uses the personal header and footer composition", () => {
+    expect(publicThemes[0]?.headerComposition).toBe("personal-signature");
+    expect(publicThemes[0]?.footerComposition).toBe("personal-contact");
   });
 
-  it("documents a distinct real-estate design direction for every theme", () => {
-    expect(new Set(publicThemes.map((theme) => theme.direction)).size).toBe(4);
+  it("documents the real-estate design direction", () => {
     expect(publicThemes.every((theme) => theme.direction.length > 20)).toBe(
       true,
     );
   });
 
-  it("maps each theme to exactly one distinct presentation stylesheet", () => {
+  it("maps the default theme to the warm presentation stylesheet", () => {
     const stylesheets = publicThemes.map((theme) =>
       getPublicThemeStylesheet(theme.key),
     );
-    expect(new Set(stylesheets).size).toBe(4);
-    expect(stylesheets).toEqual([
-      "/themes/classic-estate.css",
-      "/themes/modern-grid.css",
-      "/themes/editorial.css",
-      "/themes/warm-minimal.css",
-    ]);
+    expect(stylesheets).toEqual(["/themes/warm-minimal.css"]);
   });
 
   it("uses the default theme stylesheet for an unknown key", () => {
     expect(getPublicThemeStylesheet("REMOVED_THEME")).toBe(
-      "/themes/classic-estate.css",
+      "/themes/warm-minimal.css",
     );
   });
 
-  it("builds a full sample website URL for landing-page previews", () => {
-    expect(getPublicThemeDemoHref("EDITORIAL")).toBe(
-      "/demo?themePreview=EDITORIAL",
-    );
-    expect(getPublicThemeDemoHref("WARM_MINIMAL", "anland")).toBe(
-      "/anland?themePreview=WARM_MINIMAL",
-    );
+  it("builds sample website URLs without theme preview query state", () => {
+    expect(getPublicThemeDemoHref("EDITORIAL")).toBe("/demo");
+    expect(getPublicThemeDemoHref("WARM_MINIMAL", "anland")).toBe("/anland");
   });
 });

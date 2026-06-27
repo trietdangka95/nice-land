@@ -33,18 +33,15 @@ export async function generateMetadata({
 
 export default async function PropertyDetailPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ slug: string; id: string }>;
-  searchParams: Promise<{ themePreview?: string }>;
 }) {
   const { slug, id } = await params;
-  const query = await searchParams;
   const site = await getTenantSite(slug);
   if (!site || !site.isActive || site.subscriptionStatus === "EXPIRED") notFound();
   const post = await getTenantPost(slug, site.id, id);
   if (!post) notFound();
-  const renderedTheme = resolvePublicTheme(query.themePreview ?? site.themeKey);
+  const renderedTheme = resolvePublicTheme(site.themeKey);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",

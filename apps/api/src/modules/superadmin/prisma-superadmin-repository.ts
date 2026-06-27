@@ -14,6 +14,8 @@ import {
 } from "./superadmin-repository.js";
 import { writeAuditLog } from "../audit/audit-log-service.js";
 
+const DEFAULT_SITE_THEME = "WARM_MINIMAL" as const;
+
 const siteSelect = {
   id: true,
   name: true,
@@ -61,7 +63,7 @@ async function mapSite(site: SelectedSite) {
     phone: site.phone,
     email: site.email,
     address: site.address,
-    themeKey: site.themeKey,
+    themeKey: DEFAULT_SITE_THEME,
     isActive: site.isActive,
     subscriptionStatus: site.subscriptionStatus,
     subscriptionStart: site.subscriptionStart?.toISOString() ?? null,
@@ -179,7 +181,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
             phone: input.phone,
             email: input.email,
             address: input.address || null,
-            themeKey: input.themeKey,
+            themeKey: DEFAULT_SITE_THEME,
             planId: input.planId,
             subscriptionStatus: "ACTIVE",
             subscriptionStart: new Date(),
@@ -227,7 +229,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
           details: {
             slug: input.slug,
             planId: input.planId,
-            themeKey: input.themeKey,
+            themeKey: DEFAULT_SITE_THEME,
           },
         });
         return site;
@@ -254,7 +256,6 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
           phone: input.phone,
           email: input.email,
           address: input.address || null,
-          themeKey: input.themeKey,
           planId: input.planId,
           subscriptionStatus: input.subscriptionStatus,
           subscriptionEnd: input.subscriptionEnd,
@@ -275,7 +276,6 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
           details: {
             planId: input.planId,
             status: input.subscriptionStatus,
-            themeKey: input.themeKey,
           },
         });
       });

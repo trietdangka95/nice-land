@@ -3,11 +3,9 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Save } from "lucide-react";
 import type { SubscriptionPlan, SubscriptionStatus } from "@nice-land/contracts";
-import type { PublicTheme } from "@nice-land/contracts";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { revalidateTenant } from "@/app/actions";
-import { PublicThemePicker } from "@/components/site/public-theme-picker";
 import { getValidationFieldMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
 
@@ -18,7 +16,6 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
   const [form, setForm] = useState({
     name: "", slug: "", phone: "", email: "", address: "", planId: "",
     subscriptionEnd: "", subscriptionStatus: "ACTIVE" as SubscriptionStatus,
-    themeKey: "CLASSIC_ESTATE" as PublicTheme,
     adminName: "", adminUsername: "", adminPassword: "",
   });
   const [saving, setSaving] = useState(false);
@@ -30,7 +27,6 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
       void api.getSuperAdminSite(siteId).then((site) => setForm((current) => ({
         ...current, name: site.name, slug: site.slug, phone: site.phone ?? "",
         email: site.email ?? "", address: site.address ?? "", planId: site.plan?.id ?? "",
-        themeKey: site.themeKey,
         subscriptionEnd: site.subscriptionEnd?.slice(0, 10) ?? "",
         subscriptionStatus: site.subscriptionStatus,
       }))).catch((requestError) => setError(requestError.message));
@@ -45,7 +41,6 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
         await api.updateSuperAdminSite(siteId, {
           name: form.name, slug: form.slug, phone: form.phone, email: form.email,
           address: form.address || null, planId: form.planId || null,
-          themeKey: form.themeKey,
           subscriptionEnd: form.subscriptionEnd ? new Date(form.subscriptionEnd) : null,
           subscriptionStatus: form.subscriptionStatus,
         });
@@ -53,7 +48,6 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
         await api.createSuperAdminSite({
           name: form.name, slug: form.slug, phone: form.phone, email: form.email,
           address: form.address || null, planId: form.planId,
-          themeKey: form.themeKey,
           subscriptionEnd: new Date(form.subscriptionEnd), adminName: form.adminName,
           adminUsername: form.adminUsername, adminPassword: form.adminPassword,
         });
@@ -83,12 +77,6 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
           <Field label="Địa chỉ" value={form.address} onChange={(v) => field("address", v)} />
           {!siteId && <><Field label="Tên quản trị viên" value={form.adminName} onChange={(v) => field("adminName", v)} required /><Field label="Tên đăng nhập" value={form.adminUsername} onChange={(v) => field("adminUsername", v)} required /><Field label="Mật khẩu ban đầu" type="password" value={form.adminPassword} onChange={(v) => field("adminPassword", v)} required /></>}
         </div>
-          <div className="mt-8 border-t border-ink/10 pt-7">
-            <PublicThemePicker
-              value={form.themeKey}
-              onChange={(value) => field("themeKey", value)}
-            />
-          </div>
         </section>
         <aside className="space-y-6">
           <section className="glass-panel rounded-3xl p-8"><h2 className="font-display text-2xl">Gói dịch vụ</h2>
@@ -107,7 +95,6 @@ const fieldLabels: Record<string, string> = {
   phone: "Số điện thoại",
   email: "Email",
   address: "Địa chỉ",
-  themeKey: "Giao diện",
   planId: "Gói dịch vụ",
   subscriptionEnd: "Ngày hết hạn",
   subscriptionStatus: "Trạng thái",

@@ -1,4 +1,3 @@
-import type { PublicTheme } from "@nice-land/contracts";
 import type { PropertyPost, PropertyType, Site } from "@/lib/types";
 
 export interface PublicThemeHomeProps {
@@ -12,6 +11,4 @@ export interface PublicThemeHomeProps {
   type?: PropertyType;
   categoryId?: string;
   sort: "newest" | "price_asc" | "price_desc";
-  themePreview?: PublicTheme;
 }
-

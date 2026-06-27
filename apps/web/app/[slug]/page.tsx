@@ -73,7 +73,7 @@ export default async function TenantHomePage({
 
   if (!site.isActive || site.subscriptionStatus === "EXPIRED") {
     return (
-      <main className="grid min-h-screen place-items-center px-5 text-center">
+      <main className="grid min-h-[100dvh] place-items-center px-5 text-center">
         <div className="max-w-lg">
           <span className="mx-auto grid size-16 place-items-center bg-amber-100 text-amber-700">
             <ShieldCheck size={30} />
@@ -123,14 +123,7 @@ export default async function TenantHomePage({
   const sort = ["newest", "price_asc", "price_desc"].includes(sortValue ?? "")
     ? (sortValue as "newest" | "price_asc" | "price_desc")
     : "newest";
-  const previewValue = Array.isArray(queryParams.themePreview)
-    ? queryParams.themePreview[0]
-    : queryParams.themePreview;
-  const renderedTheme = resolvePublicTheme(previewValue ?? site.themeKey);
-  const themePreview =
-    typeof previewValue === "string"
-      ? resolvePublicTheme(previewValue)
-      : undefined;
+  const renderedTheme = resolvePublicTheme(site.themeKey);
 
   const [listing, featuredListing] = await Promise.all([
     getTenantPosts(slug, site.id, {
@@ -165,7 +158,6 @@ export default async function TenantHomePage({
         type={type}
         categoryId={categoryId}
         sort={sort}
-        themePreview={themePreview}
       />
     </main>
   );

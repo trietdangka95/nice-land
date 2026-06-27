@@ -12,3 +12,4 @@ coverage
 packages/database/src/generated/
 .prisma/
 .agent
+skills
