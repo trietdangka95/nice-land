@@ -1,11 +1,12 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { CalendarDays, Check, Gauge, ImageIcon, Send } from "lucide-react";
-import type { AdminSubscription, SubscriptionPlan } from "@nice-land/contracts";
-import { createTenantApi } from "@/lib/api";
+import { CalendarDays, Check, Gauge, ImageIcon, Send, ArrowRight } from "lucide-react";
+import type { AdminSubscription, SubscriptionPlan, SystemSetting } from "@nice-land/contracts";
+import { createTenantApi, api } from "@/lib/api";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
+import { VietQR } from "@/components/shared/viet-qr";
 
 const statusLabels: Record<AdminSubscription["status"], string> = {
   TRIAL: "Dùng thử",
@@ -22,17 +23,19 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [selectedPlanId, setSelectedPlanId] = useState("");
   const [note, setNote] = useState("");
+  const [bankInfo, setBankInfo] = useState<SystemSetting | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
-    Promise.all([client.getSubscription(), client.getAvailablePlans()])
-      .then(([subData, plansData]) => {
+    Promise.all([client.getSubscription(), client.getAvailablePlans(), api.getPublicBankInfo()])
+      .then(([subData, plansData, bankData]) => {
         if (!active) return;
         setSubscription(subData);
         setPlans(plansData);
+        setBankInfo(bankData);
         setSelectedPlanId(subData.plan?.id ?? (plansData[0]?.id || ""));
       })
       .catch((requestError) => active && setError(requestError instanceof Error ? requestError.message : "Không thể tải gói dịch vụ."))
@@ -138,6 +141,20 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
                 Ghi chú gia hạn
                 <textarea value={note} onChange={(event) => setNote(event.target.value)} maxLength={1000} placeholder="Ví dụ: Tôi muốn gia hạn thêm 12 tháng" className="min-h-24 rounded-xl border border-white/20 bg-white/10 p-4 font-normal text-white placeholder:text-white/35 focus:bg-white/20 transition-colors" />
               </label>
+
+              {(() => {
+                const sp = plans.find((p) => p.id === selectedPlanId);
+                if (sp && sp.price > 0 && bankInfo?.bankId) {
+                  return (
+                    <div className="mt-4 rounded-xl bg-white/10 p-4">
+                      <p className="mb-4 text-center text-sm font-bold text-gold">Quét mã QR để thanh toán</p>
+                      <VietQR amount={Number(sp.price)} content={`GIA HAN ${slug}`} bankInfo={bankInfo} />
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+
               <button disabled={sending} className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-gold px-5 text-sm font-bold text-ink hover:bg-gold/90 transition-colors disabled:opacity-60">
                 <Send size={16} /> {sending ? "Đang gửi..." : "Gửi yêu cầu gia hạn"}
               </button>

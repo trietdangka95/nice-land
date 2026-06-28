@@ -52,6 +52,7 @@ export function AdminShell({
       [WalletCards, "Gói dịch vụ", `${base}/plans`],
       [Users, "Liên hệ & gia hạn", `${base}/contacts`],
       [BarChart3, "Nhật ký hệ thống", `${base}/audit-logs`],
+      [Settings, "Cấu hình thanh toán", `${base}/settings`],
     ]
     : [
       [LayoutDashboard, "Tổng quan", base],

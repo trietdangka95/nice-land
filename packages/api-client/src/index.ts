@@ -42,6 +42,8 @@ import type {
   TenantAnalytics,
   TenantDashboard,
   TenantLead,
+  SystemSetting,
+  SystemSettingInput,
 } from "@nice-land/contracts";
 
 export interface ApiClientOptions {
@@ -319,11 +321,20 @@ export function createApiClient(options: ApiClientOptions) {
       }),
     listAuditLogs: () =>
       request<AuditLogItem[]>("/v1/superadmin/audit-logs"),
+    getSystemSetting: () =>
+      request<SystemSetting>("/v1/superadmin/settings"),
+    updateSystemSetting: (input: SystemSettingInput) =>
+      request<SystemSetting>("/v1/superadmin/settings", {
+        method: "PUT",
+        body: JSON.stringify(input),
+      }),
     createContactRequest: (input: ContactRequestInput) =>
       request<{ id: string; createdAt: string }>("/v1/public/contact-requests", {
         method: "POST",
         body: JSON.stringify(input),
       }),
+    getPublicBankInfo: () =>
+      request<SystemSetting>("/v1/public/bank-info"),
     trackPostView: (postId: string) =>
       request<void>(`/v1/public/posts/${encodeURIComponent(postId)}/view`, {
         method: "POST",

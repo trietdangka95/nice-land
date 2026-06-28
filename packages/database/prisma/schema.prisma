@@ -367,3 +367,11 @@ model ContactRequest {
   @@index([siteId, status, createdAt])
   @@index([createdAt])
 }
+
+model SystemSetting {
+  id              String @id @default("default")
+  bankId          String?
+  bankAccount     String?
+  bankAccountName String?
+  updatedAt       DateTime @updatedAt
+}

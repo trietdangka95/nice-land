@@ -7,6 +7,8 @@ import type {
   SuperAdminSiteCreate,
   SuperAdminSiteListQuery,
   SuperAdminSiteUpdate,
+  SystemSetting,
+  SystemSettingInput,
 } from "@nice-land/contracts";
 import {
   SuperAdminConflictError,
@@ -474,5 +476,50 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
       },
     });
     return items.map((item) => ({ ...item, createdAt: item.createdAt.toISOString() }));
+  }
+
+  async getSystemSetting(): Promise<SystemSetting> {
+    let setting = await prisma.systemSetting.findUnique({
+      where: { id: "default" },
+    });
+    if (!setting) {
+      setting = await prisma.systemSetting.create({
+        data: { id: "default" },
+      });
+    }
+    return {
+      id: setting.id,
+      bankId: setting.bankId,
+      bankAccount: setting.bankAccount,
+      bankAccountName: setting.bankAccountName,
+      updatedAt: setting.updatedAt,
+    };
+  }
+
+  async updateSystemSetting(input: SystemSettingInput, actorId: string): Promise<SystemSetting> {
+    const setting = await prisma.systemSetting.upsert({
+      where: { id: "default" },
+      create: {
+        id: "default",
+        ...input,
+      },
+      update: input,
+    });
+
+    await writeAuditLog(prisma, {
+      userId: actorId,
+      action: "SYSTEM_SETTING_UPDATED",
+      entityType: "SystemSetting",
+      entityId: "default",
+      details: input,
+    });
+
+    return {
+      id: setting.id,
+      bankId: setting.bankId,
+      bankAccount: setting.bankAccount,
+      bankAccountName: setting.bankAccountName,
+      updatedAt: setting.updatedAt,
+    };
   }
 }

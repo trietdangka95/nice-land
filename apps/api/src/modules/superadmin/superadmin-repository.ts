@@ -9,6 +9,8 @@ import type {
   SuperAdminSiteCreate,
   SuperAdminSiteListQuery,
   SuperAdminSiteUpdate,
+  SystemSetting,
+  SystemSettingInput,
 } from "@nice-land/contracts";
 
 export interface SuperAdminRepository {
@@ -28,6 +30,8 @@ export interface SuperAdminRepository {
   listContacts(): Promise<SuperAdminContact[]>;
   updateContactStatus(id: string, status: "NEW" | "IN_PROGRESS" | "DONE" | "REJECTED", actorId: string): Promise<boolean>;
   listAuditLogs(): Promise<AuditLogItem[]>;
+  getSystemSetting(): Promise<SystemSetting>;
+  updateSystemSetting(input: SystemSettingInput, actorId: string): Promise<SystemSetting>;
 }
 
 export class SuperAdminConflictError extends Error {

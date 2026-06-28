@@ -1,9 +1,12 @@
 "use client";
 
-import { FormEvent, useState } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useToast } from "@/components/shared/toast-provider";
+import { VietQR } from "@/components/shared/viet-qr";
+import { plans } from "@/lib/data";
+import type { SystemSetting } from "@nice-land/contracts";
 
 export function ContactForm({
   selectedPlan,
@@ -13,8 +16,20 @@ export function ContactForm({
   const toast = useToast();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [bankInfo, setBankInfo] = useState<SystemSetting | null>(null);
+  const [phone, setPhone] = useState("");
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    let active = true;
+    api.getPublicBankInfo().then((data) => {
+      if (active) setBankInfo(data);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formEl = event.currentTarget;
     setLoading(true);
@@ -89,6 +104,8 @@ export function ContactForm({
             type="tel"
             placeholder="09xx xxx xxx"
             required
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
           />
         </label>
       </div>
@@ -109,6 +126,20 @@ export function ContactForm({
           placeholder="Ví dụ: Tôi muốn tạo website cho đội ngũ 5 môi giới..."
         />
       </label>
+
+      {(() => {
+        const sp = plans.find((p) => p.name === selectedPlan);
+        if (sp && sp.price > 0 && bankInfo?.bankId) {
+          return (
+            <div className="mt-4 rounded-xl bg-white/10 p-4">
+              <p className="mb-4 text-center text-sm font-bold text-gold">Quét mã QR để thanh toán</p>
+              <VietQR amount={Number(sp.price)} content={`DANG KY ${phone || "09..."}`} bankInfo={bankInfo} />
+            </div>
+          );
+        }
+        return null;
+      })()}
+
       <button className="button-primary mt-2 bg-gold text-ink hover:bg-white" disabled={loading}>
         {loading ? "Đang gửi..." : "Nhận tư vấn miễn phí"}
         {!loading && <ArrowRight size={17} aria-hidden="true" />}

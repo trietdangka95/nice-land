@@ -7,6 +7,7 @@ import {
   superAdminSiteCreateSchema,
   superAdminSiteListQuerySchema,
   superAdminSiteUpdateSchema,
+  systemSettingInputSchema,
 } from "@nice-land/contracts";
 import { createRequireAuth, requireRole } from "../auth/auth-guards.js";
 import type { AccessTokenService } from "../auth/token-service.js";
@@ -87,4 +88,10 @@ export async function registerSuperAdminRoutes(
       : reply.status(404).send(notFound(request.id));
   });
   app.get("/v1/superadmin/audit-logs", { preHandler: guards }, () => options.repository.listAuditLogs());
+
+  app.get("/v1/superadmin/settings", { preHandler: guards }, () => options.repository.getSystemSetting());
+  app.put("/v1/superadmin/settings", { preHandler: guards }, async (request) => {
+    const input = systemSettingInputSchema.parse(request.body);
+    return options.repository.updateSystemSetting(input, request.auth!.sub);
+  });
 }

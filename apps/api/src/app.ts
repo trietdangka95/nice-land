@@ -205,6 +205,12 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
     );
   }
 
+  if (options.superAdminRepository) {
+    app.get("/v1/public/bank-info", async () => {
+      return options.superAdminRepository!.getSystemSetting();
+    });
+  }
+
   if (options.tenantRepository && options.contactRequestRepository) {
     app.post(
       "/v1/public/contact-requests",

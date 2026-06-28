@@ -110,6 +110,20 @@ export const updateProfileInputSchema = z.object({
   phone: z.string().trim().max(20).nullable().optional(),
 });
 
+export const systemSettingSchema = z.object({
+  id: z.string(),
+  bankId: z.string().nullable(),
+  bankAccount: z.string().nullable(),
+  bankAccountName: z.string().nullable(),
+  updatedAt: z.union([z.string(), z.date()]).transform((d) => new Date(d)),
+});
+
+export const systemSettingInputSchema = z.object({
+  bankId: z.string().trim().nullable(),
+  bankAccount: z.string().trim().nullable(),
+  bankAccountName: z.string().trim().nullable(),
+});
+
 export const changePasswordInputSchema = z.object({
   currentPassword: z.string().min(1),
   newPassword: z.string().min(8).max(200),
@@ -308,6 +322,8 @@ export type LoginInput = z.infer<typeof loginInputSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordInputSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordInputSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
+export type SystemSetting = z.infer<typeof systemSettingSchema>;
+export type SystemSettingInput = z.infer<typeof systemSettingInputSchema>;
 export type ChangePasswordInput = z.infer<typeof changePasswordInputSchema>;
 export type AdminPostInput = z.infer<typeof adminPostInputSchema>;
 export type AdminPostUpdate = z.infer<typeof adminPostUpdateSchema>;

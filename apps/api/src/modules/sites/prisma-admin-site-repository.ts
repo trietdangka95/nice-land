@@ -228,6 +228,6 @@ export class PrismaAdminSiteRepository implements AdminSiteRepository {
       where: { isActive: true },
       orderBy: { price: "asc" },
     });
-    return plans.map((p) => ({ ...p, price: p.price.toNumber() }));
+    return plans.map((p) => ({ ...p, price: Number(p.price), siteCount: 0 }));
   }
 }
