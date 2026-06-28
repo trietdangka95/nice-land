@@ -11,6 +11,7 @@ import { PropertyEngagement } from "@/components/site/property-engagement";
 import { TrackedContactLink } from "@/components/site/tracked-contact-link";
 import { resolvePublicTheme } from "@/lib/public-themes";
 import { PublicThemeStylesheet } from "@/components/site/public-theme-stylesheet";
+import { PropertyGallery } from "@/components/site/property-gallery";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3002";
 
@@ -81,27 +82,7 @@ export default async function PropertyDetailPage({
       </div>
 
       <section className="tenant-detail-gallery page-shell">
-        <div className="tenant-detail-gallery-grid grid gap-3 md:grid-cols-[1.6fr_1fr]" data-reveal="soft">
-          <div className="tenant-detail-main-image relative min-h-[380px] overflow-hidden md:min-h-[570px]">
-            <Image
-              src={post.images[0]}
-              alt={post.title}
-              fill
-              priority
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 65vw"
-            />
-          </div>
-          <div className="tenant-detail-thumbnails grid grid-cols-2 gap-3 md:grid-cols-1">
-            {(post.images.slice(1, 3).length ? post.images.slice(1, 3) : [post.images[0], post.images[0]]).map(
-              (image, index) => (
-                <div key={`${image}-${index}`} className="relative min-h-44 overflow-hidden md:min-h-0">
-                  <Image src={image} alt={`${post.title} - ảnh ${index + 2}`} fill className="object-cover" sizes="35vw" />
-                </div>
-              ),
-            )}
-          </div>
-        </div>
+        <PropertyGallery images={post.images} title={post.title} />
       </section>
 
       <section className="tenant-detail-layout page-shell grid gap-12 py-14 lg:grid-cols-[1fr_360px]">

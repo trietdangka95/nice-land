@@ -171,7 +171,6 @@ export function PersonalHeader({ site }: { site: Site }) {
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-semibold text-[#5c3d2e] lg:flex" aria-label="Điều hướng Personal Broker">
           <Link href={`/${site.slug}#properties`}>Bất động sản</Link>
-          <Link href={`/${site.slug}#about`}>Câu chuyện của tôi</Link>
           <Link href={`/${site.slug}#contact`}>Liên hệ</Link>
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
