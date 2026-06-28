@@ -118,7 +118,7 @@ export const properties: PropertyPost[] = [
     status: "PUBLISHED",
     images: [
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1502672260266-1c1de2d9d000?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&w=1200&q=85"
     ],
     createdAt: "2026-06-20",
   },

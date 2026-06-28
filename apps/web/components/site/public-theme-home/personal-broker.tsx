@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { TenantLink } from "@/components/shared/tenant-link";
-import { ArrowRight, Award, HeartHandshake, Phone, ShieldCheck, Map, Mail, MapPin } from "lucide-react";
+import { ArrowRight, Award, HeartHandshake, Phone, ShieldCheck, Mail, MapPin } from "lucide-react";
 import { PersonalFooter, PersonalHeader } from "./chrome";
 import { PropertyBrowser } from "@/components/site/property-browser";
 import { formatPrice } from "@/lib/format";
@@ -51,9 +51,9 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
                       <strong className="block text-[15px] font-extrabold text-[#2d1f18] truncate">{featured.district}</strong>
                       <small className="text-[#7a5a4e] text-xs font-medium mt-1 truncate">Khu vực</small>
                     </div>
-                    <div className="flex flex-col items-center justify-center gap-1 min-w-0">
-                      <Map className="text-[#7a5a4e] shrink-0" strokeWidth={1.5} size={24} />
-                      <button className="mt-1 w-full rounded-full bg-[#f1ebd9] text-[var(--tenant-color)] px-2 py-1.5 text-[10px] font-bold truncate">Lưu tin</button>
+                    <div className="rounded-2xl bg-[#f8f6f0] p-3 flex flex-col justify-center items-center text-center min-w-0">
+                      <strong className="block text-[15px] font-extrabold text-[#2d1f18] truncate">{formatPrice(featured.price, featured.type)}</strong>
+                      <small className="text-[#7a5a4e] text-xs font-medium mt-1 truncate">Mức giá</small>
                     </div>
                   </div>
                 </div>
