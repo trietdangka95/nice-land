@@ -291,3 +291,20 @@ export async function getTenantPost(
     return allowMockFallback ? getMockPost(siteId, postId) : undefined;
   }
 }
+
+export async function getPlatformStats(): Promise<{
+  totalSites: number;
+  totalPosts: number;
+}> {
+  try {
+    const response = await fetch(`${apiUrl}/v1/public/stats`, {
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) {
+      return { totalSites: 1200, totalPosts: 48000 };
+    }
+    return (await response.json()) as { totalSites: number; totalPosts: number };
+  } catch {
+    return { totalSites: 1200, totalPosts: 48000 };
+  }
+}

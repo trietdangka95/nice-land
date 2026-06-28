@@ -18,4 +18,5 @@ export interface PublicSiteConfig {
 
 export interface PublicSiteRepository {
   findPublicConfig(siteId: string): Promise<PublicSiteConfig | null>;
+  getPlatformStats?(): Promise<{ totalSites: number; totalPosts: number }>;
 }

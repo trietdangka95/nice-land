@@ -203,6 +203,12 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
         return site;
       },
     );
+
+    if (options.publicSiteRepository.getPlatformStats) {
+      app.get("/v1/public/stats", async () => {
+        return options.publicSiteRepository!.getPlatformStats!();
+      });
+    }
   }
 
   if (options.superAdminRepository) {

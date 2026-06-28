@@ -21,6 +21,7 @@ import { Faq } from "@/components/marketing/faq";
 import { MobileNavigation } from "@/components/shared/mobile-navigation";
 import { plans, properties } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
+import { getPlatformStats } from "@/lib/server-api";
 import { ThemeShowcase } from "@/components/marketing/theme-showcase";
 
 export default async function LandingPage({
@@ -30,6 +31,7 @@ export default async function LandingPage({
 }) {
   const query = await searchParams;
   const selectedPlan = query.plan?.slice(0, 120);
+  const stats = await getPlatformStats();
 
   return (
     <main className="overflow-hidden">
@@ -123,10 +125,16 @@ export default async function LandingPage({
         <div className="page-shell">
           <div className="glass-panel rounded-3xl grid gap-8 sm:gap-5 text-center sm:grid-cols-3 sm:text-left p-10 mx-auto max-w-5xl" data-reveal-group>
             {[
-              ["1.200+", "website đã khởi tạo"],
-              ["48.000+", "tin đăng được quản lý"],
+              [
+                new Intl.NumberFormat("vi-VN").format(stats.totalSites) + "+",
+                "website đã khởi tạo",
+              ],
+              [
+                new Intl.NumberFormat("vi-VN").format(stats.totalPosts) + "+",
+                "tin đăng được quản lý",
+              ],
               ["99,9%", "thời gian hoạt động"],
-            ].map(([value, label]) => (
+            ].map(([value, label], index) => (
               <div key={label} className="flex flex-col sm:flex-row items-center gap-3 sm:justify-start">
                 <strong className="font-display text-4xl font-semibold text-gradient drop-shadow-sm">{value}</strong>
                 <span className="text-sm font-medium text-ink/60 uppercase tracking-wider">{label}</span>

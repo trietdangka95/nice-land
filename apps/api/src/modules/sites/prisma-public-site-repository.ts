@@ -27,4 +27,12 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
     });
     return site ? { ...site, themeKey: "WARM_MINIMAL" as const } : null;
   }
+
+  async getPlatformStats() {
+    const [totalSites, totalPosts] = await Promise.all([
+      prisma.site.count({ where: { isActive: true, deletedAt: null } }),
+      prisma.propertyPost.count({ where: { status: "PUBLISHED", deletedAt: null } }),
+    ]);
+    return { totalSites, totalPosts };
+  }
 }
