@@ -17,7 +17,7 @@ function mockSite(slug: string) {
 }
 
 function tenantHost(slug: string) {
-  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost";
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "nice-land.id.vn";
   return `${slug}.${rootDomain}`;
 }
 
@@ -43,14 +43,31 @@ export async function getTenantSite(slug: string): Promise<Site | undefined> {
   try {
     const response = await tenantFetch(slug, "/v1/public/site");
     if (response.status === 402 || response.status === 403) {
-      return fallback
-        ? {
-            ...fallback,
-            isActive: false,
-            subscriptionStatus:
-              response.status === 402 ? "EXPIRED" : fallback.subscriptionStatus,
-          }
-        : undefined;
+      if (fallback) {
+        return {
+          ...fallback,
+          isActive: false,
+          subscriptionStatus:
+            response.status === 402 ? "EXPIRED" : fallback.subscriptionStatus,
+        };
+      }
+      return {
+        id: `inactive-${slug}`,
+        name: "Website bất động sản",
+        slug,
+        tagline: "",
+        logoMark: "WB",
+        themeKey: resolvePublicTheme("warm-minimal"),
+        themeColor: "#315c45",
+        phone: "",
+        email: "",
+        address: "",
+        isActive: false,
+        subscriptionStatus: response.status === 402 ? "EXPIRED" : "SUSPENDED",
+        subscriptionEnd: "",
+        plan: "",
+        createdAt: new Date().toISOString(),
+      };
     }
     if (!response.ok) return fallback;
     const site = (await response.json()) as {

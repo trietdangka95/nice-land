@@ -12,6 +12,18 @@ import { useToast } from "@/components/shared/toast-provider";
 
 const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "nice-land.id.vn";
 
+function getStatusDisplay(site: SuperAdminSite) {
+  if (!site.isActive) return { label: "Tạm ngưng", tone: "gray" as const };
+  switch (site.subscriptionStatus) {
+    case "ACTIVE": return { label: "Hoạt động", tone: "green" as const };
+    case "EXPIRED": return { label: "Hết hạn", tone: "red" as const };
+    case "TRIAL": return { label: "Dùng thử", tone: "gold" as const };
+    case "GRACE_PERIOD": return { label: "Ân hạn", tone: "gold" as const };
+    case "SUSPENDED": return { label: "Khóa", tone: "red" as const };
+    default: return { label: site.subscriptionStatus, tone: "gray" as const };
+  }
+}
+
 export function SuperAdminSitesScreen() {
   const toast = useToast();
   const [items, setItems] = useState<SuperAdminSite[]>([]);
@@ -132,7 +144,12 @@ export function SuperAdminSitesScreen() {
             <td className="px-6 py-4 text-xs"><strong>{site.admin?.username ?? "Chưa có"}</strong><p className="mt-1 text-ink/50 font-medium">{site.admin ? (site.admin.isActive ? "Tài khoản hoạt động" : "Tài khoản bị khóa") : "Chưa có tài khoản"}</p></td>
             <td className="px-6 py-4 text-sm font-medium">{site.plan?.name ?? "Chưa gán"}</td>
             <td className="px-6 py-4 text-xs font-medium text-ink/60">{site.usage.posts} tin · {site.usage.images} ảnh</td>
-            <td className="px-6 py-4"><StatusPill tone={site.isActive ? "green" : "red"}>{site.isActive ? site.subscriptionStatus : "Tạm ngưng"}</StatusPill></td>
+            <td className="px-6 py-4">
+              {(() => {
+                const display = getStatusDisplay(site);
+                return <StatusPill tone={display.tone}>{display.label}</StatusPill>;
+              })()}
+            </td>
             <td className="px-6 py-4"><div className="flex gap-2"><Link href={`/superadmin/sites/${site.id}`} className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 hover:border-moss/30 hover:text-moss transition-colors" aria-label={`Sửa ${site.name}`}><Pencil size={15} /></Link><button onClick={() => void resetPassword(site)} className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 hover:border-moss/30 hover:text-moss transition-colors" aria-label={`Reset mật khẩu ${site.name}`}><KeyRound size={15} /></button><button onClick={() => void toggleAdmin(site)} className="rounded-lg bg-white shadow-sm border border-ink/5 hover:bg-ink/5 transition-colors px-3 text-xs font-bold">{site.admin?.isActive ? "Khóa admin" : "Mở admin"}</button><button onClick={() => void toggle(site)} className="rounded-lg bg-white shadow-sm border border-ink/5 hover:bg-ink/5 transition-colors px-3 text-xs font-bold">{site.isActive ? "Tạm ngưng" : "Kích hoạt"}</button></div></td>
           </tr>)}</tbody></table></div>
         )}

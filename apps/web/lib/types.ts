@@ -1,6 +1,6 @@
 export type PropertyType = "LAND" | "HOUSE" | "APARTMENT" | "RENTAL";
 export type PostStatus = "DRAFT" | "PUBLISHED" | "HIDDEN" | "SOLD";
-export type SubscriptionStatus = "ACTIVE" | "TRIAL" | "EXPIRED";
+export type SubscriptionStatus = "ACTIVE" | "TRIAL" | "EXPIRED" | "SUSPENDED" | "GRACE_PERIOD";
 export type PublicTheme =
   | "CLASSIC_ESTATE"
   | "MODERN_GRID"

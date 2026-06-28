@@ -27,10 +27,12 @@ import { useAuth } from "@/components/shared/auth-guard";
 export function AdminShell({
   site,
   superAdmin = false,
+  isExpired = false,
   children,
 }: {
   site?: AdminSiteIdentity;
   superAdmin?: boolean;
+  isExpired?: boolean;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -43,7 +45,7 @@ export function AdminShell({
     : user.username.slice(0, 2).toUpperCase();
 
   const base = superAdmin ? "/superadmin" : `/${site?.slug}/admin`;
-  const nav = superAdmin
+  let nav = superAdmin
     ? [
       [LayoutDashboard, "Tổng quan", base],
       [Building2, "Website khách hàng", `${base}/sites`],
@@ -61,6 +63,13 @@ export function AdminShell({
       [Settings, "Cấu hình website", `${base}/settings`],
       [WalletCards, "Gói dịch vụ", `${base}/subscription`],
     ];
+
+  if (isExpired && !superAdmin) {
+    nav = [
+      [WalletCards, "Gói dịch vụ", `${base}/subscription`],
+    ];
+  }
+
   const activeHref = findActiveNavigationHref(
     pathname,
     nav.map(([, , href]) => href as string),

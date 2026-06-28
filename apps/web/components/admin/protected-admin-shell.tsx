@@ -13,9 +13,11 @@ import {
 
 function TenantAdminShell({
   slug,
+  isExpired,
   children,
 }: {
   slug: string;
+  isExpired?: boolean;
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -45,6 +47,13 @@ function TenantAdminShell({
   useEffect(() => {
     void loadSite();
   }, [attempt, loadSite]);
+
+  useEffect(() => {
+    const pathname = window.location.pathname;
+    if (isExpired && !pathname.endsWith("/admin/subscription") && !pathname.endsWith("/admin/login")) {
+      router.replace(`/${slug}/admin/subscription`);
+    }
+  }, [isExpired, router, slug]);
 
   if (error) {
     return (
@@ -76,16 +85,18 @@ function TenantAdminShell({
     );
   }
 
-  return <AdminShell site={site}>{children}</AdminShell>;
+  return <AdminShell site={site} isExpired={isExpired}>{children}</AdminShell>;
 }
 
 export function ProtectedAdminShell({
   slug,
   superAdmin = false,
+  isExpired = false,
   children,
 }: {
   slug?: string;
   superAdmin?: boolean;
+  isExpired?: boolean;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -112,7 +123,7 @@ export function ProtectedAdminShell({
 
   return (
     <AuthGuard slug={slug}>
-      <TenantAdminShell slug={slug}>{children}</TenantAdminShell>
+      <TenantAdminShell slug={slug} isExpired={isExpired}>{children}</TenantAdminShell>
     </AuthGuard>
   );
 }
