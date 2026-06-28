@@ -92,7 +92,7 @@ export function ContactForm({
           <input
             className="h-12 border border-white/15 bg-white/10 px-4 font-normal text-white placeholder:text-white/35"
             name="name"
-            placeholder="Nguyễn Minh Anh"
+            placeholder="Nguyễn Văn A"
             required
           />
         </label>
@@ -115,7 +115,7 @@ export function ContactForm({
           className="h-12 border border-white/15 bg-white/10 px-4 font-normal text-white placeholder:text-white/35"
           name="email"
           type="email"
-          placeholder="ban@congty.vn"
+          placeholder="ten-email@gmail.com"
         />
       </label>
       <label className="grid gap-2 text-sm font-semibold">
@@ -123,7 +123,7 @@ export function ContactForm({
         <textarea
           className="min-h-28 resize-y border border-white/15 bg-white/10 p-4 font-normal text-white placeholder:text-white/35"
           name="message"
-          placeholder="Ví dụ: Tôi muốn tạo website cho đội ngũ 5 môi giới..."
+          placeholder="Ví dụ: Tôi muốn tạo website bán bất động sản..."
         />
       </label>
 

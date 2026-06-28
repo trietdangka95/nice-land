@@ -2,15 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  BarChart3,
   Building2,
   Check,
-  ChevronRight,
   Globe2,
-  Layers3,
   MousePointerClick,
   Palette,
-  ShieldCheck,
+  PhoneCall,
   Sparkles,
   LayoutDashboard
 } from "lucide-react";
@@ -22,7 +19,6 @@ import { MobileNavigation } from "@/components/shared/mobile-navigation";
 import { plans, properties } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
 import { getPlatformStats } from "@/lib/server-api";
-import { ThemeShowcase } from "@/components/marketing/theme-showcase";
 
 export default async function LandingPage({
   searchParams,
@@ -32,21 +28,25 @@ export default async function LandingPage({
   const query = await searchParams;
   const selectedPlan = query.plan?.slice(0, 120);
   const stats = await getPlatformStats();
+  const featuredPreview = properties[0];
 
   return (
     <main className="overflow-hidden">
-      <header className="absolute inset-x-0 top-0 z-50">
-        <div className="page-shell flex h-24 items-center justify-between">
+      <header className="sticky top-0 z-50 border-b border-ink/10 bg-cream/90 backdrop-blur-xl supports-[backdrop-filter]:bg-cream/75">
+        <div className="page-shell flex min-h-20 items-center justify-between gap-4">
           <Logo />
-          <nav className="hidden items-center gap-8 text-sm font-semibold lg:flex rounded-full bg-white/40 backdrop-blur-md border border-white/40 px-8 py-3 shadow-sm" aria-label="Điều hướng chính">
-            <a href="#features" className="hover:text-moss transition-colors">Tính năng</a>
-            <Link href="/themes" className="hover:text-moss transition-colors">Giao diện mẫu</Link>
-            <a href="#process" className="hover:text-moss transition-colors">Cách hoạt động</a>
-            <a href="#pricing" className="hover:text-moss transition-colors">Bảng giá</a>
-            <a href="#faq" className="hover:text-moss transition-colors">Hỏi đáp</a>
+          <nav className="hidden items-center gap-1 rounded-full border border-ink/10 bg-white/70 p-1 text-sm font-semibold shadow-sm lg:flex" aria-label="Điều hướng chính">
+            <a href="#features" className="rounded-full px-4 py-2.5 text-ink/65 transition-colors hover:bg-moss/10 hover:text-moss focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70">Tính năng</a>
+            <Link href="/themes" className="rounded-full px-4 py-2.5 text-ink/65 transition-colors hover:bg-moss/10 hover:text-moss focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70">Giao diện mẫu</Link>
+            <a href="#process" className="rounded-full px-4 py-2.5 text-ink/65 transition-colors hover:bg-moss/10 hover:text-moss focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70">Cách hoạt động</a>
+            <a href="#pricing" className="rounded-full px-4 py-2.5 text-ink/65 transition-colors hover:bg-moss/10 hover:text-moss focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70">Bảng giá</a>
+            <a href="#faq" className="rounded-full px-4 py-2.5 text-ink/65 transition-colors hover:bg-moss/10 hover:text-moss focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70">Hỏi đáp</a>
           </nav>
           <div className="hidden items-center gap-3 sm:flex">
-            <a href="#contact" className="button-primary !py-2.5 !min-h-0">
+            <Link href="/themes" className="button-secondary !min-h-11 !px-5 !py-2.5">
+              Xem mẫu
+            </Link>
+            <a href="#contact" className="button-primary !min-h-11 !px-5 !py-2.5">
               Tạo website
               <ArrowRight size={16} aria-hidden="true" />
             </a>
@@ -54,7 +54,7 @@ export default async function LandingPage({
           <MobileNavigation
             label="Mở menu"
             title="Nice Land"
-            triggerClassName="grid size-11 place-items-center rounded-xl bg-white/50 backdrop-blur-md border border-white/50 shadow-sm sm:hidden"
+            triggerClassName="grid size-11 place-items-center rounded-xl bg-white/80 border border-ink/10 shadow-sm sm:hidden"
           >
             <nav className="flex flex-col p-4 text-base font-semibold" aria-label="Điều hướng chính trên di động">
               <a href="#features" className="border-b border-ink/5 px-3 py-4">Tính năng</a>
@@ -64,6 +64,9 @@ export default async function LandingPage({
               <a href="#faq" className="border-b border-ink/5 px-3 py-4">Hỏi đáp</a>
             </nav>
             <div className="mt-auto space-y-3 border-t border-ink/5 p-4 bg-cream/30">
+              <Link href="/themes" className="button-secondary w-full">
+                Xem website mẫu
+              </Link>
               <a href="#contact" className="button-primary w-full">
                 Tạo website
               </a>
@@ -73,47 +76,94 @@ export default async function LandingPage({
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-10 lg:pt-40 lg:pb-16 min-h-[90vh] flex flex-col justify-center">
-        {/* Animated Background Gradients */}
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-moss/15 gradient-glow z-0"></div>
-        <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-gold/20 gradient-glow animation-delay-2000 z-0"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-[600px] h-[600px] bg-leaf/10 gradient-glow animation-delay-4000 z-0"></div>
+      <section className="hero-surface relative overflow-hidden py-10 lg:py-14">
+        <div className="page-shell relative z-10 grid min-h-[clamp(560px,calc(100dvh-5rem),760px)] gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(390px,0.95fr)] lg:items-center">
+          <div className="max-w-2xl" data-reveal="soft">
+            <div className="inline-flex items-center gap-2 rounded-full border border-moss/15 bg-white/70 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-moss shadow-sm sm:text-xs">
+              <Sparkles size={14} aria-hidden="true" />
+              <span>Nền tảng website cho người làm địa ốc</span>
+            </div>
 
-        <div className="page-shell relative z-10 text-center max-w-4xl mx-auto mt-8 lg:mt-0" data-reveal="soft">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/40 backdrop-blur-md px-4 py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-moss shadow-sm transition-all hover:bg-white/60">
-            <Sparkles size={14} aria-hidden="true" />
-            <span>Nền tảng website cho người làm địa ốc</span>
-          </div>
+            <h1 className="mt-6 text-balance font-display text-4xl font-semibold leading-[1.02] min-[420px]:text-5xl sm:text-6xl lg:text-[68px]">
+              Website tin đăng <span className="text-gradient">mang tên bạn.</span>
+            </h1>
 
-          <h1 className="mt-8 text-balance font-display text-5xl font-medium leading-[1.05] min-[420px]:text-6xl sm:text-7xl lg:text-[86px] tracking-tight">
-            Website tin đăng <br className="hidden sm:block" />
-            <span className="text-gradient font-bold drop-shadow-sm">mang tên bạn.</span>
-          </h1>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-ink/70 sm:text-lg">
+              Xây thương hiệu riêng, quản lý tin mua bán - cho thuê thông minh và biến mỗi lượt xem thành một cơ hội kết nối với khách hàng thật.
+            </p>
 
-          <p className="mt-8 max-w-2xl mx-auto text-base leading-relaxed text-ink/70 sm:text-lg">
-            Xây thương hiệu riêng, quản lý tin đăng thông minh và biến mỗi lượt xem thành một cơ hội kết nối với giao diện hiện đại.
-          </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <a href="#contact" className="button-primary group w-full sm:w-auto">
+                Bắt đầu website của bạn
+                <ArrowRight size={17} className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" aria-hidden="true" />
+              </a>
+              <Link href="/themes" className="button-secondary w-full sm:w-auto">
+                Xem website mẫu
+                <LayoutDashboard size={17} aria-hidden="true" />
+              </Link>
+            </div>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <a href="#contact" className="button-primary group w-full sm:w-auto">
-              Bắt đầu website của bạn
-              <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
-            </a>
-            <Link href="/themes" className="button-secondary w-full sm:w-auto">
-              Xem website mẫu
-              <LayoutDashboard size={17} aria-hidden="true" />
-            </Link>
-          </div>
-
-          <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ink/60 font-medium">
-            {["Dùng thử 14 ngày", "Không cần thẻ", "Hỗ trợ thiết lập"].map((item) => (
-              <span key={item} className="flex items-center gap-2">
-                <span className="flex size-5 items-center justify-center rounded-full bg-moss/10">
-                  <Check className="text-moss" size={12} aria-hidden="true" />
+            <div className="mt-7 grid max-w-xl gap-2 text-sm font-semibold text-ink/65 sm:grid-cols-3">
+              {["Dùng thử 14 ngày", "Không cần thẻ", "Hỗ trợ thiết lập"].map((item) => (
+                <span key={item} className="flex items-center gap-2 rounded-full border border-ink/8 bg-white/55 px-3 py-2 text-xs sm:text-sm">
+                  <span className="flex size-5 items-center justify-center rounded-full bg-moss/10">
+                    <Check className="text-moss" size={12} aria-hidden="true" />
+                  </span>
+                  {item}
                 </span>
-                {item}
-              </span>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          <div className="relative" data-reveal="right">
+            <div className="hero-preview-shadow absolute inset-x-8 bottom-0 top-10 rounded-[2rem]"></div>
+            <div className="relative mx-auto max-w-[760px] overflow-hidden rounded-3xl border border-ink/10 bg-white shadow-[0_24px_70px_rgba(23,33,27,0.14)]">
+              <div className="flex items-center justify-between border-b border-ink/10 bg-white px-4 py-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="size-3 rounded-full bg-red-400"></span>
+                  <span className="size-3 rounded-full bg-gold"></span>
+                  <span className="size-3 rounded-full bg-leaf"></span>
+                </div>
+                <span className="rounded-full bg-cream px-4 py-1 text-[11px] font-bold text-ink/45">minhphat.nice-land.id.vn</span>
+              </div>
+              <div className="grid gap-4 p-4 sm:grid-cols-[1.1fr_0.9fr] sm:p-5">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-sand">
+                  <Image src={featuredPreview.images[0]} alt={featuredPreview.title} fill priority className="object-cover" sizes="(max-width: 1024px) 100vw, 540px" />
+                  <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-extrabold text-moss shadow-sm">Tin nổi bật</span>
+                </div>
+                <div className="flex min-w-0 flex-col justify-between gap-4 rounded-2xl bg-cream p-4">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-moss">Giao diện của bạn</p>
+                    <h2 className="mt-2 line-clamp-2 font-display text-xl font-semibold leading-tight text-ink sm:text-2xl">{featuredPreview.title}</h2>
+                    <p className="mt-3 text-sm leading-6 text-ink/60">Tin đăng, thương hiệu và liên hệ được trình bày rõ ràng trên cùng một website.</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      ["85%", "CTA rõ hơn"],
+                      ["24/7", "website hoạt động"],
+                    ].map(([value, label]) => (
+                      <div key={label} className="rounded-xl bg-white p-3">
+                        <strong className="block font-display text-xl text-moss">{value}</strong>
+                        <span className="mt-1 block text-xs font-semibold text-ink/45">{label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="border-t border-ink/10 bg-[#f9faf7] p-3">
+                <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {["Căn hộ", "Đất", "Cho thuê"].map((label) => (
+                      <span key={label} className="rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm font-bold text-ink/60">{label}</span>
+                    ))}
+                  </div>
+                  <span className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-moss px-5 text-sm font-bold text-white">
+                    <PhoneCall size={16} />
+                    Gọi tư vấn
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -211,10 +261,7 @@ export default async function LandingPage({
       </section>
 
       {/* Process Section */}
-      <section id="process" className="relative py-24 sm:py-32 overflow-hidden bg-ink">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-moss/20 blur-[120px] rounded-full mix-blend-screen pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold/10 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
-
+      <section id="process" className="dark-surface relative overflow-hidden py-24 sm:py-32">
         <div className="page-shell relative z-10 text-white">
           <SectionHeading
             eyebrow="Đơn giản từ ngày đầu"
@@ -312,11 +359,7 @@ export default async function LandingPage({
       </section>
 
       {/* Featured Theme Showcase */}
-      <section id="themes" className="relative py-24 sm:py-32 overflow-hidden bg-[#fdf6ee]">
-        {/* Background Gradients for elegance */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-moss/5 blur-[120px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold/10 blur-[120px] rounded-full pointer-events-none"></div>
-
+      <section id="themes" className="warm-surface relative overflow-hidden py-24 sm:py-32">
         <div className="page-shell relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-16" data-reveal="soft">
             <SectionHeading
@@ -332,7 +375,7 @@ export default async function LandingPage({
           <div className="relative mx-auto max-w-5xl group" data-reveal="up">
             {/* Ambient Shadow / Glow behind the mockup */}
             <div className="absolute -inset-1 bg-gradient-to-b from-moss/20 to-gold/20 rounded-[2rem] blur-2xl opacity-70 group-hover:opacity-100 transition duration-1000 pointer-events-none"></div>
-            
+
             <div className="relative rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] ring-1 ring-ink/10 transition-transform duration-700 hover:-translate-y-2">
               {/* Browser Toolbar */}
               <div className="flex items-center bg-[#f1f1f1] px-4 py-3 border-b border-ink/5">
@@ -345,11 +388,11 @@ export default async function LandingPage({
                   demo.nice-land.id.vn
                 </div>
               </div>
-              
+
               {/* Iframe Content */}
               <div className="relative bg-white aspect-[4/3] sm:aspect-[16/10] overflow-hidden">
-                <iframe 
-                  src="/demo" 
+                <iframe
+                  src="/demo"
                   className="w-full h-full border-none"
                   title="Personal Broker Theme Preview"
                 />
@@ -358,8 +401,8 @@ export default async function LandingPage({
 
             {/* CTA Overlay or Button below */}
             <div className="relative z-10 mt-12 flex justify-center">
-              <Link 
-                href="/demo" 
+              <Link
+                href="/demo"
                 target="_blank"
                 className="button-primary group/btn flex items-center gap-2 shadow-lg hover:shadow-xl"
               >
@@ -371,8 +414,8 @@ export default async function LandingPage({
         </div>
       </section>
 
-      <section id="faq" className="py-24 sm:py-32">
-        <div className="page-shell grid gap-14 lg:grid-cols-[0.7fr_1.3fr]" data-reveal-group>
+      <section id="faq" className="py-20 sm:py-24">
+        <div className="page-shell grid gap-10 lg:grid-cols-[minmax(280px,0.82fr)_minmax(0,1.18fr)]" data-reveal-group>
           <SectionHeading eyebrow="Câu hỏi thường gặp" title="Những điều bạn có thể đang băn khoăn." />
           <div className="glass-card rounded-3xl p-6 sm:p-10">
             <Faq />
@@ -380,8 +423,7 @@ export default async function LandingPage({
         </div>
       </section>
 
-      <section id="contact" className="bg-ink py-24 text-white sm:py-32 relative overflow-hidden">
-        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[600px] h-[600px] bg-moss/20 blur-[150px] rounded-full pointer-events-none"></div>
+      <section id="contact" className="dark-surface relative overflow-hidden py-24 text-white sm:py-32">
         <div className="page-shell grid gap-12 lg:grid-cols-2 relative z-10" data-reveal-group>
           <div className="max-w-xl">
             <p className="eyebrow !text-gold mb-5">Bắt đầu hôm nay</p>
@@ -401,20 +443,44 @@ export default async function LandingPage({
         </div>
       </section>
 
-      <footer className="bg-[#101713] py-12 text-white border-t border-white/5">
-        <div className="page-shell">
-          <div className="flex flex-col justify-between gap-8 border-b border-white/10 pb-10 md:flex-row">
-            <Logo href="/" inverted />
-            <div className="grid grid-cols-2 gap-x-14 gap-y-3 text-sm text-white/55 sm:grid-cols-4 font-medium">
-              <a href="#features" className="hover:text-white transition-colors">Tính năng</a>
-              <Link href="/themes" className="hover:text-white transition-colors">Giao diện mẫu</Link>
-              <a href="#pricing" className="hover:text-white transition-colors">Bảng giá</a>
-              <a href="#faq" className="hover:text-white transition-colors">Hỏi đáp</a>
-              <a href="#contact" className="hover:text-white transition-colors">Liên hệ</a>
+      <footer className="bg-[#101713] text-white border-t border-white/5">
+        <div className="page-shell mt-10">
+          <div className="grid gap-10 border-b border-white/10 pb-10 pt-2 lg:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.35fr)]">
+            <div className="max-w-sm">
+              <Logo href="/" inverted />
+              <p className="mt-5 text-sm leading-7 text-white/50">
+                Nice Land giúp môi giới và đội nhóm vận hành website tin đăng riêng, rõ thương hiệu và sẵn sàng chuyển đổi khách hàng.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-8 text-sm sm:grid-cols-3 lg:justify-items-end">
+              <div>
+                <strong className="text-xs uppercase tracking-[0.18em] text-white/35">Sản phẩm</strong>
+                <div className="mt-4 grid gap-3 font-medium text-white/55">
+                  <a href="#features" className="transition-colors hover:text-white">Tính năng</a>
+                  <Link href="/themes" className="transition-colors hover:text-white">Giao diện mẫu</Link>
+                  <a href="#pricing" className="transition-colors hover:text-white">Bảng giá</a>
+                </div>
+              </div>
+              <div>
+                <strong className="text-xs uppercase tracking-[0.18em] text-white/35">Hỗ trợ</strong>
+                <div className="mt-4 grid gap-3 font-medium text-white/55">
+                  <a href="#faq" className="transition-colors hover:text-white">Hỏi đáp</a>
+                  <a href="#contact" className="transition-colors hover:text-white">Liên hệ</a>
+                  <Link href="/demo" className="transition-colors hover:text-white">Website mẫu</Link>
+                </div>
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <strong className="text-xs uppercase tracking-[0.18em] text-white/35">Cam kết</strong>
+                <div className="mt-4 grid gap-3 font-medium text-white/55">
+                  <span>Thiết lập nhanh</span>
+                  <span>Giao diện responsive</span>
+                  <span>Hỗ trợ vận hành</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col justify-between gap-3 pt-7 text-xs text-white/35 sm:flex-row font-medium">
-            <p>© 2026 Nice Land. Kiến tạo không gian số cho người làm địa ốc.</p>
+          <div className="flex flex-col justify-between gap-3 py-7 text-xs text-white/35 sm:flex-row font-medium">
+            <p>Powered by Triet Dang</p>
             <p className="hover:text-white/50 cursor-pointer transition-colors">Điều khoản · Quyền riêng tư</p>
           </div>
         </div>

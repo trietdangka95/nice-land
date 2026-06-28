@@ -161,26 +161,30 @@ export function EditorialHeader({ site }: { site: Site }) {
 
 export function PersonalHeader({ site }: { site: Site }) {
   return (
-    <header className="tenant-header bg-[#fdf6ee] text-[#2d1f18]" style={{ borderBottom: '1px solid rgba(178,94,67,0.1)' }}>
-      <div className="page-shell flex min-h-24 items-center justify-between gap-5">
-        <TenantLink slug={site.slug} href="" className="flex items-center gap-4">
+    <header className="tenant-header sticky top-0 z-40 border-b border-black/5 bg-[#fdf6ee]/90 text-[#2d1f18] shadow-[0_10px_30px_rgba(45,31,24,0.04)] backdrop-blur-xl">
+      <div className="page-shell flex min-h-20 items-center justify-between gap-5">
+        <TenantLink slug={site.slug} href="" className="group flex min-w-0 items-center gap-3">
           {site.logo ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={site.logo} alt="" className="h-10 w-auto object-contain drop-shadow-sm" />
+            <img src={site.logo} alt={`Logo ${site.name}`} className="h-10 w-auto object-contain drop-shadow-sm" />
           ) : (
-            <span className="grid size-10 place-items-center rounded-xl font-display text-sm font-bold bg-[#7A5A4E]/10 text-[#7A5A4E] border border-[#7A5A4E]/20 shadow-inner">{site.logoMark}</span>
+            <span className="grid size-10 shrink-0 place-items-center rounded-full font-display text-sm font-bold bg-[#7A5A4E]/10 text-[#7A5A4E] border border-[#7A5A4E]/20 shadow-inner transition-colors duration-200 group-hover:bg-[var(--tenant-color)] group-hover:text-white">{site.logoMark}</span>
           )}
-          <span className="font-display text-lg tracking-wide text-[#2D1F18] drop-shadow-sm">{site.name}</span>
+          <span className="min-w-0">
+            <span className="block truncate font-display text-lg font-extrabold tracking-tight text-[#2D1F18]">{site.name}</span>
+            <span className="hidden text-[10px] font-bold uppercase tracking-[0.18em] text-[#7A5A4E]/55 sm:block">Tin đăng tuyển chọn</span>
+          </span>
         </TenantLink>
-        <nav className="flex items-center gap-6 text-[11px] font-bold uppercase tracking-[0.15em] text-[#7A5A4E]/70">
-          <TenantLink slug={site.slug} href="#properties">Tin đăng</TenantLink>
-          <TenantLink slug={site.slug} href="#contact">Liên hệ</TenantLink>
+        <nav className="hidden items-center gap-1 rounded-full border border-black/5 bg-white/70 p-1 text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#7A5A4E]/75 shadow-sm lg:flex" aria-label="Điều hướng website">
+          <TenantLink slug={site.slug} href="#properties" className="rounded-full px-4 py-2.5 transition-colors hover:bg-[#f1ebd9] hover:text-[var(--tenant-color)]">Tin đăng</TenantLink>
+          <TenantLink slug={site.slug} href="#about" className="rounded-full px-4 py-2.5 transition-colors hover:bg-[#f1ebd9] hover:text-[var(--tenant-color)]">Tư vấn</TenantLink>
+          <TenantLink slug={site.slug} href="#contact" className="rounded-full px-4 py-2.5 transition-colors hover:bg-[#f1ebd9] hover:text-[var(--tenant-color)]">Liên hệ</TenantLink>
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
-          <a href={site.facebookUrl ?? "#"} aria-label="Facebook" className="grid size-10 place-items-center rounded-full border border-black/10 text-[var(--tenant-color)]"><Facebook size={15} /></a>
-          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="rounded-full bg-[var(--tenant-color)] px-6 py-3 text-xs font-bold text-white">Gọi trực tiếp</a>
+          <a href={site.facebookUrl ?? "#"} aria-label="Facebook" className="grid size-10 place-items-center rounded-full border border-black/10 bg-white/60 text-[var(--tenant-color)] transition-colors duration-200 hover:bg-white"><Facebook size={15} /></a>
+          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--tenant-color)] px-5 text-xs font-extrabold text-white shadow-[0_12px_26px_rgba(124,58,36,0.16)] transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"><Phone size={15} />Gọi trực tiếp</a>
         </div>
-        <MobileMenu site={site} triggerClassName="grid size-11 place-items-center rounded-full border border-black/10 text-[var(--tenant-color)] lg:hidden" />
+        <MobileMenu site={site} triggerClassName="grid size-11 place-items-center rounded-full border border-black/10 bg-white/60 text-[var(--tenant-color)] lg:hidden" />
       </div>
     </header>
   );
@@ -245,16 +249,17 @@ export function EditorialFooter({ site }: { site: Site }) {
 
 export function PersonalFooter({ site }: { site: Site }) {
   return (
-    <footer id="contact" className="tenant-footer bg-[#f4ebe1] py-8 text-[#2d1f18] overflow-hidden">
+    <footer id="contact" className="tenant-footer relative overflow-hidden bg-[#f4ebe1] py-10 text-[#2d1f18]">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#b25e43]/30 to-transparent" />
       <div className="page-shell grid gap-8 lg:gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div>
           <p className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#7a5a4e]">Liên hệ trực tiếp</p>
-          <h2 className="mt-3 font-display text-2xl sm:text-3xl font-medium leading-[1.4] text-[#2d1f18]">Khởi đầu hành trình sở hữu tổ ấm hoàn hảo</h2>
-          <p className="mt-3 text-[#5c463d] leading-relaxed max-w-md text-sm">Hãy để lại thông tin hoặc liên hệ trực tiếp. Tôi luôn sẵn sàng lắng nghe và đồng hành cùng bạn trên hành trình tìm kiếm không gian sống lý tưởng.</p>
+          <h2 className="mt-3 max-w-xl font-display text-2xl font-semibold leading-tight text-[#2d1f18] sm:text-3xl">Chọn đúng nơi bắt đầu từ một cuộc trò chuyện rõ ràng.</h2>
+          <p className="mt-4 max-w-md text-sm leading-7 text-[#5c463d]">Hãy để lại thông tin hoặc liên hệ trực tiếp. Tôi luôn sẵn sàng lắng nghe và đồng hành cùng bạn trên hành trình tìm kiếm lựa chọn phù hợp.</p>
         </div>
         <div className="relative">
-          <div className="absolute inset-0 -translate-y-3 translate-x-3 rounded-[2rem] bg-[#ead5c4] opacity-50 sm:-translate-y-4 sm:translate-x-4"></div>
-          <div className="relative rounded-[2rem] bg-white p-6 shadow-[0_20px_60px_rgba(124,58,36,0.06)] border border-black/5 flex flex-col justify-between">
+          <div className="absolute inset-0 -translate-y-3 translate-x-3 rounded-[1.75rem] bg-[#ead5c4] opacity-50 sm:-translate-y-4 sm:translate-x-4"></div>
+          <div className="relative flex flex-col justify-between rounded-[1.75rem] border border-black/5 bg-white p-6 shadow-[0_20px_60px_rgba(124,58,36,0.06)] transition-transform duration-300 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <strong className="font-display text-xl font-medium text-[#2d1f18]">{site.name}</strong>
@@ -270,6 +275,10 @@ export function PersonalFooter({ site }: { site: Site }) {
               <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="flex items-center gap-2.5 font-bold hover:text-[var(--tenant-color)] transition-colors"><div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#f8f6f0] text-[var(--tenant-color)]"><Phone size={13} /></div>{site.phone}</a>
               <a href={`mailto:${site.email}`} className="flex items-center gap-2.5 font-bold hover:text-[var(--tenant-color)] transition-colors"><div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#f8f6f0] text-[var(--tenant-color)]"><Mail size={13} /></div><span className="truncate">{site.email}</span></a>
               <div className="flex items-center gap-2.5 sm:col-span-2 font-medium"><div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#f8f6f0] text-[var(--tenant-color)]"><MapPin size={13} /></div><span className="truncate">{site.address}</span></div>
+            </div>
+            <div className="mt-5 flex flex-col gap-3 border-t border-black/5 pt-5 sm:flex-row">
+              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-[var(--tenant-color)] px-5 text-sm font-extrabold text-white transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"><Phone size={15} />Gọi ngay</a>
+              <a href={`mailto:${site.email}`} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full border border-black/5 bg-[#f8f6f0] px-5 text-sm font-extrabold text-[#4a3c31] transition-colors hover:bg-white"><Mail size={15} />Gửi email</a>
             </div>
           </div>
         </div>

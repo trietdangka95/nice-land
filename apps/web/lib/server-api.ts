@@ -301,10 +301,10 @@ export async function getPlatformStats(): Promise<{
       next: { revalidate: 3600 },
     });
     if (!response.ok) {
-      return { totalSites: 1200, totalPosts: 48000 };
+      return { totalSites: 200, totalPosts: 48000 };
     }
     return (await response.json()) as { totalSites: number; totalPosts: number };
   } catch {
-    return { totalSites: 1200, totalPosts: 48000 };
+    return { totalSites: 200, totalPosts: 48000 };
   }
 }

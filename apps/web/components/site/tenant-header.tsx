@@ -20,10 +20,10 @@ export function TenantHeader({ site }: { site: Site }) {
           </div>
         </div>
       </div>
-      <header className="tenant-header border-b border-ink/10 bg-white">
-        <div className="tenant-header-inner page-shell flex h-20 items-center justify-between">
-          <TenantLink href="" slug={site.slug} className="tenant-brand flex min-w-0 items-center gap-3">
-            <span className="tenant-brand-mark relative grid size-11 shrink-0 place-items-center overflow-hidden text-sm font-extrabold text-white" style={{ backgroundColor: site.themeColor }}>
+      <header className="tenant-header sticky top-0 z-40 border-b border-ink/10 bg-white/90 shadow-[0_10px_30px_rgba(23,33,27,0.04)] backdrop-blur-xl">
+        <div className="tenant-header-inner page-shell flex min-h-20 items-center justify-between gap-4">
+          <TenantLink href="" slug={site.slug} className="tenant-brand group flex min-w-0 items-center gap-3">
+            <span className="tenant-brand-mark relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-full text-sm font-extrabold text-white transition-transform duration-200 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0" style={{ backgroundColor: site.themeColor }}>
               {site.logo ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -42,16 +42,16 @@ export function TenantHeader({ site }: { site: Site }) {
               </small>
             </span>
           </TenantLink>
-          <nav className="tenant-navigation hidden items-center gap-7 text-sm font-semibold lg:flex" aria-label="Điều hướng website">
-            <TenantLink href="" slug={site.slug}>Trang chủ</TenantLink>
-            <TenantLink href="#properties" slug={site.slug}>Tin đăng</TenantLink>
-            <TenantLink href="#about" slug={site.slug}>Về chúng tôi</TenantLink>
-            <TenantLink href="#contact" slug={site.slug}>Liên hệ</TenantLink>
+          <nav className="tenant-navigation hidden items-center gap-1 rounded-full border border-ink/10 bg-cream/70 p-1 text-sm font-bold lg:flex" aria-label="Điều hướng website">
+            <TenantLink href="" slug={site.slug} className="rounded-full px-4 py-2.5 text-ink/65 transition-colors hover:bg-white hover:text-[var(--tenant-color)]">Trang chủ</TenantLink>
+            <TenantLink href="#properties" slug={site.slug} className="rounded-full px-4 py-2.5 text-ink/65 transition-colors hover:bg-white hover:text-[var(--tenant-color)]">Tin đăng</TenantLink>
+            <TenantLink href="#about" slug={site.slug} className="rounded-full px-4 py-2.5 text-ink/65 transition-colors hover:bg-white hover:text-[var(--tenant-color)]">Về chúng tôi</TenantLink>
+            <TenantLink href="#contact" slug={site.slug} className="rounded-full px-4 py-2.5 text-ink/65 transition-colors hover:bg-white hover:text-[var(--tenant-color)]">Liên hệ</TenantLink>
           </nav>
           <div className="flex items-center gap-3">
             <a
               href={`tel:${site.phone.replace(/\s/g, "")}`}
-              className="hidden min-h-11 items-center gap-2 px-5 text-sm font-bold text-white sm:inline-flex"
+              className="hidden min-h-11 items-center gap-2 rounded-full px-5 text-sm font-bold text-white shadow-[0_12px_26px_rgba(23,33,27,0.12)] transition-transform duration-200 hover:-translate-y-0.5 sm:inline-flex motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               style={{ backgroundColor: site.themeColor }}
             >
               <Phone size={16} />
@@ -60,7 +60,7 @@ export function TenantHeader({ site }: { site: Site }) {
             <MobileNavigation
               label="Mở menu"
               title={site.name}
-              triggerClassName="grid size-11 place-items-center border border-ink/15 lg:hidden"
+              triggerClassName="grid size-11 place-items-center rounded-full border border-ink/15 bg-white text-[var(--tenant-color)] lg:hidden"
             >
               <nav
                 className="flex flex-col p-4 text-base font-semibold"

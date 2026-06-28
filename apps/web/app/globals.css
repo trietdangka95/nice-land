@@ -111,12 +111,12 @@ textarea {
 
 .reveal-ready {
   opacity: 0;
-  filter: blur(5px);
-  transform: translate3d(0, 28px, 0) scale(0.985);
+  filter: blur(3px);
+  transform: translate3d(0, 22px, 0) scale(0.99);
   transition:
-    opacity 680ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 680ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 680ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 560ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 560ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--reveal-delay, 0ms);
   will-change: opacity, filter, transform;
 }
@@ -142,15 +142,15 @@ textarea {
 
 .motion-card {
   transition:
-    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 320ms ease,
-    box-shadow 320ms ease;
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 240ms ease,
+    box-shadow 240ms ease;
 }
 
 .motion-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   border-color: rgba(49, 92, 69, 0.32);
-  box-shadow: 0 20px 45px rgba(23, 33, 27, 0.09);
+  box-shadow: 0 18px 38px rgba(23, 33, 27, 0.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -195,7 +195,7 @@ textarea {
 }
 
 .glass-card {
-  @apply bg-white/50 backdrop-blur-sm border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)];
+  @apply bg-white/50 backdrop-blur-sm border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-moss/20 hover:shadow-[0_12px_34px_rgb(0,0,0,0.07)];
 }
 
 .glass-dark {
@@ -204,6 +204,55 @@ textarea {
 
 .text-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-moss via-leaf to-gold;
+}
+
+.hero-surface {
+  background:
+    linear-gradient(180deg, rgba(245, 243, 237, 0.96) 0%, rgba(249, 250, 247, 0.9) 56%, rgba(245, 243, 237, 1) 100%),
+    radial-gradient(circle at 18% 12%, rgba(49, 92, 69, 0.1), transparent 34%),
+    radial-gradient(circle at 88% 18%, rgba(201, 152, 84, 0.12), transparent 30%);
+}
+
+.hero-surface::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image:
+    linear-gradient(rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 33, 27, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.hero-preview-shadow {
+  background: linear-gradient(135deg, rgba(49, 92, 69, 0.22), rgba(201, 152, 84, 0.18));
+  filter: blur(28px);
+  transform: translateY(18px);
+}
+
+.dark-surface {
+  background:
+    linear-gradient(135deg, rgba(16, 23, 19, 0.98), rgba(23, 33, 27, 1) 46%, rgba(34, 53, 42, 0.98)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
+.dark-surface::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+.warm-surface {
+  background:
+    linear-gradient(180deg, #fdf6ee 0%, #f8f3e8 50%, #f5f3ed 100%),
+    linear-gradient(90deg, rgba(49, 92, 69, 0.04), rgba(201, 152, 84, 0.06));
 }
 
 .gradient-glow {

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { ChevronLeft, Facebook, Mail, MapPin, Maximize2, Phone, Share2 } from "lucide-react";
 import { TenantLink } from "@/components/shared/tenant-link";
 import { notFound } from "next/navigation";
@@ -74,8 +73,8 @@ export default async function PropertyDetailPage({
       <PublicThemeStylesheet theme={renderedTheme} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       {renderedTheme === "WARM_MINIMAL" ? <PersonalHeader site={site} /> : <TenantHeader site={site} />}
-      <div className="mx-auto max-w-5xl px-5 py-7 sm:px-8 xl:px-0">
-        <TenantLink href="#properties" slug={slug} className="inline-flex items-center gap-2 text-sm font-bold text-ink/60 hover:text-ink">
+      <div className="page-shell py-6">
+        <TenantLink href="" slug={slug} className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-ink/55 transition-colors hover:text-ink">
           <ChevronLeft size={16} />
           Trở lại danh sách
         </TenantLink>
@@ -85,29 +84,29 @@ export default async function PropertyDetailPage({
         <PropertyGallery images={post.images} title={post.title} />
       </section>
 
-      <section className="tenant-detail-layout page-shell grid gap-12 py-14 lg:grid-cols-[1fr_360px]">
+      <section className="tenant-detail-layout page-shell grid gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_360px]">
         <article className="tenant-detail-content" data-reveal="left">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="bg-[var(--tenant-color)] px-3 py-2 text-[10px] font-extrabold uppercase tracking-widest text-white">
+            <span className="rounded-full bg-[var(--tenant-color)] px-3 py-2 text-[10px] font-extrabold uppercase tracking-widest text-white shadow-sm">
               {propertyTypeLabels[post.type]}
             </span>
-            <span className="text-xs font-semibold text-ink/45">Mã tin: {post.id.toUpperCase()}</span>
+            <span className="rounded-full border border-ink/10 bg-white/60 px-3 py-2 text-xs font-semibold text-ink/45">Mã tin: {post.id.toUpperCase()}</span>
           </div>
-          <h1 className="tenant-detail-title mt-5 max-w-4xl text-balance font-display text-4xl font-medium leading-tight sm:text-5xl">
+          <h1 className="tenant-detail-title mt-5 max-w-4xl text-balance font-display text-3xl font-semibold leading-tight sm:text-5xl">
             {post.title}
           </h1>
           <p className="mt-4 flex items-center gap-2 text-sm text-ink/55">
             <MapPin size={17} className="text-[var(--tenant-color)]" />
             {post.ward && `${post.ward}, `}{post.district}, {post.province}
           </p>
-          <div className="tenant-detail-facts mt-8 flex flex-wrap gap-8 border-y border-ink/10 py-6">
-            <div>
+          <div className="tenant-detail-facts mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border border-ink/10 bg-white/70 p-5 shadow-[0_12px_36px_rgba(23,33,27,0.05)]">
               <span className="block text-xs uppercase tracking-wider text-ink/40">Mức giá</span>
               <strong className="mt-1 block font-display text-3xl text-[var(--tenant-color)]">
                 {formatPrice(post.price, post.type)}
               </strong>
             </div>
-            <div>
+            <div className="rounded-2xl border border-ink/10 bg-white/70 p-5 shadow-[0_12px_36px_rgba(23,33,27,0.05)]">
               <span className="block text-xs uppercase tracking-wider text-ink/40">Diện tích</span>
               <strong className="mt-1 flex items-center gap-2 font-display text-3xl">
                 <Maximize2 size={20} /> {post.area} m²
@@ -125,7 +124,7 @@ export default async function PropertyDetailPage({
           </div>
           <div className="border-t border-ink/10 pt-8">
             <h2 className="font-display text-3xl font-medium">Vị trí tin đăng</h2>
-            <div className="mt-5 h-[400px] w-full bg-[#dbe1d7]">
+            <div className="mt-5 h-[360px] w-full overflow-hidden rounded-3xl border border-ink/10 bg-[#dbe1d7] shadow-[0_18px_48px_rgba(23,33,27,0.08)]">
               <iframe
                 title="Bản đồ vị trí"
                 width="100%"
@@ -143,7 +142,7 @@ export default async function PropertyDetailPage({
         </article>
 
         <aside className="tenant-detail-aside" data-reveal="right">
-          <div className="tenant-contact-card sticky top-6 border border-ink/10 bg-white p-6 shadow-soft">
+          <div className="tenant-contact-card sticky top-24 border border-ink/10 bg-white p-6 shadow-soft transition-transform duration-300 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--tenant-color)]">Chuyên viên phụ trách</p>
             <div className="mt-5 flex items-center gap-4">
               <div className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-full bg-[var(--tenant-color)] font-display text-xl text-white">
@@ -165,23 +164,23 @@ export default async function PropertyDetailPage({
                 </p>
               </div>
             </div>
-            <TrackedContactLink slug={slug} postId={post.id} source="PHONE_CLICK" href={`tel:${site.phone.replace(/\s/g, "")}`} className={`mt-6 flex min-h-13 items-center justify-center gap-2 px-5 py-4 text-sm font-bold text-white transition-transform active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full bg-[var(--tenant-color)]" : "bg-[var(--tenant-color)]"}`}>
+            <TrackedContactLink slug={slug} postId={post.id} source="PHONE_CLICK" href={`tel:${site.phone.replace(/\s/g, "")}`} className={`mt-6 flex min-h-13 items-center justify-center gap-2 px-5 py-4 text-sm font-bold text-white transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${renderedTheme === "WARM_MINIMAL" ? "rounded-full bg-[var(--tenant-color)]" : "bg-[var(--tenant-color)]"}`}>
               <Phone size={17} />
               Gọi {site.phone}
             </TrackedContactLink>
             {site.zaloPhone && (
-              <TrackedContactLink slug={slug} postId={post.id} source="ZALO_CLICK" href={`https://zalo.me/${site.zaloPhone.replace(/\D/g, "")}`} className={`mt-3 flex min-h-13 items-center justify-center gap-2 border border-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-[var(--tenant-color)] transition-transform active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full" : ""}`}>
+              <TrackedContactLink slug={slug} postId={post.id} source="ZALO_CLICK" href={`https://zalo.me/${site.zaloPhone.replace(/\D/g, "")}`} className={`mt-3 flex min-h-13 items-center justify-center gap-2 border border-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-[var(--tenant-color)] transition-colors duration-200 hover:bg-[var(--tenant-color)] hover:text-white active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full" : ""}`}>
                 Nhắn Zalo
               </TrackedContactLink>
             )}
-            <a href={`mailto:${site.email}`} className={`mt-3 flex min-h-13 items-center justify-center gap-2 border px-5 py-4 text-sm font-bold transition-transform active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full border-black/5 bg-[#f8f6f0]" : "border-ink/15"}`}>
+            <a href={`mailto:${site.email}`} className={`mt-3 flex min-h-13 items-center justify-center gap-2 border px-5 py-4 text-sm font-bold transition-colors duration-200 active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full border-black/5 bg-[#f8f6f0] hover:bg-white" : "border-ink/15"}`}>
               <Mail size={17} />
               Gửi email
             </a>
             <PropertyEngagement slug={slug} postId={post.id} />
             <div className="mt-6 flex items-center justify-center gap-6 border-t border-ink/10 pt-5 text-ink/45">
-              <button aria-label="Chia sẻ tin đăng"><Share2 size={18} /></button>
-              <a href={site.facebookUrl} aria-label="Chia sẻ Facebook"><Facebook size={18} /></a>
+              <button className="transition-colors hover:text-[var(--tenant-color)]" aria-label="Chia sẻ tin đăng"><Share2 size={18} /></button>
+              <a href={site.facebookUrl} className="transition-colors hover:text-[var(--tenant-color)]" aria-label="Chia sẻ Facebook"><Facebook size={18} /></a>
             </div>
           </div>
         </aside>
