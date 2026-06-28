@@ -132,7 +132,7 @@ export default async function TenantHomePage({
   const [listing, featuredListing] = await Promise.all([
     getTenantPosts(slug, site.id, {
       page,
-      limit: 9,
+      limit: 12,
       q: q || undefined,
       type,
       categoryId,

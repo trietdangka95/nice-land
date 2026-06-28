@@ -144,12 +144,14 @@ export async function getTenantPosts(
     const response = await tenantFetch(slug, `/v1/public/posts?${query}`);
     if (!response.ok) {
       const items = allowMockFallback ? getMockPosts(siteId) : [];
+      const page = options.page ?? 1;
+      const limit = options.limit ?? 12;
       return {
-        items,
+        items: items.slice((page - 1) * limit, page * limit),
         total: items.length,
-        page: 1,
-        limit: items.length || (options.limit ?? 12),
-        totalPages: items.length ? 1 : 0,
+        page,
+        limit,
+        totalPages: items.length ? Math.ceil(items.length / limit) : 0,
       };
     }
     const data = (await response.json()) as {
@@ -201,12 +203,14 @@ export async function getTenantPosts(
     };
   } catch {
     const items = allowMockFallback ? getMockPosts(siteId) : [];
+    const page = options.page ?? 1;
+    const limit = options.limit ?? 12;
     return {
-      items,
+      items: items.slice((page - 1) * limit, page * limit),
       total: items.length,
-      page: 1,
-      limit: items.length || (options.limit ?? 12),
-      totalPages: items.length ? 1 : 0,
+      page,
+      limit,
+      totalPages: items.length ? Math.ceil(items.length / limit) : 0,
     };
   }
 }

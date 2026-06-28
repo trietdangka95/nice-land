@@ -41,7 +41,7 @@ export function WarmBrowser({
   const visiblePages = Array.from({ length: Math.min(totalPages, 5) }, (_, index) => index + 1);
 
   return (
-    <div className="variant-warm mx-auto max-w-[1180px]">
+    <div className="variant-warm mx-auto max-w-[1360px]">
       <form onSubmit={applyFilters} className="mx-auto flex flex-col md:flex-row items-center gap-3 rounded-3xl md:rounded-full border border-black/5 bg-white p-2 shadow-sm w-full max-w-4xl">
         <label className="relative flex-1 w-full min-w-[200px]">
           <span className="sr-only">Từ khóa</span>
@@ -116,7 +116,7 @@ export function WarmBrowser({
       </p>
 
       {posts.length > 0 ? (
-        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {posts.map((post) => (
             <TenantLink slug={slug} href={`/posts/${post.slug ?? post.id}`} key={post.id} className="group rounded-[2rem] border border-black/5 bg-white p-3 shadow-[0_12px_35px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-1">
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] bg-[#ead5c4]">
