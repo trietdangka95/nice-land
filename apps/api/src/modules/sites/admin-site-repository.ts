@@ -3,6 +3,7 @@ import type {
   RenewalRequestInput,
   SiteSettings,
   SiteSettingsInput,
+  SubscriptionPlan,
 } from "@nice-land/contracts";
 
 export interface AdminSiteRepository {
@@ -18,6 +19,7 @@ export interface AdminSiteRepository {
     input: RenewalRequestInput,
     userId: string,
   ): Promise<NonNullable<AdminSubscription["latestRenewalRequest"]>>;
+  listAvailablePlans(): Promise<SubscriptionPlan[]>;
 }
 
 export class PendingRenewalRequestError extends Error {

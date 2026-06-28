@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { CalendarDays, Check, Gauge, ImageIcon, Send } from "lucide-react";
-import type { AdminSubscription } from "@nice-land/contracts";
+import type { AdminSubscription, SubscriptionPlan } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
@@ -19,6 +19,8 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
   const client = useMemo(() => createTenantApi(slug), [slug]);
   const toast = useToast();
   const [subscription, setSubscription] = useState<AdminSubscription | null>(null);
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+  const [selectedPlanId, setSelectedPlanId] = useState("");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -26,9 +28,13 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
 
   useEffect(() => {
     let active = true;
-    client
-      .getSubscription()
-      .then((data) => active && setSubscription(data))
+    Promise.all([client.getSubscription(), client.getAvailablePlans()])
+      .then(([subData, plansData]) => {
+        if (!active) return;
+        setSubscription(subData);
+        setPlans(plansData);
+        setSelectedPlanId(subData.plan?.id ?? (plansData[0]?.id || ""));
+      })
       .catch((requestError) => active && setError(requestError instanceof Error ? requestError.message : "Không thể tải gói dịch vụ."))
       .finally(() => active && setLoading(false));
     return () => {
@@ -42,7 +48,7 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
     setSending(true);
     try {
       const request = await client.createRenewalRequest({
-        planId: subscription.plan?.id ?? null,
+        planId: selectedPlanId || null,
         note: note || null,
       });
       setSubscription({ ...subscription, latestRenewalRequest: request });
@@ -116,7 +122,18 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
               </p>
             </div>
           ) : (
-            <form onSubmit={requestRenewal} className="mt-7">
+            <form onSubmit={requestRenewal} className="mt-7 grid gap-5">
+              <label className="grid gap-2 text-sm font-bold text-white/90">
+                Đổi / Gia hạn gói
+                <select value={selectedPlanId} onChange={(e) => setSelectedPlanId(e.target.value)} required className="h-12 rounded-xl border border-white/20 bg-white/10 px-4 font-normal text-white focus:bg-white/20 transition-colors [&>option]:text-black">
+                  <option value="">Chọn gói dịch vụ</option>
+                  {plans.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} - {p.price.toLocaleString("vi-VN")}đ
+                    </option>
+                  ))}
+                </select>
+              </label>
               <label className="grid gap-2 text-sm font-bold text-white/90">
                 Ghi chú gia hạn
                 <textarea value={note} onChange={(event) => setNote(event.target.value)} maxLength={1000} placeholder="Ví dụ: Tôi muốn gia hạn thêm 12 tháng" className="min-h-24 rounded-xl border border-white/20 bg-white/10 p-4 font-normal text-white placeholder:text-white/35 focus:bg-white/20 transition-colors" />

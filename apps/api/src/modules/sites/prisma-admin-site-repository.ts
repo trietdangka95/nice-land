@@ -222,4 +222,12 @@ export class PrismaAdminSiteRepository implements AdminSiteRepository {
       };
     });
   }
+
+  async listAvailablePlans() {
+    const plans = await prisma.subscriptionPlan.findMany({
+      where: { isActive: true },
+      orderBy: { price: "asc" },
+    });
+    return plans.map((p) => ({ ...p, price: p.price.toNumber() }));
+  }
 }

@@ -241,6 +241,8 @@ export function createApiClient(options: ApiClientOptions) {
       }),
     getSubscription: () =>
       request<AdminSubscription>("/v1/admin/subscription"),
+    getAvailablePlans: () =>
+      request<SubscriptionPlan[]>("/v1/admin/plans"),
     createRenewalRequest: (input: RenewalRequestInput) =>
       request<NonNullable<AdminSubscription["latestRenewalRequest"]>>(
         "/v1/admin/renewal-requests",

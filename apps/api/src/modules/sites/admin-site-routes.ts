@@ -73,6 +73,10 @@ export async function registerAdminSiteRoutes(
     return subscription ?? reply.status(404).send(notFound(request.id));
   });
 
+  app.get("/v1/admin/plans", { preHandler: subscriptionGuards }, async () => {
+    return options.repository.listAvailablePlans();
+  });
+
   app.post("/v1/admin/renewal-requests", { preHandler: subscriptionGuards }, async (request, reply) => {
     const input = renewalRequestInputSchema.parse(request.body);
     try {
