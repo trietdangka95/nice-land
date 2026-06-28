@@ -24,8 +24,9 @@ export function PropertyEngagement({
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formEl = event.currentTarget;
     setSending(true);
-    const data = new FormData(event.currentTarget);
+    const data = new FormData(formEl);
     try {
       await client.createPropertyLead(postId, {
         name: String(data.get("name") ?? ""),
@@ -39,7 +40,7 @@ export function PropertyEngagement({
         "Chuyên viên sẽ liên hệ với bạn sớm.",
         "Đã gửi yêu cầu",
       );
-      event.currentTarget.reset();
+      formEl.reset();
     } catch (requestError) {
       toast.error(
         getErrorMessage(requestError, "Không thể gửi yêu cầu."),

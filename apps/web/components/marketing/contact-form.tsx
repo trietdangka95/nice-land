@@ -16,8 +16,9 @@ export function ContactForm({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formEl = event.currentTarget;
     setLoading(true);
-    const form = new FormData(event.currentTarget);
+    const form = new FormData(formEl);
     const selection = [
       selectedPlan ? `Gói quan tâm: ${selectedPlan}` : "",
       String(form.get("message") ?? ""),
@@ -37,7 +38,7 @@ export function ContactForm({
         "Đội ngũ Nice Land sẽ liên hệ trong giờ làm việc.",
         "Đã nhận thông tin",
       );
-      event.currentTarget.reset();
+      formEl.reset();
     } catch {
       toast.error(
         "Chưa thể gửi yêu cầu. Vui lòng thử lại sau.",

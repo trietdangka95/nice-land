@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import {
@@ -25,8 +26,16 @@ export function ThemeShowcase({
               href={getPublicThemeDemoHref(theme.key)}
               className={`relative block overflow-hidden ${compact ? "h-48" : "h-72"} bg-ink`}
             >
-              <span className="absolute inset-0 transition duration-700 group-hover:scale-105">
-                <ThemeThumbnail theme={theme.key} />
+              <span className="absolute inset-0 transition duration-700 group-hover:scale-105 overflow-hidden">
+                <div className="absolute top-0 left-0 w-[400%] h-[400%] origin-top-left scale-[0.25] pointer-events-none bg-white">
+                  <iframe 
+                    src={getPublicThemeDemoHref(theme.key)} 
+                    className="w-full h-full border-none pointer-events-none" 
+                    tabIndex={-1}
+                    aria-hidden="true"
+                  />
+                </div>
+                <div className="absolute inset-0 z-10" />
               </span>
               <span className="absolute bottom-4 right-4 rounded-full bg-moss/90 backdrop-blur-md shadow-lg border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 group-hover:bg-moss group-hover:scale-105">
                 Xem mẫu
