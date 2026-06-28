@@ -268,9 +268,11 @@ export default async function LandingPage({
 
                   <div className="mt-8 flex items-baseline gap-1">
                     <strong className="font-display text-5xl font-semibold tracking-tight">
-                      {new Intl.NumberFormat("vi-VN").format(plan.price)}
+                      {plan.price === 0 ? "Miễn phí" : new Intl.NumberFormat("vi-VN").format(plan.price)}
                     </strong>
-                    <span className={`text-sm font-medium ${plan.popular ? "text-white/60" : "text-ink/50"}`}>đ/tháng</span>
+                    <span className={`text-sm font-medium ${plan.popular ? "text-white/60" : "text-ink/50"}`}>
+                      {plan.price === 0 ? "2 tuần" : "đ/tháng"}
+                    </span>
                   </div>
 
                   <div className={`my-8 h-px w-full ${plan.popular ? "bg-white/20" : "bg-ink/10"}`} />

@@ -17,6 +17,26 @@ async function main() {
   const defaultPassword = process.env.SEED_DEFAULT_PASSWORD ?? "ChangeMe123!";
   const passwordHash = await hash(defaultPassword, 12);
 
+  const trialPlan = await prisma.subscriptionPlan.upsert({
+    where: { code: "TRIAL" },
+    update: {
+      name: "Trải nghiệm",
+      maxPosts: 10,
+      maxImagesPerPost: 3,
+      price: 0,
+      durationDays: 14,
+      isActive: true,
+    },
+    create: {
+      code: "TRIAL",
+      name: "Trải nghiệm",
+      maxPosts: 10,
+      maxImagesPerPost: 3,
+      price: 0,
+      durationDays: 14,
+    },
+  });
+
   const starterPlan = await prisma.subscriptionPlan.upsert({
     where: { code: "STARTER" },
     update: {
@@ -65,7 +85,7 @@ async function main() {
       maxImagesPerPost: 30,
       price: 1299000,
       durationDays: 30,
-      isActive: true,
+      isActive: false, // Bỏ gói cuối
     },
     create: {
       code: "BUSINESS",
@@ -74,6 +94,7 @@ async function main() {
       maxImagesPerPost: 30,
       price: 1299000,
       durationDays: 30,
+      isActive: false,
     },
   });
 
@@ -147,7 +168,7 @@ async function main() {
     where: { slug: "anland" },
     update: {
       name: "An Land",
-      planId: starterPlan.id,
+      planId: trialPlan.id,
       isActive: true,
     },
     create: {
@@ -158,7 +179,7 @@ async function main() {
       phone: "0912333558",
       email: "contact@anland.vn",
       address: "Thủ Đức, TP. Hồ Chí Minh",
-      planId: starterPlan.id,
+      planId: trialPlan.id,
       subscriptionStatus: SubscriptionStatus.TRIAL,
       subscriptionStart: now,
       subscriptionEnd: new Date(now.getTime() + 30 * DAY),

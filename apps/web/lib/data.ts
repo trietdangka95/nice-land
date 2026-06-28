@@ -361,9 +361,15 @@ export const properties: PropertyPost[] = [
 
 export const plans = [
   {
+    name: "Trải nghiệm",
+    price: 0,
+    description: "Trải nghiệm miễn phí 2 tuần các tính năng cơ bản của Nice Land.",
+    features: ["10 tin đăng", "3 ảnh mỗi tin", "Website theo thương hiệu", "Hỗ trợ tiêu chuẩn"],
+  },
+  {
     name: "Khởi đầu",
     price: 299000,
-    description: "Dành cho môi giới cá nhân bắt đầu xây thương hiệu.",
+    description: "Dành cho môi giới cá nhân bắt đầu xây dựng thương hiệu.",
     features: ["30 tin đăng", "10 ảnh mỗi tin", "Website theo thương hiệu", "Hỗ trợ tiêu chuẩn"],
   },
   {
@@ -372,12 +378,6 @@ export const plans = [
     description: "Cho đội nhóm cần vận hành nội dung thường xuyên.",
     features: ["150 tin đăng", "20 ảnh mỗi tin", "Tùy chỉnh giao diện", "Hỗ trợ ưu tiên"],
     popular: true,
-  },
-  {
-    name: "Doanh nghiệp",
-    price: 1299000,
-    description: "Năng lực lớn hơn cho sàn và doanh nghiệp địa ốc.",
-    features: ["Không giới hạn tin", "30 ảnh mỗi tin", "Tên miền riêng", "Hỗ trợ chuyên trách"],
   },
 ];
 
