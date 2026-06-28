@@ -13,6 +13,7 @@ const allowMockFallback =
   process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";
 
 function mockSite(slug: string) {
+  if (slug === "demo") return getMockSite(slug);
   return allowMockFallback ? getMockSite(slug) : undefined;
 }
 
@@ -40,6 +41,10 @@ function logoMark(name: string) {
 
 export async function getTenantSite(slug: string): Promise<Site | undefined> {
   const fallback = mockSite(slug);
+  if (slug === "demo" && fallback) {
+    return fallback;
+  }
+
   try {
     const response = await tenantFetch(slug, "/v1/public/site");
     if (response.status === 402 || response.status === 403) {
@@ -140,6 +145,19 @@ export async function getTenantPosts(
   if (options.province) query.set("province", options.province);
   if (options.sort) query.set("sort", options.sort);
 
+  if (slug === "demo") {
+    const items = getMockPosts("site-demo");
+    const page = options.page ?? 1;
+    const limit = options.limit ?? 12;
+    return {
+      items: items.slice((page - 1) * limit, page * limit),
+      total: items.length,
+      page,
+      limit,
+      totalPages: items.length ? Math.ceil(items.length / limit) : 0,
+    };
+  }
+
   try {
     const response = await tenantFetch(slug, `/v1/public/posts?${query}`);
     if (!response.ok) {
@@ -218,15 +236,19 @@ export async function getTenantPosts(
 export async function getTenantPost(
   slug: string,
   siteId: string,
-  id: string,
+  postId: string,
 ): Promise<PropertyPost | undefined> {
+  if (slug === "demo") {
+    return getMockPost("site-demo", postId);
+  }
+
   try {
     const response = await tenantFetch(
       slug,
-      `/v1/public/posts/${encodeURIComponent(id)}`,
+      `/v1/public/posts/${encodeURIComponent(postId)}`,
     );
     if (!response.ok) {
-      return allowMockFallback ? getMockPost(siteId, id) : undefined;
+      return allowMockFallback ? getMockPost(siteId, postId) : undefined;
     }
     const post = (await response.json()) as {
       id: string;
@@ -266,6 +288,6 @@ export async function getTenantPost(
       createdAt: post.publishedAt ?? "",
     };
   } catch {
-    return allowMockFallback ? getMockPost(siteId, id) : undefined;
+    return allowMockFallback ? getMockPost(siteId, postId) : undefined;
   }
 }
