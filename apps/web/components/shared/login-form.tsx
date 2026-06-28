@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LockKeyhole, Eye, EyeOff } from "lucide-react";
+import { LockKeyhole, Eye, EyeOff, Loader2 } from "lucide-react";
 import { api, createTenantApi } from "@/lib/api";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
@@ -92,7 +92,8 @@ export function LoginForm({
             </button>
           </div>
         </label>
-        <button className="button-primary mt-2 w-full" disabled={loading}>
+        <button className="button-primary mt-2 w-full disabled:cursor-wait" disabled={loading}>
+          {loading && <Loader2 className="mr-2 animate-spin" size={16} />}
           {loading ? "Đang đăng nhập..." : "Đăng nhập"}
         </button>
         <Link

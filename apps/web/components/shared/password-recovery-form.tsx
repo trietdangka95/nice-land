@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import { KeyRound, MailCheck } from "lucide-react";
+import { KeyRound, MailCheck, Loader2 } from "lucide-react";
 import { api, createTenantApi } from "@/lib/api";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
@@ -63,7 +63,8 @@ export function ForgotPasswordForm({
             minLength={3}
           />
         </label>
-        <button className="button-primary mt-2 w-full" disabled={loading}>
+        <button className="button-primary mt-2 w-full disabled:cursor-wait" disabled={loading}>
+          {loading && <Loader2 className="mr-2 animate-spin" size={16} />}
           {loading ? "Đang gửi..." : "Gửi liên kết đặt lại"}
         </button>
         <Link
@@ -166,7 +167,8 @@ export function ResetPasswordForm({
               minLength={8}
             />
           </label>
-          <button className="button-primary mt-2 w-full" disabled={loading}>
+          <button className="button-primary mt-2 w-full disabled:cursor-wait" disabled={loading}>
+            {loading && <Loader2 className="mr-2 animate-spin" size={16} />}
             {loading ? "Đang cập nhật..." : "Cập nhật mật khẩu"}
           </button>
         </form>

@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Pencil, Plus, Tags, Trash2, X } from "lucide-react";
+import { Loader2, Pencil, Plus, Save, Tags, Trash2, X } from "lucide-react";
 import type {
   PropertyCategory,
   PropertyCategoryInput,
@@ -34,6 +34,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
   const [slugTouched, setSlugTouched] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -104,6 +105,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
     ) {
       return;
     }
+    setDeletingId(category.id);
     try {
       await client.deleteAdminCategory(category.id);
       await revalidateTenant(slug);
@@ -114,6 +116,8 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
         getErrorMessage(requestError, "Không thể xóa danh mục."),
         "Không thể xóa danh mục",
       );
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -194,14 +198,16 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
           </label>
           <button
             disabled={saving}
-            className="button-primary mt-5 w-full"
+            className="button-primary mt-5 w-full disabled:opacity-60 disabled:cursor-wait"
           >
-            {editing ? <Pencil size={16} /> : <Plus size={17} />}
-            {saving
-              ? "Đang lưu..."
-              : editing
-                ? "Lưu thay đổi"
-                : "Thêm danh mục"}
+            {saving ? (
+              <Loader2 className="animate-spin" size={17} />
+            ) : editing ? (
+              <Save size={17} />
+            ) : (
+              <Plus size={17} />
+            )}
+            {saving ? "Đang lưu..." : editing ? "Lưu thay đổi" : "Thêm danh mục"}
           </button>
         </form>
 
@@ -259,7 +265,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
                     <button
                       type="button"
                       onClick={() => void remove(category)}
-                      disabled={category.postCount > 0}
+                      disabled={category.postCount > 0 || deletingId === category.id}
                       className="grid size-10 place-items-center rounded-xl bg-white shadow-sm border border-ink/5 text-red-700 hover:bg-red-50 hover:border-red-200 transition-colors disabled:cursor-not-allowed disabled:opacity-30"
                       aria-label={
                         category.postCount > 0
@@ -272,7 +278,11 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
                           : undefined
                       }
                     >
-                      <Trash2 size={16} aria-hidden="true" />
+                      {deletingId === category.id ? (
+                        <Loader2 className="animate-spin" size={15} />
+                      ) : (
+                        <Trash2 size={16} aria-hidden="true" />
+                      )}
                     </button>
                   </div>
                 </article>

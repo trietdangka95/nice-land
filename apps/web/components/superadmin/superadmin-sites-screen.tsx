@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { ExternalLink, KeyRound, Pencil, Plus, Search } from "lucide-react";
+import { ExternalLink, KeyRound, Pencil, Plus, Search, Loader2 } from "lucide-react";
 import type { SuperAdminSite } from "@nice-land/contracts";
 import { api } from "@/lib/api";
 import { revalidateTenant } from "@/app/actions";
@@ -33,6 +33,7 @@ export function SuperAdminSitesScreen() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [actionId, setActionId] = useState<string | null>(null);
   const [temporaryPassword, setTemporaryPassword] = useState("");
 
   const load = useCallback(async () => {
@@ -63,6 +64,7 @@ export function SuperAdminSitesScreen() {
   }, [load]);
 
   async function toggle(site: SuperAdminSite) {
+    setActionId(`toggle-${site.id}`);
     try {
       await api.setSuperAdminSiteActive(site.id, { isActive: !site.isActive });
       await revalidateTenant(site.slug);
@@ -76,11 +78,14 @@ export function SuperAdminSitesScreen() {
         getErrorMessage(requestError, "Không thể cập nhật website."),
         "Không thể cập nhật website",
       );
+    } finally {
+      setActionId(null);
     }
   }
 
   async function resetPassword(site: SuperAdminSite) {
     if (!window.confirm(`Tạo mật khẩu tạm mới cho ${site.name}? Các phiên cũ sẽ bị đăng xuất.`)) return;
+    setActionId(`reset-${site.id}`);
     try {
       const result = await api.resetSuperAdminSitePassword(site.id);
       setTemporaryPassword(result.temporaryPassword);
@@ -93,11 +98,14 @@ export function SuperAdminSitesScreen() {
         getErrorMessage(requestError, "Không thể reset mật khẩu."),
         "Không thể reset mật khẩu",
       );
+    } finally {
+      setActionId(null);
     }
   }
 
   async function toggleAdmin(site: SuperAdminSite) {
     if (!site.admin) return;
+    setActionId(`admin-${site.id}`);
     try {
       await api.setSuperAdminAdminActive(site.id, { isActive: !site.admin.isActive });
       setItems((current) => current.map((item) => item.id === site.id && item.admin ? { ...item, admin: { ...item.admin, isActive: !item.admin.isActive } } : item));
@@ -110,6 +118,8 @@ export function SuperAdminSitesScreen() {
         getErrorMessage(requestError, "Không thể cập nhật admin."),
         "Không thể cập nhật admin",
       );
+    } finally {
+      setActionId(null);
     }
   }
 
@@ -150,7 +160,7 @@ export function SuperAdminSitesScreen() {
                 return <StatusPill tone={display.tone}>{display.label}</StatusPill>;
               })()}
             </td>
-            <td className="px-6 py-4"><div className="flex gap-2"><Link href={`/superadmin/sites/${site.id}`} className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 hover:border-moss/30 hover:text-moss transition-colors" aria-label={`Sửa ${site.name}`}><Pencil size={15} /></Link><button onClick={() => void resetPassword(site)} className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 hover:border-moss/30 hover:text-moss transition-colors" aria-label={`Reset mật khẩu ${site.name}`}><KeyRound size={15} /></button><button onClick={() => void toggleAdmin(site)} className="rounded-lg bg-white shadow-sm border border-ink/5 hover:bg-ink/5 transition-colors px-3 text-xs font-bold">{site.admin?.isActive ? "Khóa admin" : "Mở admin"}</button><button onClick={() => void toggle(site)} className="rounded-lg bg-white shadow-sm border border-ink/5 hover:bg-ink/5 transition-colors px-3 text-xs font-bold">{site.isActive ? "Tạm ngưng" : "Kích hoạt"}</button></div></td>
+            <td className="px-6 py-4"><div className="flex gap-2"><Link href={`/superadmin/sites/${site.id}`} className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 hover:border-moss/30 hover:text-moss transition-colors" aria-label={`Sửa ${site.name}`}><Pencil size={15} /></Link><button onClick={() => void resetPassword(site)} disabled={actionId === `reset-${site.id}`} className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 hover:border-moss/30 hover:text-moss transition-colors disabled:opacity-50 disabled:cursor-wait" aria-label={`Reset mật khẩu ${site.name}`}>{actionId === `reset-${site.id}` ? <Loader2 className="animate-spin" size={15} /> : <KeyRound size={15} />}</button><button onClick={() => void toggleAdmin(site)} disabled={actionId === `admin-${site.id}`} className="flex items-center justify-center gap-1 rounded-lg bg-white shadow-sm border border-ink/5 hover:bg-ink/5 transition-colors px-3 text-xs font-bold disabled:opacity-50 disabled:cursor-wait">{actionId === `admin-${site.id}` && <Loader2 className="animate-spin" size={12} />} {site.admin?.isActive ? "Khóa admin" : "Mở admin"}</button><button onClick={() => void toggle(site)} disabled={actionId === `toggle-${site.id}`} className="flex items-center justify-center gap-1 rounded-lg bg-white shadow-sm border border-ink/5 hover:bg-ink/5 transition-colors px-3 text-xs font-bold disabled:opacity-50 disabled:cursor-wait">{actionId === `toggle-${site.id}` && <Loader2 className="animate-spin" size={12} />} {site.isActive ? "Tạm ngưng" : "Kích hoạt"}</button></div></td>
           </tr>)}</tbody></table></div>
         )}
         <div className="flex items-center justify-between border-t border-ink/5 p-6 text-sm font-medium text-ink/60"><span>Trang {page} / {totalPages}</span><div className="flex gap-2"><button disabled={page <= 1} onClick={() => setPage((value) => value - 1)} className="button-secondary !py-2 !px-4 !min-h-0 disabled:opacity-40">Trước</button><button disabled={page >= totalPages} onClick={() => setPage((value) => value + 1)} className="button-secondary !py-2 !px-4 !min-h-0 disabled:opacity-40">Sau</button></div></div>

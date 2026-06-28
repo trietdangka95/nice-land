@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Archive, ChevronLeft, ChevronRight, Edit3, Plus, Search } from "lucide-react";
+import { Archive, ChevronLeft, ChevronRight, Edit3, Loader2, Plus, Search } from "lucide-react";
 import type { AdminPost, PostStatus, PropertyType } from "@nice-land/contracts";
 import { StatusPill } from "@/components/shared/status-pill";
 import { createTenantApi } from "@/lib/api";
@@ -39,6 +39,8 @@ export function AdminPostsTable({ slug }: { slug: string }) {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isCreating, setIsCreating] = useState(false);
+  const [archivingId, setArchivingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -81,6 +83,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
 
   async function archive(post: AdminPost) {
     if (!window.confirm(`Lưu trữ tin “${post.title}”?`)) return;
+    setArchivingId(post.id);
     try {
       await client.archiveAdminPost(post.id, post.version);
       await revalidateTenant(slug);
@@ -95,6 +98,8 @@ export function AdminPostsTable({ slug }: { slug: string }) {
         getErrorMessage(requestError, "Không thể lưu trữ tin."),
         "Không thể lưu trữ tin",
       );
+    } finally {
+      setArchivingId(null);
     }
   }
 
@@ -110,6 +115,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
         </div>
         <button
           onClick={async () => {
+            setIsCreating(true);
             try {
               const post = await client.createAdminPost({
                 title: "Tin đăng mới",
@@ -130,12 +136,14 @@ export function AdminPostsTable({ slug }: { slug: string }) {
               window.location.href = `/${slug}/admin/posts/${post.id}/edit`;
             } catch (error) {
               toast.error("Không thể tạo bản nháp.", "Lỗi hệ thống");
+              setIsCreating(false);
             }
           }}
-          className="button-primary"
+          disabled={isCreating}
+          className="button-primary disabled:cursor-wait"
         >
-          <Plus size={17} />
-          Đăng tin mới
+          {isCreating ? <Loader2 className="animate-spin" size={17} /> : <Plus size={17} />}
+          {isCreating ? "Đang tạo..." : "Đăng tin mới"}
         </button>
       </div>
 
@@ -249,10 +257,11 @@ export function AdminPostsTable({ slug }: { slug: string }) {
                         </Link>
                         <button
                           onClick={() => void archive(post)}
-                          className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 text-red-700 hover:bg-red-50 hover:border-red-200 transition-colors"
+                          disabled={archivingId === post.id}
+                          className="grid size-9 place-items-center rounded-lg bg-white shadow-sm border border-ink/5 text-red-700 hover:bg-red-50 hover:border-red-200 transition-colors disabled:opacity-50 disabled:cursor-wait"
                           aria-label={`Lưu trữ ${post.title}`}
                         >
-                          <Archive size={15} />
+                          {archivingId === post.id ? <Loader2 className="animate-spin" size={15} /> : <Archive size={15} />}
                         </button>
                       </div>
                     </td>
