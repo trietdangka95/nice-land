@@ -107,6 +107,7 @@ export class PrismaAdminPostRepository implements AdminPostRepository {
         : {}),
       ...(input.status ? { status: input.status } : {}),
       ...(input.type ? { type: input.type } : {}),
+      ...(input.province ? { province: input.province } : {}),
     };
 
     const [items, total] = await prisma.$transaction([

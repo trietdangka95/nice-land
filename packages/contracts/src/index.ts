@@ -131,12 +131,14 @@ export const adminPostListQuerySchema = z.object({
   q: z.string().trim().max(120).optional(),
   status: postStatusSchema.optional(),
   type: propertyTypeSchema.optional(),
+  province: z.string().trim().max(120).optional(),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().min(1).max(50).default(20),
 });
 
 export const propertyCategoryInputSchema = z.object({
   name: z.string().trim().min(2).max(120),
+  type: propertyTypeSchema,
   slug: z
     .string()
     .trim()
@@ -340,6 +342,7 @@ export interface PropertyCategory {
   id: string;
   name: string;
   slug: string;
+  type: PropertyType;
   postCount: number;
   createdAt: string;
   updatedAt: string;

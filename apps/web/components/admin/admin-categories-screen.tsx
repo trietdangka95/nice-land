@@ -5,6 +5,7 @@ import { Pencil, Plus, Tags, Trash2, X } from "lucide-react";
 import type {
   PropertyCategory,
   PropertyCategoryInput,
+  PropertyType,
 } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 import { revalidateTenant } from "@/app/actions";
@@ -28,6 +29,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
   const [categories, setCategories] = useState<PropertyCategory[]>([]);
   const [editing, setEditing] = useState<PropertyCategory | null>(null);
   const [name, setName] = useState("");
+  const [type, setType] = useState<PropertyType>("HOUSE");
   const [categorySlug, setCategorySlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -54,6 +56,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
   function resetForm() {
     setEditing(null);
     setName("");
+    setType("HOUSE");
     setCategorySlug("");
     setSlugTouched(false);
   }
@@ -61,6 +64,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
   function edit(category: PropertyCategory) {
     setEditing(category);
     setName(category.name);
+    setType(category.type);
     setCategorySlug(category.slug);
     setSlugTouched(true);
   }
@@ -70,6 +74,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
     setSaving(true);
     const input: PropertyCategoryInput = {
       name,
+      type,
       slug: categorySlug || slugify(name),
     };
     try {
@@ -162,6 +167,19 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
             />
           </label>
           <label className="mt-4 grid gap-2 text-sm font-bold">
+            Loại hình bất động sản
+            <select
+              value={type}
+              onChange={(event) => setType(event.target.value as PropertyType)}
+              className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
+            >
+              <option value="HOUSE">Nhà ở</option>
+              <option value="APARTMENT">Căn hộ</option>
+              <option value="LAND">Đất</option>
+              <option value="RENTAL">Cho thuê</option>
+            </select>
+          </label>
+          <label className="mt-4 grid gap-2 text-sm font-bold">
             Đường dẫn
             <input
               value={categorySlug}
@@ -223,7 +241,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
                       {category.name}
                     </strong>
                     <p className="mt-1 text-xs text-ink/45">
-                      /{category.slug} ·{" "}
+                      {category.type === "HOUSE" ? "Nhà ở" : category.type === "APARTMENT" ? "Căn hộ" : category.type === "LAND" ? "Đất" : "Cho thuê"} · /{category.slug} ·{" "}
                       <span className="tabular-nums">
                         {category.postCount} tin
                       </span>

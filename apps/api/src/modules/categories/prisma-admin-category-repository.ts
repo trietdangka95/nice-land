@@ -11,6 +11,7 @@ const categorySelect = {
   id: true,
   name: true,
   slug: true,
+  type: true,
   createdAt: true,
   updatedAt: true,
   _count: {
@@ -29,6 +30,7 @@ function serialize(
     id: category.id,
     name: category.name,
     slug: category.slug,
+    type: category.type,
     postCount: category._count.posts,
     createdAt: category.createdAt.toISOString(),
     updatedAt: category.updatedAt.toISOString(),
@@ -74,11 +76,11 @@ export class PrismaAdminCategoryRepository
         const category = existing
           ? await tx.propertyCategory.update({
               where: { id: existing.id },
-              data: { name: input.name, deletedAt: null },
+              data: { name: input.name, type: input.type, deletedAt: null },
               select: categorySelect,
             })
           : await tx.propertyCategory.create({
-              data: { siteId, name: input.name, slug: input.slug },
+              data: { siteId, name: input.name, slug: input.slug, type: input.type },
               select: categorySelect,
             });
         await writeAuditLog(tx, {
@@ -112,7 +114,7 @@ export class PrismaAdminCategoryRepository
 
         const category = await tx.propertyCategory.update({
           where: { id },
-          data: { name: input.name, slug: input.slug },
+          data: { name: input.name, slug: input.slug, type: input.type },
           select: categorySelect,
         });
         await writeAuditLog(tx, {

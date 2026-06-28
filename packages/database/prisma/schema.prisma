@@ -176,6 +176,7 @@ model PropertyCategory {
   siteId    String
   name      String
   slug      String
+  type      PropertyType   @default(HOUSE)
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
   deletedAt DateTime?

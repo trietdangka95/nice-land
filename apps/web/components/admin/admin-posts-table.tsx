@@ -11,6 +11,14 @@ import { revalidateTenant } from "@/app/actions";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
 
+const PROVINCES = [
+  "Hà Nội", "Huế", "Hải Phòng", "Đà Nẵng", "TP. Hồ Chí Minh", "Cần Thơ",
+  "Cao Bằng", "Điện Biên", "Hà Tĩnh", "Lai Châu", "Lạng Sơn", "Nghệ An", "Quảng Ninh", "Thanh Hóa", "Sơn La",
+  "Tuyên Quang", "Lào Cai", "Thái Nguyên", "Phú Thọ", "Bắc Ninh", "Hưng Yên", "Ninh Bình",
+  "Quảng Trị", "Quảng Ngãi", "Gia Lai", "Khánh Hòa", "Lâm Đồng", "Đắk Lắk",
+  "Đồng Nai", "Tây Ninh", "Vĩnh Long", "Đồng Tháp", "Cà Mau", "An Giang"
+];
+
 const statusLabels: Record<PostStatus, string> = {
   DRAFT: "Bản nháp",
   PUBLISHED: "Đang đăng",
@@ -26,6 +34,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<PostStatus | "">("");
   const [type, setType] = useState<PropertyType | "">("");
+  const [province, setProvince] = useState("");
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -41,6 +50,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
           q: query || undefined,
           status: status || undefined,
           type: type || undefined,
+          province: province || undefined,
           page,
           limit: 10,
         })
@@ -67,7 +77,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
       active = false;
       window.clearTimeout(timeout);
     };
-  }, [client, page, query, refreshKey, status, type]);
+  }, [client, page, query, refreshKey, status, type, province]);
 
   async function archive(post: AdminPost) {
     if (!window.confirm(`Lưu trữ tin “${post.title}”?`)) return;
@@ -98,10 +108,37 @@ export function AdminPostsTable({ slug }: { slug: string }) {
             <span className="tabular-nums">{total}</span> tin phù hợp bộ lọc
           </p>
         </div>
-        <Link href={`/${slug}/admin/posts/create`} className="button-primary">
+        <button
+          onClick={async () => {
+            try {
+              const post = await client.createAdminPost({
+                title: "Tin đăng mới",
+                description: "",
+                type: "HOUSE",
+                categoryId: null,
+                price: null,
+                area: null,
+                province: null,
+                district: null,
+                ward: null,
+                address: null,
+                latitude: null,
+                longitude: null,
+                legalStatus: null,
+                bedrooms: null,
+                bathrooms: null,
+                status: "DRAFT",
+              });
+              window.location.href = `/${slug}/admin/posts/${post.id}/edit`;
+            } catch (error) {
+              toast.error("Không thể tạo bản nháp.", "Lỗi hệ thống");
+            }
+          }}
+          className="button-primary"
+        >
           <Plus size={17} />
           Đăng tin mới
-        </Link>
+        </button>
       </div>
 
       <section className="mt-8 glass-panel rounded-3xl overflow-hidden">
@@ -133,6 +170,20 @@ export function AdminPostsTable({ slug }: { slug: string }) {
             <option value="DRAFT">Bản nháp</option>
             <option value="HIDDEN">Đang ẩn</option>
             <option value="SOLD">Đã bán</option>
+          </select>
+          <select
+            value={province}
+            onChange={(event) => {
+              setProvince(event.target.value);
+              setPage(1);
+            }}
+            className="h-11 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 text-sm font-semibold focus:bg-white transition-colors max-w-40"
+            aria-label="Lọc khu vực"
+          >
+            <option value="">Tất cả khu vực</option>
+            {PROVINCES.sort().map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
           </select>
           <select
             value={type}

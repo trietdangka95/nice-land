@@ -282,7 +282,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
                   className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
                 >
                   <option value="">Chưa phân loại</option>
-                  {categories.map((category) => (
+                  {categories.filter(c => c.type === form.type).map((category) => (
                     <option key={category.id} value={category.id}>
                       {category.name}
                     </option>
@@ -291,10 +291,33 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
               </label>
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
-              <label className="grid gap-2 text-sm font-bold text-ink/80">
+              <div className="grid gap-2 text-sm font-bold text-ink/80">
                 Mức giá (đ)
                 <input value={form.price} onChange={(e) => field("price", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" />
-              </label>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => field("price", form.price ? String(Number(form.price) * 1000000) : "1000000")}
+                      className="rounded-lg bg-moss/10 px-2 py-1 text-xs font-semibold text-moss hover:bg-moss/20 transition-colors"
+                    >
+                      + Triệu
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => field("price", form.price ? String(Number(form.price) * 1000000000) : "1000000000")}
+                      className="rounded-lg bg-moss/10 px-2 py-1 text-xs font-semibold text-moss hover:bg-moss/20 transition-colors"
+                    >
+                      + Tỷ
+                    </button>
+                  </div>
+                  {form.price && (
+                    <span className="text-xs font-medium text-moss">
+                      {new Intl.NumberFormat("vi-VN").format(Number(form.price))} đ
+                    </span>
+                  )}
+                </div>
+              </div>
               <label className="grid gap-2 text-sm font-bold text-ink/80">
                 Diện tích (m²)
                 <input value={form.area} onChange={(e) => field("area", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" step="0.1" />
@@ -427,7 +450,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
           </label>
           <button disabled={saving} className="button-primary mt-5 w-full disabled:cursor-wait disabled:opacity-60">
             <Save size={17} />
-            {saving ? "Đang lưu..." : post ? "Lưu thay đổi" : "Lưu tin đăng"}
+            {saving ? "Đang lưu..." : "Lưu thay đổi"}
           </button>
         </section>
       </aside>
