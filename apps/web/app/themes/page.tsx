@@ -24,7 +24,7 @@ export default async function ThemeGalleryPage({
       <section className="page-shell py-16 sm:py-24">
         <p className="eyebrow">Thư viện giao diện</p>
         <h1 className="mt-4 max-w-4xl text-balance font-display text-5xl leading-tight sm:text-7xl">
-          Một giao diện mặc định cho website bất động sản của bạn.
+          Một giao diện mặc định cho website tin đăng của bạn.
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-ink/60">
           Nice Land sử dụng giao diện Personal Broker làm chuẩn cho mọi website

@@ -291,7 +291,7 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
         if (!post) {
           return reply.status(404).send({
             code: "POST_NOT_FOUND",
-            message: "Tin bất động sản không tồn tại.",
+            message: "Tin đăng không tồn tại.",
             requestId: request.id,
           });
         }

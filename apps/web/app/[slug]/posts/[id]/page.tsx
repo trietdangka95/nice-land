@@ -24,7 +24,7 @@ export async function generateMetadata({
   const site = await getTenantSite(slug);
   const post = site ? await getTenantPost(slug, site.id, id) : undefined;
   return {
-    title: post?.title ?? "Chi tiết bất động sản",
+    title: post?.title ?? "Chi tiết tin đăng",
     description: post?.description.slice(0, 155),
     alternates: { canonical: `${appUrl}/${slug}/posts/${post?.slug ?? id}` },
     openGraph: post
@@ -119,12 +119,12 @@ export default async function PropertyDetailPage({
             <p className="mt-5 max-w-3xl whitespace-pre-line text-base leading-8 text-ink/65">
               {post.description}
               {"\n\n"}
-              Bất động sản được đội ngũ {site.name} khảo sát trực tiếp. Thông tin quy hoạch, pháp lý và
-              lịch xem nhà sẽ được chuyên viên phụ trách xác nhận trước buổi hẹn.
+              Tin đăng được đội ngũ {site.name} khảo sát trực tiếp. Thông tin quy hoạch, pháp lý và
+              lịch xem thực tế sẽ được chuyên viên phụ trách xác nhận trước buổi hẹn.
             </p>
           </div>
           <div className="border-t border-ink/10 pt-8">
-            <h2 className="font-display text-3xl font-medium">Vị trí bất động sản</h2>
+            <h2 className="font-display text-3xl font-medium">Vị trí tin đăng</h2>
             <div className="mt-5 h-[400px] w-full bg-[#dbe1d7]">
               <iframe
                 title="Bản đồ vị trí"
@@ -161,7 +161,7 @@ export default async function PropertyDetailPage({
               <div>
                 <strong className="font-display text-xl">{site.name}</strong>
                 <p className="mt-1 text-xs text-ink/45">
-                  Tư vấn bất động sản tại {post.province}
+                  Tư vấn tin đăng tại {post.province}
                 </p>
               </div>
             </div>

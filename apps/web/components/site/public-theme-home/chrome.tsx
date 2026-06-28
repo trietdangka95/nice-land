@@ -46,7 +46,7 @@ function MobileMenu({
       <nav className="flex flex-col p-4 text-base font-semibold" aria-label="Điều hướng website trên di động">
         {[
           ["Trang chủ", ""],
-          ["Bất động sản", "#properties"],
+          ["Tin đăng", "#properties"],
           ["Về chúng tôi", "#about"],
           ["Liên hệ", "#contact"],
         ].map(([label, href]) => (
@@ -107,8 +107,8 @@ export function SearchHeader({ site }: { site: Site }) {
           <strong className="text-base font-extrabold tracking-[-0.03em]">{site.name}</strong>
         </TenantLink>
         <nav className="tenant-navigation hidden items-center gap-7 text-xs font-bold uppercase tracking-[0.09em] text-slate-300 lg:flex" aria-label="Điều hướng Search First">
-          <TenantLink slug={site.slug} href="#properties">Nhà đất bán</TenantLink>
-          <TenantLink slug={site.slug} href="#properties">Nhà đất thuê</TenantLink>
+          <TenantLink slug={site.slug} href="#properties">Tin mua bán</TenantLink>
+          <TenantLink slug={site.slug} href="#properties">Tin cho thuê</TenantLink>
           <TenantLink slug={site.slug} href="#about">Khu vực</TenantLink>
           <TenantLink slug={site.slug} href="#contact">Tư vấn</TenantLink>
         </nav>
@@ -122,7 +122,7 @@ export function SearchHeader({ site }: { site: Site }) {
         <div className="page-shell flex min-h-10 items-center gap-7 overflow-x-auto text-[11px] font-semibold">
           <span className="shrink-0 text-white/50">Tìm nhanh:</span>
           <a href="#properties" className="shrink-0">Căn hộ</a>
-          <a href="#properties" className="shrink-0">Nhà phố</a>
+          <a href="#properties" className="shrink-0">Căn liền thổ</a>
           <a href="#properties" className="shrink-0">Đất nền</a>
           <a href="#properties" className="shrink-0">Cho thuê</a>
         </div>
@@ -173,7 +173,7 @@ export function PersonalHeader({ site }: { site: Site }) {
           <span className="font-display text-lg tracking-wide text-[#2D1F18] drop-shadow-sm">{site.name}</span>
         </TenantLink>
         <nav className="flex items-center gap-6 text-[11px] font-bold uppercase tracking-[0.15em] text-[#7A5A4E]/70">
-          <TenantLink slug={site.slug} href="#properties">Bất động sản</TenantLink>
+          <TenantLink slug={site.slug} href="#properties">Tin đăng</TenantLink>
           <TenantLink slug={site.slug} href="#contact">Liên hệ</TenantLink>
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
@@ -216,9 +216,9 @@ export function SearchFooter({ site }: { site: Site }) {
     <footer id="contact" className="tenant-footer border-t-4 border-[#3b82f6] bg-[#0f172a] py-12 text-white">
       <div className="page-shell grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div><strong className="text-lg font-extrabold text-white">{site.name}</strong><p className="mt-3 text-sm leading-6 text-white/50">{site.tagline}</p></div>
-        <div className="text-sm leading-7"><strong className="block text-white">Khám phá</strong><a href="#properties" className="block text-white/50 hover:text-white">Nhà đất bán</a><a href="#properties" className="block text-white/50 hover:text-white">Nhà đất thuê</a></div>
+        <div className="text-sm leading-7"><strong className="block text-white">Khám phá</strong><a href="#properties" className="block text-white/50 hover:text-white">Tin mua bán</a><a href="#properties" className="block text-white/50 hover:text-white">Tin cho thuê</a></div>
         <div className="text-sm leading-7"><strong className="block text-white">Hỗ trợ</strong><a href="#about" className="block text-white/50 hover:text-white">Về chúng tôi</a><a href="#contact" className="block text-white/50 hover:text-white">Liên hệ môi giới</a></div>
-        <div className="rounded-lg bg-[#1e293b] p-5 text-sm border border-white/10"><strong className="block text-white font-bold">Cần tìm nhà nhanh?</strong><a href={`tel:${site.phone.replace(/\s/g, "")}`} className="mt-3 flex items-center gap-2 font-bold text-[#60a5fa]"><Phone size={15} />{site.phone}</a></div>
+        <div className="rounded-lg bg-[#1e293b] p-5 text-sm border border-white/10"><strong className="block text-white font-bold">Cần tư vấn nhanh?</strong><a href={`tel:${site.phone.replace(/\s/g, "")}`} className="mt-3 flex items-center gap-2 font-bold text-[#60a5fa]"><Phone size={15} />{site.phone}</a></div>
       </div>
       <div className="page-shell mt-10 border-t border-white/10 pt-5 text-xs text-white/30">© {new Date().getFullYear()} {site.name} · Nền tảng Nice Land</div>
     </footer>
@@ -258,7 +258,7 @@ export function PersonalFooter({ site }: { site: Site }) {
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <strong className="font-display text-xl font-medium text-[#2d1f18]">{site.name}</strong>
-                <p className="text-xs text-[#7a5a4e] font-medium mt-1">Đối tác bất động sản của bạn</p>
+                <p className="text-xs text-[#7a5a4e] font-medium mt-1">Đối tác tin đăng của bạn</p>
               </div>
               <div className="flex gap-2">
                 <a href={site.facebookUrl ?? "#"} aria-label="Facebook" className="grid size-8 place-items-center rounded-full border border-black/5 text-[#7a5a4e] hover:bg-[var(--tenant-color)] hover:text-white transition-colors"><Facebook size={14} /></a>

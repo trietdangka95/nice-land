@@ -38,13 +38,13 @@ export function TenantHeader({ site }: { site: Site }) {
                 {site.name}
               </strong>
               <small className="hidden text-[9px] font-bold uppercase tracking-[0.18em] text-ink/45 min-[400px]:block">
-                Bất động sản chọn lọc
+                Tin đăng chọn lọc
               </small>
             </span>
           </TenantLink>
           <nav className="tenant-navigation hidden items-center gap-7 text-sm font-semibold lg:flex" aria-label="Điều hướng website">
             <TenantLink href="" slug={site.slug}>Trang chủ</TenantLink>
-            <TenantLink href="#properties" slug={site.slug}>Bất động sản</TenantLink>
+            <TenantLink href="#properties" slug={site.slug}>Tin đăng</TenantLink>
             <TenantLink href="#about" slug={site.slug}>Về chúng tôi</TenantLink>
             <TenantLink href="#contact" slug={site.slug}>Liên hệ</TenantLink>
           </nav>
@@ -70,7 +70,7 @@ export function TenantHeader({ site }: { site: Site }) {
                   Trang chủ
                 </TenantLink>
                 <TenantLink href="#properties" slug={site.slug} className="border-b border-white/10 px-3 py-4">
-                  Bất động sản
+                  Tin đăng
                 </TenantLink>
                 <TenantLink href="#about" slug={site.slug} className="border-b border-white/10 px-3 py-4">
                   Về chúng tôi

@@ -58,10 +58,10 @@ export async function getTenantSite(slug: string): Promise<Site | undefined> {
       }
       return {
         id: `inactive-${slug}`,
-        name: "Website bất động sản",
+        name: "Website tin đăng",
         slug,
         tagline: "",
-        logoMark: "WB",
+        logoMark: "WT",
         themeKey: resolvePublicTheme("warm-minimal"),
         themeColor: "#315c45",
         phone: "",

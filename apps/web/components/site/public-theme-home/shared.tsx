@@ -80,7 +80,7 @@ export function ExpertiseSection({
               : "Tư vấn bằng hiểu biết. Đồng hành bằng sự tử tế."}
           </h2>
           <p className="mt-6 leading-7 text-ink/60">
-            Mỗi bất động sản được chọn lọc dựa trên pháp lý, tiềm năng và mức
+            Mỗi tin đăng được chọn lọc dựa trên pháp lý, tiềm năng và mức
             độ phù hợp với nhu cầu thực tế. Bạn luôn nhận được thông tin rõ
             ràng trước khi đi xem hoặc thương lượng.
           </p>

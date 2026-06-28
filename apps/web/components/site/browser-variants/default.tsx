@@ -23,7 +23,7 @@ export function DefaultBrowser({
         className="tenant-filter grid gap-3 border border-ink/10 bg-white p-3 md:grid-cols-2 xl:grid-cols-[1fr_140px_140px_140px_140px_auto]"
       >
         <label className="relative">
-          <span className="sr-only">Tìm kiếm bất động sản</span>
+          <span className="sr-only">Tìm kiếm tin đăng</span>
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" size={18} />
           <input
             type="search"
@@ -47,7 +47,7 @@ export function DefaultBrowser({
           </select>
         </label>
         <label>
-          <span className="sr-only">Danh mục bất động sản</span>
+          <span className="sr-only">Danh mục tin đăng</span>
           <select
             value={categoryId}
             onChange={(event) => setCategoryId(event.target.value)}
@@ -62,7 +62,7 @@ export function DefaultBrowser({
           </select>
         </label>
         <label>
-          <span className="sr-only">Loại bất động sản</span>
+          <span className="sr-only">Loại tin đăng</span>
           <select
             value={type}
             onChange={(event) => setType(event.target.value)}
@@ -97,7 +97,7 @@ export function DefaultBrowser({
 
       <div className="mt-7 flex items-center justify-between">
         <p className="text-sm text-ink/55">
-          Tìm thấy <strong className="tabular-nums text-ink">{total}</strong> bất động sản
+          Tìm thấy <strong className="tabular-nums text-ink">{total}</strong> tin đăng
         </p>
       </div>
 
@@ -114,7 +114,7 @@ export function DefaultBrowser({
       ) : (
         <div className="mt-6 border border-dashed border-ink/20 bg-white py-20 text-center">
           <Search className="mx-auto text-ink/25" size={34} />
-          <h3 className="mt-4 font-display text-2xl">Chưa tìm thấy bất động sản phù hợp</h3>
+          <h3 className="mt-4 font-display text-2xl">Chưa tìm thấy tin đăng phù hợp</h3>
           <p className="mt-2 text-sm text-ink/50">Thử thay đổi từ khóa hoặc loại hình đang chọn.</p>
         </div>
       )}
@@ -122,7 +122,7 @@ export function DefaultBrowser({
       {totalPages > 1 && (
         <nav
           className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-ink/10 pt-6 sm:flex-row"
-          aria-label="Phân trang bất động sản"
+          aria-label="Phân trang tin đăng"
         >
           <p className="text-sm text-ink/50">
             Trang <strong className="tabular-nums text-ink">{page}</strong> /{" "}

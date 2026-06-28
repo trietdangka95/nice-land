@@ -15,7 +15,7 @@ function createEmptyFeaturedPost(site: Site): PropertyPost {
     siteId: site.id,
     title: site.name,
     description:
-      site.tagline || "Website đang được cập nhật danh sách bất động sản.",
+      site.tagline || "Website đang được cập nhật danh sách tin đăng.",
     type: "HOUSE",
     price: 0,
     area: 0,
@@ -45,7 +45,7 @@ export async function generateMetadata({
   }/${slug}`;
 
   return {
-    title: site?.name ?? "Website bất động sản",
+    title: site?.name ?? "Website tin đăng",
     description: site?.tagline,
     alternates: { canonical },
     openGraph: site

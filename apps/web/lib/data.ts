@@ -11,7 +11,7 @@ export const sites: Site[] = [
     themeColor: "#315c45",
     phone: "1900 1234",
     email: "demo@nice-land.vn",
-    address: "Tòa nhà Nice Land, TP. Hồ Chí Minh",
+    address: "Văn phòng Nice Land, TP. Hồ Chí Minh",
     facebookUrl: "https://facebook.com",
     zaloPhone: "19001234",
     isActive: true,
@@ -22,7 +22,7 @@ export const sites: Site[] = [
   },
   {
     id: "site-minhphat",
-    name: "Nhà Đất Minh Phát",
+    name: "Minh Phát Land",
     slug: "minhphat",
     tagline: "Chọn đúng nơi, dựng đúng tổ ấm",
     logoMark: "MP",
@@ -125,7 +125,7 @@ export const properties: PropertyPost[] = [
   {
     id: "shophouse-demo-2",
     siteId: "site-demo",
-    title: "Nhà phố thương mại Shophouse trung tâm",
+    title: "Shophouse thương mại trung tâm",
     description:
       "Shophouse vị trí góc 2 mặt tiền đường lớn, thuận tiện kinh doanh đa ngành nghề. Khu vực sầm uất, lượng khách qua lại đông đúc.",
     type: "HOUSE",
@@ -266,9 +266,9 @@ export const properties: PropertyPost[] = [
   {
     id: "townhouse-hai-chau",
     siteId: "site-minhphat",
-    title: "Nhà phố thanh lịch giữa trung tâm Hải Châu",
+    title: "Căn liền thổ thanh lịch giữa trung tâm Hải Châu",
     description:
-      "Nhà phố hoàn thiện mới, bố trí tối ưu cho gia đình trẻ. Khu dân cư yên tĩnh, chỉ vài phút đến sông Hàn và trung tâm hành chính.",
+      "Không gian hoàn thiện mới, bố trí tối ưu cho gia đình trẻ. Khu dân cư yên tĩnh, chỉ vài phút đến sông Hàn và trung tâm hành chính.",
     type: "HOUSE",
     price: 8900000000,
     area: 112,
@@ -306,7 +306,7 @@ export const properties: PropertyPost[] = [
     siteId: "site-minhphat",
     title: "Đất vườn ven sông, không gian mở tại Hòa Vang",
     description:
-      "Lô đất vuông vức, đường xe hơi, thích hợp làm nhà vườn cuối tuần hoặc đầu tư trung hạn.",
+      "Lô đất vuông vức, đường xe hơi, thích hợp làm không gian nghỉ cuối tuần hoặc đầu tư trung hạn.",
     type: "LAND",
     price: 2700000000,
     area: 340,
@@ -342,8 +342,8 @@ export const properties: PropertyPost[] = [
   {
     id: "anland-garden",
     siteId: "site-anland",
-    title: "Nhà vườn riêng tư tại Thủ Đức",
-    description: "Nhà vườn một tầng với khoảng xanh bao quanh.",
+    title: "Biệt thự vườn riêng tư tại Thủ Đức",
+    description: "Không gian một tầng với khoảng xanh bao quanh.",
     type: "HOUSE",
     price: 12000000000,
     area: 230,

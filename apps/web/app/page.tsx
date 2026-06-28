@@ -86,7 +86,7 @@ export default async function LandingPage({
           </div>
 
           <h1 className="mt-8 text-balance font-display text-5xl font-medium leading-[1.05] min-[420px]:text-6xl sm:text-7xl lg:text-[86px] tracking-tight">
-            Website bất động sản <br className="hidden sm:block" />
+            Website tin đăng <br className="hidden sm:block" />
             <span className="text-gradient font-bold drop-shadow-sm">mang tên bạn.</span>
           </h1>
 
@@ -169,7 +169,7 @@ export default async function LandingPage({
                   <Building2 className="text-moss" size={28} strokeWidth={1.5} />
                 </div>
                 <h3 className="font-display text-3xl font-medium mb-3">Quản lý tin đăng thông minh</h3>
-                <p className="text-ink/60 max-w-md leading-relaxed text-lg">Tạo, chỉnh sửa, phân loại và theo dõi trạng thái bất động sản với giao diện trực quan chỉ trong vài thao tác cơ bản.</p>
+                <p className="text-ink/60 max-w-md leading-relaxed text-lg">Tạo, chỉnh sửa, phân loại và theo dõi trạng thái tin đăng với giao diện trực quan chỉ trong vài thao tác cơ bản.</p>
               </div>
             </div>
 
@@ -225,7 +225,7 @@ export default async function LandingPage({
             {[
               ["01", "Chọn gói & giao diện", "Xem các website mẫu, chọn phong cách phù hợp rồi đăng ký gói dịch vụ tương ứng."],
               ["02", "Tạo dấu ấn riêng", "Chúng tôi thiết lập theme đã chọn với tên, logo, màu sắc và thông tin liên hệ của bạn."],
-              ["03", "Đăng tin & bán hàng", "Đưa các bất động sản lên website, chia sẻ đường dẫn và kết nối ngay với khách hàng."],
+              ["03", "Đăng tin & bán hàng", "Đưa các tin mua bán - cho thuê lên website, chia sẻ đường dẫn và kết nối ngay với khách hàng."],
             ].map(([number, title, description]) => (
               <article key={number} className="glass-dark rounded-3xl p-10 relative overflow-hidden group transition-all duration-500 hover:-translate-y-2 hover:bg-white/5 hover:border-white/20">
                 <div className="absolute -right-4 -top-8 text-[140px] font-display font-bold text-white/5 group-hover:text-white/10 transition-colors duration-500">{number}</div>

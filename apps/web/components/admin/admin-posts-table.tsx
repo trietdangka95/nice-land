@@ -221,7 +221,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
             <table className="w-full min-w-[780px] text-left">
               <thead className="bg-ink/5 text-[10px] font-bold uppercase tracking-widest text-ink/50">
                 <tr>
-                  <th className="px-5 py-4">Bất động sản</th>
+                  <th className="px-5 py-4">Tin đăng</th>
                   <th className="px-5 py-4">Loại hình</th>
                   <th className="px-5 py-4">Mức giá</th>
                   <th className="px-5 py-4">Trạng thái</th>

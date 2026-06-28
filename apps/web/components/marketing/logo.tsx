@@ -25,7 +25,7 @@ export function Logo({
             Nice Land
           </span>
           <span className={`mt-1 hidden whitespace-nowrap text-[9px] font-bold uppercase tracking-[0.2em] min-[400px]:block sm:tracking-[0.24em] ${inverted ? "text-white/45" : "text-ink/50"}`}>
-            Bất động sản của riêng bạn
+            Tin đăng của riêng bạn
           </span>
         </span>
       )}

@@ -112,7 +112,7 @@ export function WarmBrowser({
       </div>
 
       <p className="mt-8 text-center text-sm font-bold text-[#a78a7a]">
-        Đã tìm thấy <strong className="text-[#2d1f18]">{total}</strong> sản phầm phù hợp
+        Đã tìm thấy <strong className="text-[#2d1f18]">{total}</strong> tin đăng phù hợp
       </p>
 
       {posts.length > 0 ? (
@@ -146,13 +146,13 @@ export function WarmBrowser({
           <div className="mx-auto grid size-20 place-items-center rounded-full bg-[#f1ebd9] text-[#a78a7a]">
             <Search size={34} />
           </div>
-          <h3 className="mt-5 text-2xl font-extrabold text-[#2d1f18]">Chưa tìm thấy nhà phù hợp</h3>
+          <h3 className="mt-5 text-2xl font-extrabold text-[#2d1f18]">Chưa tìm thấy lựa chọn phù hợp</h3>
           <p className="mt-2 text-sm font-semibold text-[#7a5a4e]">Bạn có thể thử đổi khu vực, loại hình hoặc từ khóa.</p>
         </div>
       )}
 
       {totalPages > 1 && (
-        <nav className="mt-12 flex items-center justify-center gap-2 pb-8" aria-label="Phân trang bất động sản">
+        <nav className="mt-12 flex items-center justify-center gap-2 pb-8" aria-label="Phân trang tin đăng">
           {page > 1 ? (
             <TenantLink slug={slug} href={buildPublicPostsHref("", { page: page - 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })} className="grid size-12 place-items-center rounded-full bg-white text-[#2d1f18] shadow-[0_8px_22px_rgba(124,58,36,0.08)]">
               <ChevronLeft size={20} />

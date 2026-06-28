@@ -128,7 +128,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
           Phân loại nội dung
         </p>
         <h1 className="mt-2 text-balance font-display text-4xl font-medium">
-          Danh mục bất động sản
+          Danh mục tin đăng
         </h1>
         <p className="mt-2 text-pretty text-sm text-ink/50">
           Tạo nhóm nội dung để quản lý tin và giúp khách hàng tìm kiếm dễ hơn.
@@ -165,19 +165,19 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
                 if (!slugTouched) setCategorySlug(slugify(value));
               }}
               className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
-              placeholder="Ví dụ: Nhà phố"
+              placeholder="Ví dụ: Căn hộ cao cấp"
               required
               minLength={2}
             />
           </label>
           <label className="mt-4 grid gap-2 text-sm font-bold">
-            Loại hình bất động sản
+            Loại tin đăng
             <select
               value={type}
               onChange={(event) => setType(event.target.value as PropertyType)}
               className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
             >
-              <option value="HOUSE">Nhà ở</option>
+              <option value="HOUSE">Căn liền thổ</option>
               <option value="APARTMENT">Căn hộ</option>
               <option value="LAND">Đất</option>
               <option value="RENTAL">Cho thuê</option>
@@ -192,7 +192,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
                 setCategorySlug(slugify(event.target.value));
               }}
               className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
-              placeholder="nha-pho"
+              placeholder="can-ho-cao-cap"
               required
             />
           </label>
@@ -247,7 +247,7 @@ export function AdminCategoriesScreen({ slug }: { slug: string }) {
                       {category.name}
                     </strong>
                     <p className="mt-1 text-xs text-ink/45">
-                      {category.type === "HOUSE" ? "Nhà ở" : category.type === "APARTMENT" ? "Căn hộ" : category.type === "LAND" ? "Đất" : "Cho thuê"} · /{category.slug} ·{" "}
+                      {category.type === "HOUSE" ? "Căn liền thổ" : category.type === "APARTMENT" ? "Căn hộ" : category.type === "LAND" ? "Đất" : "Cho thuê"} · /{category.slug} ·{" "}
                       <span className="tabular-nums">
                         {category.postCount} tin
                       </span>

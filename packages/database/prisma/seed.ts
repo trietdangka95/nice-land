@@ -129,7 +129,7 @@ async function main() {
       themeColor: "#315c45",
       phone: "19001234",
       email: "demo@nice-land.vn",
-      address: "Tòa nhà Nice Land, TP. Hồ Chí Minh",
+      address: "Văn phòng Nice Land, TP. Hồ Chí Minh",
       facebookUrl: "https://facebook.com",
       zaloPhone: "19001234",
       planId: professionalPlan.id,
@@ -142,13 +142,13 @@ async function main() {
   const minhPhat = await prisma.site.upsert({
     where: { slug: "minhphat" },
     update: {
-      name: "Nhà Đất Minh Phát",
+      name: "Minh Phát Land",
       planId: professionalPlan.id,
       isActive: true,
       subscriptionStatus: SubscriptionStatus.ACTIVE,
     },
     create: {
-      name: "Nhà Đất Minh Phát",
+      name: "Minh Phát Land",
       slug: "minhphat",
       tagline: "Chọn đúng nơi, dựng đúng tổ ấm",
       themeColor: "#315c45",
@@ -276,14 +276,14 @@ async function main() {
     where: {
       siteId_slug: {
         siteId: demoSite.id,
-        slug: "nha-o",
+        slug: "can-lien-tho",
       },
     },
-    update: { name: "Nhà ở", deletedAt: null },
+    update: { name: "Căn liền thổ", deletedAt: null },
     create: {
       siteId: demoSite.id,
-      name: "Nhà ở",
-      slug: "nha-o",
+      name: "Căn liền thổ",
+      slug: "can-lien-tho",
     },
   });
 
@@ -306,14 +306,14 @@ async function main() {
     where: {
       siteId_slug: {
         siteId: minhPhat.id,
-        slug: "nha-o",
+        slug: "can-lien-tho",
       },
     },
-    update: { name: "Nhà ở", deletedAt: null },
+    update: { name: "Căn liền thổ", deletedAt: null },
     create: {
       siteId: minhPhat.id,
-      name: "Nhà ở",
-      slug: "nha-o",
+      name: "Căn liền thổ",
+      slug: "can-lien-tho",
     },
   });
 

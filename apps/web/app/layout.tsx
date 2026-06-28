@@ -12,11 +12,11 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Nice Land — Website bất động sản mang tên bạn",
+    default: "Nice Land — Website tin đăng mang tên bạn",
     template: "%s | Nice Land",
   },
   description:
-    "Nền tảng giúp môi giới và doanh nghiệp tạo website bất động sản riêng, quản lý tin đăng và xây dựng thương hiệu.",
+    "Nền tảng giúp môi giới và doanh nghiệp tạo website riêng, quản lý tin đăng mua bán - cho thuê và xây dựng thương hiệu.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

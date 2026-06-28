@@ -22,11 +22,11 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
               {site.name}
             </h1>
             <p className="mt-5 max-w-lg text-base leading-8 text-[#7a5a4e]">
-              {site.tagline || "Tìm kiếm bất động sản ưng ý chưa bao giờ dễ dàng đến thế. Chúng tôi ở đây để giúp bạn. Khám phá ngay"}
+              {site.tagline || "Tìm kiếm lựa chọn ưng ý chưa bao giờ dễ dàng đến thế. Chúng tôi ở đây để giúp bạn. Khám phá ngay"}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <TenantLink slug={site.slug} href="#properties" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--tenant-color)] px-6 text-sm font-extrabold text-white transition-transform active:scale-[0.98]">
-                Xem danh mục nhà đất
+                Xem danh sách tin
                 <ArrowRight size={17} />
               </TenantLink>
               <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-extrabold text-[#2d1f18] shadow-[0_8px_24px_rgba(124,58,36,0.08)]">
@@ -95,7 +95,7 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
       <section id="properties" className="tenant-listing bg-[#fcfbf9] text-[#4a3c31] py-16 sm:py-20">
         <div className="page-shell">
           <div className="mb-10 text-center">
-            <h2 className="font-display text-4xl sm:text-5xl font-medium text-[#2d1f18]">Bất động sản</h2>
+            <h2 className="font-display text-4xl sm:text-5xl font-medium text-[#2d1f18]">Tin đăng nổi bật</h2>
             <p className="my-2 text-[#7a5a4e]">Những lựa chọn phù hợp nhất, được chắt lọc dành riêng cho bạn.</p>
           </div>
 

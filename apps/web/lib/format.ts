@@ -15,7 +15,7 @@ export function formatPrice(price: number, type?: PropertyType) {
 
 export const propertyTypeLabels: Record<PropertyType, string> = {
   LAND: "Đất",
-  HOUSE: "Nhà ở",
+  HOUSE: "Căn liền thổ",
   APARTMENT: "Căn hộ",
   RENTAL: "Cho thuê",
 };
