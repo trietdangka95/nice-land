@@ -10,5 +10,6 @@ export interface PublicThemeHomeProps {
   query: string;
   type?: PropertyType;
   categoryId?: string;
+  province?: string;
   sort: "newest" | "price_asc" | "price_desc";
 }

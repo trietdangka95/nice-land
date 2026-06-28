@@ -6,6 +6,14 @@ import { buildPublicPostsHref } from "@/lib/pagination";
 import type { PropertyPost } from "@/lib/types";
 import type { BrowserVariantProps } from "../property-browser";
 
+const PROVINCES = [
+  "Hà Nội", "Huế", "Hải Phòng", "Đà Nẵng", "TP. Hồ Chí Minh", "Cần Thơ",
+  "Cao Bằng", "Điện Biên", "Hà Tĩnh", "Lai Châu", "Lạng Sơn", "Nghệ An", "Quảng Ninh", "Thanh Hóa", "Sơn La",
+  "Tuyên Quang", "Lào Cai", "Thái Nguyên", "Phú Thọ", "Bắc Ninh", "Hưng Yên", "Ninh Bình",
+  "Quảng Trị", "Quảng Ngãi", "Gia Lai", "Khánh Hòa", "Lâm Đồng", "Đắk Lắk",
+  "Đồng Nai", "Tây Ninh", "Vĩnh Long", "Đồng Tháp", "Cà Mau", "An Giang"
+];
+
 function propertyHref(slug: string, post: PropertyPost) {
   return `/${slug}/posts/${post.slug ?? post.id}`;
 }
@@ -17,6 +25,8 @@ export function WarmBrowser({
   setType,
   categoryId,
   setCategoryId,
+  province,
+  setProvince,
   sort,
   setSort,
   categories,
@@ -29,6 +39,7 @@ export function WarmBrowser({
   initialQuery,
   initialType,
   initialCategoryId,
+  initialProvince,
   initialSort,
 }: BrowserVariantProps) {
   const visiblePages = Array.from({ length: Math.min(totalPages, 5) }, (_, index) => index + 1);
@@ -50,10 +61,10 @@ export function WarmBrowser({
 
         <div className="h-8 w-px bg-black/5 hidden md:block"></div>
 
-        <select value={categoryId} onChange={(event) => setCategoryId(event.target.value)} className="h-12 w-full md:w-auto min-w-[140px] bg-transparent px-4 text-sm font-bold text-[#4a3c31] outline-none cursor-pointer">
+        <select value={province} onChange={(event) => setProvince(event.target.value)} className="h-12 w-full md:w-auto min-w-[140px] bg-transparent px-4 text-sm font-bold text-[#4a3c31] outline-none cursor-pointer">
           <option value="">Khu vực</option>
-          {categories.map((category) => (
-            <option value={category.id} key={category.id}>{category.name}</option>
+          {PROVINCES.sort().map((p) => (
+            <option value={p} key={p}>{p}</option>
           ))}
         </select>
 
@@ -80,22 +91,28 @@ export function WarmBrowser({
       </form>
 
       <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
-        {[
-          ["Tất cả", "ALL"],
-          ...Object.entries(propertyTypeLabels),
-        ].map(([label, value]) => {
-          const active = type === value;
-          return (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setType(value)}
-              className={`rounded-full px-4 py-2 text-sm font-extrabold transition-colors ${active ? "bg-[var(--tenant-color)] text-white" : "bg-white text-[#7a5a4e]"}`}
-            >
-              {label}
-            </button>
-          );
-        })}
+        <button
+          type="button"
+          onClick={() => setCategoryId("")}
+          className={`rounded-full px-4 py-2 text-sm font-extrabold transition-colors ${categoryId === "" ? "bg-[var(--tenant-color)] text-white" : "bg-white text-[#7a5a4e]"}`}
+        >
+          Tất cả danh mục
+        </button>
+        {categories
+          .filter((c) => type === "ALL" || c.type === type)
+          .map((category) => {
+            const active = categoryId === category.id;
+            return (
+              <button
+                key={category.id}
+                type="button"
+                onClick={() => setCategoryId(category.id)}
+                className={`rounded-full px-4 py-2 text-sm font-extrabold transition-colors ${active ? "bg-[var(--tenant-color)] text-white" : "bg-white text-[#7a5a4e]"}`}
+              >
+                {category.name}
+              </button>
+            );
+          })}
       </div>
 
       <p className="mt-8 text-center text-sm font-bold text-[#a78a7a]">
@@ -141,7 +158,7 @@ export function WarmBrowser({
       {totalPages > 1 && (
         <nav className="mt-12 flex flex-wrap items-center justify-center gap-3">
           {page > 1 ? (
-            <Link href={buildPublicPostsHref(slug, { page: page - 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, sort: initialSort as any })} className="grid size-12 place-items-center rounded-full bg-white text-[#2d1f18] shadow-[0_8px_22px_rgba(124,58,36,0.08)]">
+            <Link href={buildPublicPostsHref(slug, { page: page - 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })} className="grid size-12 place-items-center rounded-full bg-white text-[#2d1f18] shadow-[0_8px_22px_rgba(124,58,36,0.08)]">
               <ChevronLeft size={21} />
             </Link>
           ) : (
@@ -153,13 +170,13 @@ export function WarmBrowser({
             paginationPage === page ? (
               <span key={paginationPage} className="grid size-11 place-items-center rounded-full bg-[var(--tenant-color)] text-sm font-extrabold text-white">{paginationPage}</span>
             ) : (
-              <Link key={paginationPage} href={buildPublicPostsHref(slug, { page: paginationPage, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, sort: initialSort as any })} className="grid size-11 place-items-center rounded-full bg-white text-sm font-extrabold text-[#7a5a4e]">
+              <Link key={paginationPage} href={buildPublicPostsHref(slug, { page: paginationPage, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })} className="grid size-11 place-items-center rounded-full bg-white text-sm font-extrabold text-[#7a5a4e]">
                 {paginationPage}
               </Link>
             )
           ))}
           {page < totalPages ? (
-            <Link href={buildPublicPostsHref(slug, { page: page + 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, sort: initialSort as any })} className="grid size-12 place-items-center rounded-full bg-white text-[#2d1f18] shadow-[0_8px_22px_rgba(124,58,36,0.08)]">
+            <Link href={buildPublicPostsHref(slug, { page: page + 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })} className="grid size-12 place-items-center rounded-full bg-white text-[#2d1f18] shadow-[0_8px_22px_rgba(124,58,36,0.08)]">
               <ChevronRight size={21} />
             </Link>
           ) : (

@@ -5,14 +5,22 @@ import { propertyTypeLabels } from "@/lib/format";
 import { buildPublicPostsHref } from "@/lib/pagination";
 import type { BrowserVariantProps } from "../property-browser";
 
+const PROVINCES = [
+  "Hà Nội", "Huế", "Hải Phòng", "Đà Nẵng", "TP. Hồ Chí Minh", "Cần Thơ",
+  "Cao Bằng", "Điện Biên", "Hà Tĩnh", "Lai Châu", "Lạng Sơn", "Nghệ An", "Quảng Ninh", "Thanh Hóa", "Sơn La",
+  "Tuyên Quang", "Lào Cai", "Thái Nguyên", "Phú Thọ", "Bắc Ninh", "Hưng Yên", "Ninh Bình",
+  "Quảng Trị", "Quảng Ngãi", "Gia Lai", "Khánh Hòa", "Lâm Đồng", "Đắk Lắk",
+  "Đồng Nai", "Tây Ninh", "Vĩnh Long", "Đồng Tháp", "Cà Mau", "An Giang"
+];
+
 export function DefaultBrowser({
-  query, setQuery, type, setType, categoryId, setCategoryId, sort, setSort, categories, applyFilters,
-  posts, slug, total, page, totalPages, initialQuery, initialType, initialCategoryId, initialSort}: BrowserVariantProps) {
+  query, setQuery, type, setType, categoryId, setCategoryId, province, setProvince, sort, setSort, categories, applyFilters,
+  posts, slug, total, page, totalPages, initialQuery, initialType, initialCategoryId, initialProvince, initialSort}: BrowserVariantProps) {
   return (
     <div className="tenant-property-browser">
       <form
         onSubmit={applyFilters}
-        className="tenant-filter grid gap-3 border border-ink/10 bg-white p-3 md:grid-cols-2 xl:grid-cols-[1fr_180px_180px_180px_auto]"
+        className="tenant-filter grid gap-3 border border-ink/10 bg-white p-3 md:grid-cols-2 xl:grid-cols-[1fr_140px_140px_140px_140px_auto]"
       >
         <label className="relative">
           <span className="sr-only">Tìm kiếm bất động sản</span>
@@ -26,6 +34,19 @@ export function DefaultBrowser({
           />
         </label>
         <label>
+          <span className="sr-only">Khu vực</span>
+          <select
+            value={province}
+            onChange={(event) => setProvince(event.target.value)}
+            className="h-12 w-full bg-cream/70 px-4 text-sm font-semibold"
+          >
+            <option value="">Tất cả khu vực</option>
+            {PROVINCES.sort().map((p) => (
+              <option value={p} key={p}>{p}</option>
+            ))}
+          </select>
+        </label>
+        <label>
           <span className="sr-only">Danh mục bất động sản</span>
           <select
             value={categoryId}
@@ -33,7 +54,7 @@ export function DefaultBrowser({
             className="h-12 w-full bg-cream/70 px-4 text-sm font-semibold"
           >
             <option value="">Tất cả danh mục</option>
-            {categories.map((category) => (
+            {categories.filter(c => type === "ALL" || c.type === type).map((category) => (
               <option value={category.id} key={category.id}>
                 {category.name}
               </option>
@@ -110,7 +131,7 @@ export function DefaultBrowser({
           <div className="flex gap-2">
             {page > 1 ? (
               <Link
-                href={buildPublicPostsHref(slug, { page: page - 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, sort: initialSort as any })}
+                href={buildPublicPostsHref(slug, { page: page - 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })}
                 className="button-secondary min-h-11 px-4"
               >
                 <ChevronLeft size={17} aria-hidden="true" />
@@ -124,7 +145,7 @@ export function DefaultBrowser({
             )}
             {page < totalPages ? (
               <Link
-                href={buildPublicPostsHref(slug, { page: page + 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, sort: initialSort as any })}
+                href={buildPublicPostsHref(slug, { page: page + 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })}
                 className="button-secondary min-h-11 px-4"
               >
                 Trang sau

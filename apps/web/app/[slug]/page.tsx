@@ -117,6 +117,10 @@ export default async function TenantHomePage({
     /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(categoryIdValue)
       ? categoryIdValue
       : undefined;
+  const provinceValue = Array.isArray(queryParams.province)
+    ? queryParams.province[0]
+    : queryParams.province;
+  const province = provinceValue?.trim() || undefined;
   const sortValue = Array.isArray(queryParams.sort)
     ? queryParams.sort[0]
     : queryParams.sort;
@@ -132,6 +136,7 @@ export default async function TenantHomePage({
       q: q || undefined,
       type,
       categoryId,
+      province,
       sort,
     }),
     getTenantPosts(slug, site.id, { page: 1, limit: 1 }),
@@ -157,6 +162,7 @@ export default async function TenantHomePage({
         query={q}
         type={type}
         categoryId={categoryId}
+        province={province}
         sort={sort}
       />
     </main>

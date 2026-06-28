@@ -122,8 +122,6 @@ export function AdminPostsTable({ slug }: { slug: string }) {
                 district: null,
                 ward: null,
                 address: null,
-                latitude: null,
-                longitude: null,
                 legalStatus: null,
                 bedrooms: null,
                 bathrooms: null,

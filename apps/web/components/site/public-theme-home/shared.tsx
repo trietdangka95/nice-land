@@ -42,6 +42,7 @@ export function PropertyCollection({
             initialQuery={model.query}
             initialType={model.type ?? "ALL"}
             initialCategoryId={model.categoryId ?? ""}
+            initialProvince={model.province ?? ""}
             initialSort={model.sort}
           />
         </div>

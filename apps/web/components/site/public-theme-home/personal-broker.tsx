@@ -7,7 +7,7 @@ import { formatPrice } from "@/lib/format";
 import type { PublicThemeHomeProps } from "./types";
 
 export function PersonalBrokerHome(model: PublicThemeHomeProps) {
-  const { site, featured, posts, total, page, totalPages, query, type, categoryId, sort } = model;
+  const { site, featured, posts, total, page, totalPages, query, type, categoryId, province, sort } = model;
   return (
     <>
       <PersonalHeader site={site} />
@@ -109,6 +109,7 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
             initialQuery={query}
             initialType={type ?? "ALL"}
             initialCategoryId={categoryId ?? ""}
+            initialProvince={province ?? ""}
             initialSort={sort}
           />
         </div>

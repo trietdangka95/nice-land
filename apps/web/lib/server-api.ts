@@ -120,6 +120,7 @@ export async function getTenantPosts(
     q?: string;
     type?: PropertyPost["type"];
     categoryId?: string;
+    province?: string;
     sort?: "newest" | "price_asc" | "price_desc";
   } = {},
 ): Promise<{
@@ -136,6 +137,7 @@ export async function getTenantPosts(
   if (options.q) query.set("q", options.q);
   if (options.type) query.set("type", options.type);
   if (options.categoryId) query.set("categoryId", options.categoryId);
+  if (options.province) query.set("province", options.province);
   if (options.sort) query.set("sort", options.sort);
 
   try {
