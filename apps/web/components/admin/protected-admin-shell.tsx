@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useTenantRouting } from "@/lib/use-tenant-routing";
 import { ApiClientError } from "@nice-land/api-client";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AuthGuard } from "@/components/shared/auth-guard";
@@ -20,7 +21,7 @@ function TenantAdminShell({
   isExpired?: boolean;
   children: React.ReactNode;
 }) {
-  const router = useRouter();
+  const router = useTenantRouting(slug);
   const [site, setSite] = useState<AdminSiteIdentity>();
   const [error, setError] = useState("");
   const [attempt, setAttempt] = useState(0);
@@ -33,7 +34,7 @@ function TenantAdminShell({
     } catch (loadError) {
       if (loadError instanceof ApiClientError && loadError.status === 401) {
         window.sessionStorage.removeItem("nice_land_access_token");
-        router.replace(`/${slug}/admin/login`);
+        router.replace("/admin/login");
         return;
       }
       setError(
@@ -51,7 +52,7 @@ function TenantAdminShell({
   useEffect(() => {
     const pathname = window.location.pathname;
     if (isExpired && !pathname.endsWith("/admin/subscription") && !pathname.endsWith("/admin/login")) {
-      router.replace(`/${slug}/admin/subscription`);
+      router.replace("/admin/subscription");
     }
   }, [isExpired, router, slug]);
 

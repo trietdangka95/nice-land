@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { TenantLink } from "@/components/shared/tenant-link";
 import { ArrowRight, Award, HeartHandshake, Phone, ShieldCheck, Map, Mail, MapPin } from "lucide-react";
 import { PersonalFooter, PersonalHeader } from "./chrome";
 import { PropertyBrowser } from "@/components/site/property-browser";
@@ -24,11 +24,11 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
             <p className="mt-5 max-w-lg text-base leading-8 text-[#7a5a4e]">
               {site.tagline || "Tìm kiếm bất động sản ưng ý chưa bao giờ dễ dàng đến thế. Chúng tôi ở đây để giúp bạn. Khám phá ngay"}
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href={`/${site.slug}#properties`} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--tenant-color)] px-6 text-sm font-extrabold text-white transition-transform active:scale-[0.98]">
-                Xem nhà tôi chọn
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <TenantLink slug={site.slug} href="#properties" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--tenant-color)] px-6 text-sm font-extrabold text-white transition-transform active:scale-[0.98]">
+                Xem danh mục nhà đất
                 <ArrowRight size={17} />
-              </Link>
+              </TenantLink>
               <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-extrabold text-[#2d1f18] shadow-[0_8px_24px_rgba(124,58,36,0.08)]">
                 <Phone size={16} />
                 Gọi trực tiếp

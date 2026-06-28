@@ -3,7 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { optimizeImageForUpload } from "@/lib/image-optimization";
-import { useRouter } from "next/navigation";
+import { useTenantRouting } from "@/lib/use-tenant-routing";
 import {
   ArrowLeft,
   ArrowRight,
@@ -69,7 +69,7 @@ function initialState(post?: AdminPost): FormState {
 }
 
 export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost }) {
-  const router = useRouter();
+  const router = useTenantRouting(slug);
   const client = useMemo(() => createTenantApi(slug), [slug]);
   const toast = useToast();
   const [form, setForm] = useState<FormState>(() => initialState(post));
@@ -126,7 +126,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
       }
       toast.success("Đã lưu tin đăng.", "Lưu thành công");
       await revalidateTenant(slug);
-      router.push(`/${slug}/admin/posts`);
+      router.push("/admin/posts");
       router.refresh();
     } catch (requestError) {
       toast.error(

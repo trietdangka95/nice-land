@@ -1,8 +1,8 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useTenantRouting } from "@/lib/use-tenant-routing";
+import { TenantLink } from "@/components/shared/tenant-link";
 import { LockKeyhole, Eye, EyeOff, Loader2 } from "lucide-react";
 import { api, createTenantApi } from "@/lib/api";
 import { getErrorMessage } from "@/lib/notifications";
@@ -15,7 +15,7 @@ export function LoginForm({
   slug?: string;
   superAdmin?: boolean;
 }) {
-  const router = useRouter();
+  const router = useTenantRouting(slug);
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -35,8 +35,12 @@ export function LoginForm({
         "nice_land_access_token",
         result.accessToken,
       );
-      router.replace(superAdmin ? "/superadmin" : `/${slug}/admin`);
-      router.refresh();
+      if (superAdmin) {
+        window.location.href = "/superadmin";
+      } else {
+        router.replace("/admin");
+        router.refresh();
+      }
     } catch (requestError) {
       toast.error(
         getErrorMessage(requestError, "Không thể đăng nhập. Vui lòng thử lại."),
@@ -96,17 +100,18 @@ export function LoginForm({
           {loading && <Loader2 className="mr-2 animate-spin" size={16} />}
           {loading ? "Đang đăng nhập..." : "Đăng nhập"}
         </button>
-        <Link
+        <TenantLink
+          slug={slug || ""}
           className="text-center text-sm font-semibold text-moss hover:underline"
           href={
             superAdmin
               ? "/superadmin/forgot-password"
-              : `/${slug}/admin/forgot-password`
+              : "/admin/forgot-password"
           }
           prefetch={false}
         >
           Quên mật khẩu?
-        </Link>
+        </TenantLink>
       </form>
     </div>
   );

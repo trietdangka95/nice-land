@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Facebook, Phone } from "lucide-react";
 import type { Site } from "@/lib/types";
 import { MobileNavigation } from "@/components/shared/mobile-navigation";
+import { TenantLink } from "@/components/shared/tenant-link";
 
 export function TenantHeader({ site }: { site: Site }) {
   return (
@@ -22,7 +22,7 @@ export function TenantHeader({ site }: { site: Site }) {
       </div>
       <header className="tenant-header border-b border-ink/10 bg-white">
         <div className="tenant-header-inner page-shell flex h-20 items-center justify-between">
-          <Link href={`/${site.slug}`} className="tenant-brand flex min-w-0 items-center gap-3">
+          <TenantLink href="" slug={site.slug} className="tenant-brand flex min-w-0 items-center gap-3">
             <span className="tenant-brand-mark relative grid size-11 shrink-0 place-items-center overflow-hidden text-sm font-extrabold text-white" style={{ backgroundColor: site.themeColor }}>
               {site.logo ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -41,12 +41,12 @@ export function TenantHeader({ site }: { site: Site }) {
                 Bất động sản chọn lọc
               </small>
             </span>
-          </Link>
+          </TenantLink>
           <nav className="tenant-navigation hidden items-center gap-7 text-sm font-semibold lg:flex" aria-label="Điều hướng website">
-            <Link href={`/${site.slug}`}>Trang chủ</Link>
-            <Link href={`/${site.slug}#properties`}>Bất động sản</Link>
-            <Link href={`/${site.slug}#about`}>Về chúng tôi</Link>
-            <Link href={`/${site.slug}#contact`}>Liên hệ</Link>
+            <TenantLink href="" slug={site.slug}>Trang chủ</TenantLink>
+            <TenantLink href="#properties" slug={site.slug}>Bất động sản</TenantLink>
+            <TenantLink href="#about" slug={site.slug}>Về chúng tôi</TenantLink>
+            <TenantLink href="#contact" slug={site.slug}>Liên hệ</TenantLink>
           </nav>
           <div className="flex items-center gap-3">
             <a
@@ -66,18 +66,18 @@ export function TenantHeader({ site }: { site: Site }) {
                 className="flex flex-col p-4 text-base font-semibold"
                 aria-label="Điều hướng website trên di động"
               >
-                <Link href={`/${site.slug}`} className="border-b border-white/10 px-3 py-4">
+                <TenantLink href="" slug={site.slug} className="border-b border-white/10 px-3 py-4">
                   Trang chủ
-                </Link>
-                <Link href={`/${site.slug}#properties`} className="border-b border-white/10 px-3 py-4">
+                </TenantLink>
+                <TenantLink href="#properties" slug={site.slug} className="border-b border-white/10 px-3 py-4">
                   Bất động sản
-                </Link>
-                <Link href={`/${site.slug}#about`} className="border-b border-white/10 px-3 py-4">
+                </TenantLink>
+                <TenantLink href="#about" slug={site.slug} className="border-b border-white/10 px-3 py-4">
                   Về chúng tôi
-                </Link>
-                <Link href={`/${site.slug}#contact`} className="border-b border-white/10 px-3 py-4">
+                </TenantLink>
+                <TenantLink href="#contact" slug={site.slug} className="border-b border-white/10 px-3 py-4">
                   Liên hệ
-                </Link>
+                </TenantLink>
               </nav>
               <div className="mt-auto border-t border-white/10 p-4">
                 <a

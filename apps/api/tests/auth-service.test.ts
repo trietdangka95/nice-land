@@ -15,6 +15,7 @@ async function createFixture() {
       siteId: "site-a",
       username: "admin",
       email: "admin@example.com",
+      phone: null,
       passwordHash,
       fullName: "Admin A",
       role: "ADMIN" as const,
@@ -25,6 +26,7 @@ async function createFixture() {
       siteId: null,
       username: "superadmin",
       email: "superadmin@example.com",
+      phone: null,
       passwordHash,
       fullName: "Super Admin",
       role: "SUPER_ADMIN" as const,
@@ -139,6 +141,8 @@ async function createFixture() {
         }
       }
     },
+    updateProfile: async () => {},
+    updatePassword: async () => {},
   };
 
   const tokenService = new AccessTokenService(

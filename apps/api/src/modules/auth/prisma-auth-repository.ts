@@ -9,6 +9,7 @@ const userSelect = {
   siteId: true,
   username: true,
   email: true,
+  phone: true,
   passwordHash: true,
   fullName: true,
   role: true,
@@ -194,6 +195,26 @@ export class PrismaAuthRepository implements AuthRepository {
       prisma.refreshSession.updateMany({
         where: { userId: input.userId, revokedAt: null },
         data: { revokedAt: input.now },
+      }),
+    ]);
+  }
+
+  async updateProfile(userId: string, data: { fullName?: string | null; email?: string | null; phone?: string | null }) {
+    await prisma.user.update({
+      where: { id: userId },
+      data,
+    });
+  }
+
+  async updatePassword(userId: string, passwordHash: string) {
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: userId },
+        data: { passwordHash },
+      }),
+      prisma.refreshSession.updateMany({
+        where: { userId, revokedAt: null },
+        data: { revokedAt: new Date() },
       }),
     ]);
   }

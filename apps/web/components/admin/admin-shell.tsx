@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { TenantLink } from "@/components/shared/tenant-link";
+import { useTenantRouting } from "@/lib/use-tenant-routing";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
 import {
   BarChart3,
   Bell,
@@ -36,7 +36,7 @@ export function AdminShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useTenantRouting(site?.slug);
   const user = useAuth();
   
   const displayName = user.fullName || user.username;
@@ -44,7 +44,7 @@ export function AdminShell({
     ? user.fullName.split(/\s+/).filter(Boolean).slice(-2).map(p => p[0]).join("").toUpperCase()
     : user.username.slice(0, 2).toUpperCase();
 
-  const base = superAdmin ? "/superadmin" : `/${site?.slug}/admin`;
+  const base = superAdmin ? "/superadmin" : "/admin";
   let nav = superAdmin
     ? [
       [LayoutDashboard, "Tổng quan", base],
@@ -82,10 +82,13 @@ export function AdminShell({
       await client.logout();
     } finally {
       window.sessionStorage.removeItem("nice_land_access_token");
-      router.replace(
-        superAdmin ? "/superadmin/login" : `/${site?.slug}/admin/login`,
-      );
-      router.refresh();
+      if (superAdmin) {
+        window.location.href = "/superadmin/login";
+      } else {
+        router.replace("/admin/login");
+        // Force reload to clear state
+        setTimeout(() => window.location.reload(), 100);
+      }
     }
   }
 
@@ -121,7 +124,8 @@ export function AdminShell({
             const NavIcon = Icon as typeof LayoutDashboard;
             const active = href === activeHref;
             return (
-              <Link
+              <TenantLink
+                slug={site?.slug || ""}
                 key={label as string}
                 href={href as string}
                 prefetch={false}
@@ -130,16 +134,16 @@ export function AdminShell({
               >
                 <NavIcon size={18} strokeWidth={1.7} />
                 {label as string}
-              </Link>
+              </TenantLink>
             );
           })}
         </nav>
         <div className="border-t border-white/10 p-4">
           {!superAdmin && site && (
-            <Link href={`/${site.slug}`} prefetch={false} className="flex items-center gap-3 px-3 py-3 text-sm text-white/55 hover:text-white">
+            <TenantLink slug={site.slug} href="" prefetch={false} className="flex items-center gap-3 px-3 py-3 text-sm text-white/55 hover:text-white">
               <ExternalLink size={17} />
               Xem website
-            </Link>
+            </TenantLink>
           )}
           <button
             className="flex w-full items-center gap-3 px-3 py-3 text-sm text-white/55 hover:text-white"
@@ -167,7 +171,8 @@ export function AdminShell({
                   const NavIcon = Icon as typeof LayoutDashboard;
                   const active = href === activeHref;
                   return (
-                    <Link
+                    <TenantLink
+                      slug={site?.slug || ""}
                       key={label as string}
                       href={href as string}
                       prefetch={false}
@@ -178,20 +183,21 @@ export function AdminShell({
                     >
                       <NavIcon size={18} strokeWidth={1.7} aria-hidden="true" />
                       {label as string}
-                    </Link>
+                    </TenantLink>
                   );
                 })}
               </nav>
               <div className="border-t border-white/10 p-4">
                 {!superAdmin && site && (
-                  <Link
-                    href={`/${site.slug}`}
+                  <TenantLink
+                    slug={site.slug}
+                    href=""
                     prefetch={false}
                     className="flex items-center gap-3 px-3 py-3 text-sm text-white/60"
                   >
                     <ExternalLink size={17} aria-hidden="true" />
                     Xem website
-                  </Link>
+                  </TenantLink>
                 )}
                 <button
                   type="button"

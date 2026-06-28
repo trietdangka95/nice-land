@@ -6,6 +6,7 @@ import type { PasswordResetNotifier } from "./password-reset-notifier.js";
 
 export interface AuthUserRecord extends AuthUser {
   email: string | null;
+  phone: string | null;
   passwordHash: string;
   isActive: boolean;
 }
@@ -75,6 +76,8 @@ export interface AuthRepository {
     passwordHash: string;
     now: Date;
   }): Promise<void>;
+  updateProfile(userId: string, data: { fullName?: string | null; email?: string | null; phone?: string | null }): Promise<void>;
+  updatePassword(userId: string, passwordHash: string): Promise<void>;
 }
 
 export type AuthErrorCode =
@@ -123,6 +126,8 @@ function toPublicUser(user: AuthUserRecord): AuthUser {
     siteId: user.siteId,
     username: user.username,
     fullName: user.fullName,
+    email: user.email,
+    phone: user.phone,
     role: user.role,
   };
 }
@@ -321,5 +326,21 @@ export class AuthService {
       passwordHash: await hash(input.password, 12),
       now,
     });
+  }
+
+  async updateProfile(userId: string, data: { fullName?: string | null; email?: string | null; phone?: string | null }) {
+    await this.repository.updateProfile(userId, data);
+  }
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await this.repository.findUserById(userId);
+    if (!user) throw new AuthError("INVALID_CREDENTIALS", "Tài khoản không tồn tại.");
+
+    if (!(await compare(currentPassword, user.passwordHash))) {
+      throw new AuthError("INVALID_CREDENTIALS", "Mật khẩu hiện tại không đúng.", 400);
+    }
+
+    const passwordHash = await hash(newPassword, 12);
+    await this.repository.updatePassword(userId, passwordHash);
   }
 }

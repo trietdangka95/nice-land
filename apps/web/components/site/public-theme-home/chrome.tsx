@@ -1,10 +1,11 @@
-import Link from "next/link";
+import { TenantLink } from "@/components/shared/tenant-link";
 import {
   ArrowUpRight,
   Facebook,
   Instagram,
   Mail,
   MapPin,
+  Menu,
   Phone,
 } from "lucide-react";
 import { MobileNavigation } from "@/components/shared/mobile-navigation";
@@ -44,14 +45,14 @@ function MobileMenu({
     >
       <nav className="flex flex-col p-4 text-base font-semibold" aria-label="Điều hướng website trên di động">
         {[
-          ["Trang chủ", `/${site.slug}`],
-          ["Bất động sản", `/${site.slug}#properties`],
-          ["Về chúng tôi", `/${site.slug}#about`],
-          ["Liên hệ", `/${site.slug}#contact`],
+          ["Trang chủ", ""],
+          ["Bất động sản", "#properties"],
+          ["Về chúng tôi", "#about"],
+          ["Liên hệ", "#contact"],
         ].map(([label, href]) => (
-          <Link key={label} href={href} className="border-b border-white/10 px-3 py-4">
+          <TenantLink key={label} slug={site.slug} href={href} className="border-b border-white/10 px-3 py-4">
             {label}
-          </Link>
+          </TenantLink>
         ))}
       </nav>
       <div className="mt-auto border-t border-white/10 p-4">
@@ -72,17 +73,17 @@ export function LuxuryHeader({ site }: { site: Site }) {
     <header className="tenant-header absolute inset-x-0 top-0 z-30">
       <div className="page-shell">
         <div className="flex h-24 items-center justify-between border-b border-current opacity-90 pb-[1px] md:pb-0" style={{ borderColor: 'var(--tenant-border, rgba(0,0,0,0.1))' }}>
-          <Link href={`/${site.slug}`} className="flex items-center gap-4">
+          <TenantLink slug={site.slug} href="" className="flex items-center gap-4">
             <BrandMark site={site} className="size-12 border border-current opacity-80 bg-black/5 text-xs font-bold" />
             <span>
               <strong className="block font-display text-xl font-normal tracking-wide">{site.name}</strong>
               <small className="mt-1 block text-[8px] uppercase tracking-[0.32em] opacity-60">Private property advisory</small>
             </span>
-          </Link>
+          </TenantLink>
           <nav className="hidden items-center gap-9 text-[11px] font-bold uppercase tracking-[0.18em] lg:flex" aria-label="Điều hướng Luxury Showcase">
-            <Link href={`/${site.slug}#properties`}>Collection</Link>
-            <Link href={`/${site.slug}#about`}>Advisory</Link>
-            <Link href={`/${site.slug}#contact`}>Private contact</Link>
+            <TenantLink slug={site.slug} href="#properties">Collection</TenantLink>
+            <TenantLink slug={site.slug} href="#about">Advisory</TenantLink>
+            <TenantLink slug={site.slug} href="#contact">Private contact</TenantLink>
           </nav>
           <div className="hidden items-center gap-5 lg:flex">
             <span className="text-xs opacity-70">{site.phone}</span>
@@ -101,15 +102,15 @@ export function SearchHeader({ site }: { site: Site }) {
   return (
     <header className="tenant-header bg-[#0f172a] text-white">
       <div className="page-shell flex h-16 items-center justify-between">
-        <Link href={`/${site.slug}`} className="flex items-center gap-3">
+        <TenantLink slug={site.slug} href="" className="flex items-center gap-3">
           <BrandMark site={site} className="tenant-brand-mark size-10 rounded-md bg-[#1d4ed8] text-xs font-extrabold text-white" />
           <strong className="text-base font-extrabold tracking-[-0.03em]">{site.name}</strong>
-        </Link>
+        </TenantLink>
         <nav className="tenant-navigation hidden items-center gap-7 text-xs font-bold uppercase tracking-[0.09em] text-slate-300 lg:flex" aria-label="Điều hướng Search First">
-          <Link href={`/${site.slug}#properties`}>Nhà đất bán</Link>
-          <Link href={`/${site.slug}#properties`}>Nhà đất thuê</Link>
-          <Link href={`/${site.slug}#about`}>Khu vực</Link>
-          <Link href={`/${site.slug}#contact`}>Tư vấn</Link>
+          <TenantLink slug={site.slug} href="#properties">Nhà đất bán</TenantLink>
+          <TenantLink slug={site.slug} href="#properties">Nhà đất thuê</TenantLink>
+          <TenantLink slug={site.slug} href="#about">Khu vực</TenantLink>
+          <TenantLink slug={site.slug} href="#contact">Tư vấn</TenantLink>
         </nav>
         <div className="hidden items-center gap-4 text-xs lg:flex">
           <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-bold text-slate-100">{site.phone}</a>
@@ -140,15 +141,15 @@ export function EditorialHeader({ site }: { site: Site }) {
         </div>
         <div className="grid h-24 grid-cols-[1fr_auto] items-center border-b border-white/20 lg:grid-cols-[1fr_auto_1fr]">
           <nav className="hidden gap-6 text-[10px] font-bold uppercase tracking-[0.2em] lg:flex" aria-label="Điều hướng Property Editorial">
-            <Link href={`/${site.slug}#properties`}>Properties</Link>
-            <Link href={`/${site.slug}#about`}>Stories</Link>
+            <TenantLink slug={site.slug} href="#properties">Properties</TenantLink>
+            <TenantLink slug={site.slug} href="#about">Stories</TenantLink>
           </nav>
-          <Link href={`/${site.slug}`} className="lg:text-center">
+          <TenantLink slug={site.slug} href="" className="lg:text-center">
             <strong className="font-display text-2xl font-normal sm:text-3xl">The Property Edit</strong>
             <small className="mt-1 block text-[8px] uppercase tracking-[0.3em] text-[#d6a85f]">{site.name}</small>
-          </Link>
+          </TenantLink>
           <div className="hidden justify-end gap-6 text-[10px] font-bold uppercase tracking-[0.2em] lg:flex">
-            <Link href={`/${site.slug}#contact`}>Contact</Link>
+            <TenantLink slug={site.slug} href="#contact">Contact</TenantLink>
             <a href={site.facebookUrl ?? "#"}>Social</a>
           </div>
           <MobileMenu site={site} triggerClassName="ml-auto grid size-11 place-items-center border border-white/25 lg:hidden" />
@@ -162,16 +163,18 @@ export function PersonalHeader({ site }: { site: Site }) {
   return (
     <header className="tenant-header bg-[#fdf6ee] text-[#2d1f18]" style={{ borderBottom: '1px solid rgba(178,94,67,0.1)' }}>
       <div className="page-shell flex min-h-24 items-center justify-between gap-5">
-        <Link href={`/${site.slug}`} className="flex items-center gap-4">
-          <BrandMark site={site} className="size-14 rounded-full bg-[var(--tenant-color)] font-serif text-sm italic text-white" />
-          <span>
-            <strong className="block font-display text-2xl font-normal italic">{site.name}</strong>
-            <small className="mt-1 block text-[8px] uppercase tracking-[0.24em] text-[var(--tenant-color)] opacity-60">Your local property partner</small>
-          </span>
-        </Link>
-        <nav className="hidden items-center gap-8 text-sm font-semibold text-[#5c3d2e] lg:flex" aria-label="Điều hướng Personal Broker">
-          <Link href={`/${site.slug}#properties`}>Bất động sản</Link>
-          <Link href={`/${site.slug}#contact`}>Liên hệ</Link>
+        <TenantLink slug={site.slug} href="" className="flex items-center gap-4">
+          {site.logo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={site.logo} alt="" className="h-10 w-auto object-contain drop-shadow-sm" />
+          ) : (
+            <span className="grid size-10 place-items-center rounded-xl font-display text-sm font-bold bg-[#7A5A4E]/10 text-[#7A5A4E] border border-[#7A5A4E]/20 shadow-inner">{site.logoMark}</span>
+          )}
+          <span className="font-display text-lg tracking-wide text-[#2D1F18] drop-shadow-sm">{site.name}</span>
+        </TenantLink>
+        <nav className="flex items-center gap-6 text-[11px] font-bold uppercase tracking-[0.15em] text-[#7A5A4E]/70">
+          <TenantLink slug={site.slug} href="#properties">Bất động sản</TenantLink>
+          <TenantLink slug={site.slug} href="#contact">Liên hệ</TenantLink>
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
           <a href={site.facebookUrl ?? "#"} aria-label="Facebook" className="grid size-10 place-items-center rounded-full border border-black/10 text-[var(--tenant-color)]"><Facebook size={15} /></a>

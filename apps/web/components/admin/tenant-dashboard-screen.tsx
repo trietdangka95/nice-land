@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { TenantLink } from "@/components/shared/tenant-link";
 import { useEffect, useMemo, useState } from "react";
 import {
   CalendarClock,
@@ -92,10 +92,10 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
             Dữ liệu được cập nhật trực tiếp từ hệ thống.
           </p>
         </div>
-        <Link href={`/${slug}/admin/posts/create`} className="button-primary">
+        <TenantLink slug={slug} href="/admin/posts/create" className="button-primary">
           <Plus size={17} />
           Đăng tin mới
-        </Link>
+        </TenantLink>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
@@ -146,23 +146,25 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
                 Tối đa 4 tin được cập nhật gần nhất
               </p>
             </div>
-            <Link
-              href={`/${slug}/admin/posts`}
+            <TenantLink
+              slug={slug}
+              href="/admin/posts"
               className="button-secondary !py-2 !px-4 !min-h-0 text-xs"
             >
               Xem tất cả
-            </Link>
+            </TenantLink>
           </div>
 
           {recentPosts.length === 0 ? (
             <div className="p-10 text-center">
               <p className="text-sm text-ink/45">Chưa có tin đăng nào.</p>
-              <Link
-                href={`/${slug}/admin/posts/create`}
+              <TenantLink
+                slug={slug}
+                href="/admin/posts/create"
                 className="mt-4 inline-flex text-sm font-bold text-moss"
               >
                 Tạo tin đầu tiên
-              </Link>
+              </TenantLink>
             </div>
           ) : (
             <div className="divide-y divide-ink/5">
@@ -187,12 +189,13 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <Link
-                      href={`/${slug}/admin/posts/${post.id}/edit`}
+                    <TenantLink
+                      slug={slug}
+                      href={`/admin/posts/${post.id}/edit`}
                       className="block truncate text-sm font-bold hover:text-moss"
                     >
                       {post.title}
-                    </Link>
+                    </TenantLink>
                     <p className="mt-1 text-xs text-ink/45">
                       {post.price === null
                         ? "Liên hệ"

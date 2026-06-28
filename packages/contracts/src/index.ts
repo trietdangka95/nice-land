@@ -104,6 +104,17 @@ export const resetPasswordInputSchema = z.object({
   password: z.string().min(8).max(200),
 });
 
+export const updateProfileInputSchema = z.object({
+  fullName: z.string().trim().min(2).max(120).nullable().optional(),
+  email: z.string().trim().email().max(180).nullable().optional(),
+  phone: z.string().trim().max(20).nullable().optional(),
+});
+
+export const changePasswordInputSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(8).max(200),
+});
+
 export const adminPostInputSchema = z.object({
   title: z.string().trim().min(5).max(180),
   description: z.string().trim().min(20).max(10000),
@@ -270,6 +281,8 @@ export interface AuthUser {
   siteId: string | null;
   username: string;
   fullName: string | null;
+  email: string | null;
+  phone: string | null;
   role: UserRole;
 }
 
@@ -294,6 +307,8 @@ export type PublicPostListQuery = z.infer<typeof publicPostListQuerySchema>;
 export type LoginInput = z.infer<typeof loginInputSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordInputSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordInputSchema>;
+export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordInputSchema>;
 export type AdminPostInput = z.infer<typeof adminPostInputSchema>;
 export type AdminPostUpdate = z.infer<typeof adminPostUpdateSchema>;
 export type AdminPostListQuery = z.infer<typeof adminPostListQuerySchema>;

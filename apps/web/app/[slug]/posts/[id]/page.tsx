@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, Facebook, Mail, MapPin, Maximize2, Phone, Share2 } from "lucide-react";
+import { ChevronLeft, Facebook, Mail, MapPin, Maximize2, Phone, Share2 } from "lucide-react";
+import { TenantLink } from "@/components/shared/tenant-link";
 import { notFound } from "next/navigation";
 import { TenantHeader } from "@/components/site/tenant-header";
 import { PersonalHeader, PersonalFooter } from "@/components/site/public-theme-home/chrome";
@@ -74,11 +74,11 @@ export default async function PropertyDetailPage({
       <PublicThemeStylesheet theme={renderedTheme} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       {renderedTheme === "WARM_MINIMAL" ? <PersonalHeader site={site} /> : <TenantHeader site={site} />}
-      <div className="tenant-detail-back page-shell py-7">
-        <Link href={`/${slug}#properties`} className="inline-flex items-center gap-2 text-sm font-bold text-ink/60 hover:text-ink">
-          <ArrowLeft size={16} />
+      <div className="mx-auto max-w-5xl px-5 py-7 sm:px-8 xl:px-0">
+        <TenantLink href="#properties" slug={slug} className="inline-flex items-center gap-2 text-sm font-bold text-ink/60 hover:text-ink">
+          <ChevronLeft size={16} />
           Trở lại danh sách
-        </Link>
+        </TenantLink>
       </div>
 
       <section className="tenant-detail-gallery page-shell">

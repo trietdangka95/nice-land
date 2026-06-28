@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ChevronLeft, ChevronRight, MapPin, Search } from "lucide-react";
+import { TenantLink } from "@/components/shared/tenant-link";
+import { Search, MapPin, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
 import { buildPublicPostsHref } from "@/lib/pagination";
 import type { PropertyPost } from "@/lib/types";
@@ -13,10 +13,6 @@ const PROVINCES = [
   "Quảng Trị", "Quảng Ngãi", "Gia Lai", "Khánh Hòa", "Lâm Đồng", "Đắk Lắk",
   "Đồng Nai", "Tây Ninh", "Vĩnh Long", "Đồng Tháp", "Cà Mau", "An Giang"
 ];
-
-function propertyHref(slug: string, post: PropertyPost) {
-  return `/${slug}/posts/${post.slug ?? post.id}`;
-}
 
 export function WarmBrowser({
   query,
@@ -122,8 +118,8 @@ export function WarmBrowser({
       {posts.length > 0 ? (
         <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {posts.map((post) => (
-            <Link href={propertyHref(slug, post)} key={post.id} className="group rounded-[2rem] border border-black/5 bg-white p-3 shadow-[0_12px_35px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-1">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] bg-[#ead5c4]">
+            <TenantLink slug={slug} href={`/posts/${post.slug ?? post.id}`} key={post.id} className="group rounded-[2rem] border border-black/5 bg-white p-3 shadow-[0_12px_35px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-1">
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] bg-[#ead5c4]">
                 <Image src={post.images[0]} alt={post.title} fill className="object-cover transition duration-500 group-hover:scale-[1.04]" sizes="(max-width: 768px) 100vw, 33vw" />
                 <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-extrabold text-[#2d1f18] shadow-sm">
                   {propertyTypeLabels[post.type]}
@@ -142,7 +138,7 @@ export function WarmBrowser({
                   <span className="rounded-full bg-[#f1ebd9] px-3 py-2">{post.area}m²</span>
                 </div>
               </div>
-            </Link>
+            </TenantLink>
           ))}
         </div>
       ) : (
@@ -156,11 +152,11 @@ export function WarmBrowser({
       )}
 
       {totalPages > 1 && (
-        <nav className="mt-12 flex flex-wrap items-center justify-center gap-3">
+        <nav className="mt-12 flex items-center justify-center gap-2 pb-8" aria-label="Phân trang bất động sản">
           {page > 1 ? (
-            <Link href={buildPublicPostsHref(slug, { page: page - 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })} className="grid size-12 place-items-center rounded-full bg-white text-[#2d1f18] shadow-[0_8px_22px_rgba(124,58,36,0.08)]">
-              <ChevronLeft size={21} />
-            </Link>
+            <TenantLink slug={slug} href={buildPublicPostsHref("", { page: page - 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })} className="grid size-12 place-items-center rounded-full bg-white text-[#2d1f18] shadow-[0_8px_22px_rgba(124,58,36,0.08)]">
+              <ChevronLeft size={20} />
+            </TenantLink>
           ) : (
             <span className="grid size-12 place-items-center rounded-full bg-transparent text-[#d4c2b6]">
               <ChevronLeft size={21} />
@@ -170,15 +166,15 @@ export function WarmBrowser({
             paginationPage === page ? (
               <span key={paginationPage} className="grid size-11 place-items-center rounded-full bg-[var(--tenant-color)] text-sm font-extrabold text-white">{paginationPage}</span>
             ) : (
-              <Link key={paginationPage} href={buildPublicPostsHref(slug, { page: paginationPage, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })} className="grid size-11 place-items-center rounded-full bg-white text-sm font-extrabold text-[#7a5a4e]">
+              <TenantLink key={paginationPage} slug={slug} href={buildPublicPostsHref("", { page: paginationPage, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })} className="grid size-11 place-items-center rounded-full bg-white text-sm font-extrabold text-[#7a5a4e]">
                 {paginationPage}
-              </Link>
+              </TenantLink>
             )
           ))}
           {page < totalPages ? (
-            <Link href={buildPublicPostsHref(slug, { page: page + 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })} className="grid size-12 place-items-center rounded-full bg-white text-[#2d1f18] shadow-[0_8px_22px_rgba(124,58,36,0.08)]">
-              <ChevronRight size={21} />
-            </Link>
+            <TenantLink slug={slug} href={buildPublicPostsHref("", { page: page + 1, q: initialQuery, type: initialType as any, categoryId: initialCategoryId, province: initialProvince, sort: initialSort as any })} className="grid size-12 place-items-center rounded-full bg-white text-[#2d1f18] shadow-[0_8px_22px_rgba(124,58,36,0.08)]">
+              <ChevronRight size={20} />
+            </TenantLink>
           ) : (
             <span className="grid size-12 place-items-center rounded-full bg-transparent text-[#d4c2b6]">
               <ChevronRight size={21} />

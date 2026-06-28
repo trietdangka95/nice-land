@@ -47,6 +47,7 @@ const category = {
   id: "11111111-1111-4111-8111-111111111111",
   name: "Nhà phố",
   slug: "nha-pho",
+  type: "HOUSE" as const,
   postCount: 2,
   createdAt: "2026-06-20T00:00:00.000Z",
   updatedAt: "2026-06-20T00:00:00.000Z",

@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTenantRouting } from "@/lib/use-tenant-routing";
 import { api, createTenantApi } from "@/lib/api";
 import type { AuthUser } from "@nice-land/contracts";
 
@@ -21,7 +21,7 @@ export function AuthGuard({
   superAdmin?: boolean;
   children: React.ReactNode;
 }) {
-  const router = useRouter();
+  const router = useTenantRouting(slug);
   const [ready, setReady] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
 
@@ -50,7 +50,7 @@ export function AuthGuard({
       } catch {
         window.sessionStorage.removeItem("nice_land_access_token");
         router.replace(
-          superAdmin ? "/superadmin/login" : `/${slug}/admin/login`,
+          superAdmin ? "/superadmin/login" : "/admin/login",
         );
       }
     }

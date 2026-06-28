@@ -16,6 +16,8 @@ import type {
   ImageReorderInput,
   LoginInput,
   ResetPasswordInput,
+  UpdateProfileInput,
+  ChangePasswordInput,
   RenewalRequestInput,
   SiteSettings,
   SiteSettingsInput,
@@ -144,6 +146,16 @@ export function createApiClient(options: ApiClientOptions) {
         method: "POST",
       }),
     me: () => request<AuthUser>("/v1/auth/me"),
+    updateProfile: (input: UpdateProfileInput) =>
+      request<{ message: string }>("/v1/auth/me", {
+        method: "PUT",
+        body: JSON.stringify(input),
+      }),
+    changePassword: (input: ChangePasswordInput) =>
+      request<{ message: string }>("/v1/auth/me/password", {
+        method: "PUT",
+        body: JSON.stringify(input),
+      }),
     getTenantDashboard: () =>
       request<TenantDashboard>("/v1/admin/dashboard"),
     listAdminPosts: (query: Partial<AdminPostListQuery> = {}) => {

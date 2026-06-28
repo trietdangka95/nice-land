@@ -4,6 +4,8 @@ import {
   forgotPasswordInputSchema,
   loginInputSchema,
   resetPasswordInputSchema,
+  updateProfileInputSchema,
+  changePasswordInputSchema,
 } from "@nice-land/contracts";
 import type { AppConfig } from "../../config.js";
 import {
@@ -192,6 +194,49 @@ export async function registerAuthRoutes(
     async (request, reply) => {
       try {
         return await options.authService.getCurrentUser(request.auth!.sub);
+      } catch (error) {
+        if (error instanceof AuthError) {
+          return reply.status(error.statusCode).send({
+            code: error.code,
+            message: error.message,
+            requestId: request.id,
+          });
+        }
+        throw error;
+      }
+    },
+  );
+
+  app.put(
+    "/v1/auth/me",
+    { preHandler: requireAuth },
+    async (request, reply) => {
+      const input = updateProfileInputSchema.parse(request.body);
+      try {
+        await options.authService.updateProfile(request.auth!.sub, input);
+        return { message: "Hồ sơ đã được cập nhật." };
+      } catch (error) {
+        if (error instanceof AuthError) {
+          return reply.status(error.statusCode).send({
+            code: error.code,
+            message: error.message,
+            requestId: request.id,
+          });
+        }
+        throw error;
+      }
+    },
+  );
+
+  app.put(
+    "/v1/auth/me/password",
+    { preHandler: requireAuth },
+    async (request, reply) => {
+      const input = changePasswordInputSchema.parse(request.body);
+      try {
+        await options.authService.changePassword(request.auth!.sub, input.currentPassword, input.newPassword);
+        // Logging out other sessions via refresh session invalidation
+        return { message: "Mật khẩu đã được thay đổi. Vui lòng đăng nhập lại." };
       } catch (error) {
         if (error instanceof AuthError) {
           return reply.status(error.statusCode).send({
