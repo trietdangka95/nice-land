@@ -163,6 +163,7 @@ export function AdminShell({
               label="Mở menu quản trị"
               title={superAdmin ? "Nice Land" : site?.name ?? "Trang quản trị"}
               triggerClassName="grid size-10 place-items-center border border-ink/10 min-[901px]:hidden"
+              align="left"
             >
               <nav className="flex-1 space-y-1 p-4" aria-label="Điều hướng quản trị trên di động">
                 <p className="px-3 pb-3 pt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/35">

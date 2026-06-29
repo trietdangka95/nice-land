@@ -97,8 +97,14 @@ export function LoginForm({
           </div>
         </label>
         <button className="button-primary mt-2 w-full disabled:cursor-wait" disabled={loading}>
-          {loading && <Loader2 className="mr-2 animate-spin" size={16} />}
-          {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin" size={16} />
+              <span>Đang đăng nhập...</span>
+            </>
+          ) : (
+            <span>Đăng nhập</span>
+          )}
         </button>
         <TenantLink
           slug={slug || ""}

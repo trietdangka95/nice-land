@@ -8,11 +8,15 @@ export function MobileNavigation({
   label,
   title,
   triggerClassName,
+  contentClassName = "bg-ink text-white",
+  align = "right",
   children,
 }: {
   label: string;
   title: string;
   triggerClassName: string;
+  contentClassName?: string;
+  align?: "left" | "right";
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -53,14 +57,14 @@ export function MobileNavigation({
           if (event.target === event.currentTarget) close();
         }}
       >
-        <section className="ml-auto flex min-h-dvh w-[min(86vw,340px)] flex-col bg-ink text-white shadow-xl">
-          <header className="flex h-20 items-center justify-between border-b border-white/10 px-5">
+        <section className={`${align === 'left' ? 'mr-auto' : 'ml-auto'} flex min-h-dvh w-[min(86vw,340px)] flex-col shadow-xl ${contentClassName}`}>
+          <header className="flex h-20 items-center justify-between border-b border-current opacity-90 px-5">
             <strong className="text-balance font-display text-xl font-semibold">
               {title}
             </strong>
             <button
               type="button"
-              className="grid size-11 place-items-center border border-white/15 text-white"
+              className="grid size-11 place-items-center border border-current opacity-70"
               aria-label="Đóng menu"
               onClick={close}
             >

@@ -42,6 +42,7 @@ function MobileMenu({
       label="Mở menu"
       title={site.name}
       triggerClassName={triggerClassName}
+      contentClassName="bg-[var(--tenant-color)] text-white"
     >
       <nav className="flex flex-col p-4 text-base font-semibold" aria-label="Điều hướng website trên di động">
         {[
