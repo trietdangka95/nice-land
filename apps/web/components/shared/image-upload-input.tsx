@@ -33,6 +33,7 @@ export function ImageUploadInput({
   const [mode, setMode] = useState<ImageUploadMode>(value ? "url" : "url");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [imgError, setImgError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -61,6 +62,7 @@ export function ImageUploadInput({
         throw new Error("Upload lên S3 thất bại.");
       }
 
+      setImgError(false);
       onChange(presigned.publicUrl);
     } catch (uploadError) {
       setError(
@@ -79,6 +81,7 @@ export function ImageUploadInput({
   function handleClear() {
     onChange("");
     setError("");
+    setImgError(false);
   }
 
   return (
@@ -122,6 +125,7 @@ export function ImageUploadInput({
           onChange={(event) => {
             onChange(event.target.value);
             setError("");
+            setImgError(false);
           }}
           placeholder="https://example.com/image.jpg"
           className="h-12 min-w-0 rounded-xl border border-ink/5 bg-white/50 px-4 font-normal backdrop-blur-sm transition-colors focus:bg-white"
@@ -162,15 +166,14 @@ export function ImageUploadInput({
         <p className="text-xs font-medium text-red-600">{error}</p>
       )}
 
-      {value && (
+      {value && !imgError && (
         <div className="group relative mt-1 overflow-hidden rounded-xl border border-ink/10">
           <img
+            key={value}
             src={value}
             alt={label}
             className="h-20 w-full object-cover"
-            onError={(event) => {
-              (event.target as HTMLImageElement).style.display = "none";
-            }}
+            onError={() => setImgError(true)}
           />
           <button
             type="button"

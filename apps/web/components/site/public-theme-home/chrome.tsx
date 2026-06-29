@@ -166,13 +166,13 @@ export function PersonalHeader({ site }: { site: Site }) {
         <TenantLink slug={site.slug} href="" className="group flex min-w-0 items-center gap-4">
           {site.logo ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={site.logo} alt={`Logo ${site.name}`} className="h-14 w-auto object-contain drop-shadow-sm" />
+            <img src={site.logo} alt="Nice Land" className="h-14 w-auto object-contain drop-shadow-sm" />
           ) : (
-            <span className="grid size-14 shrink-0 place-items-center rounded-full border border-[#7A5A4E]/20 bg-[#7A5A4E]/10 font-display text-base font-bold text-[#7A5A4E] shadow-inner transition-colors duration-200 group-hover:bg-[var(--tenant-color)] group-hover:text-white">{site.logoMark}</span>
+            <span className="grid size-14 shrink-0 place-items-center rounded-full border border-[#7A5A4E]/20 bg-[#7A5A4E]/10 font-display text-base font-bold text-[#7A5A4E] shadow-inner transition-colors duration-200 group-hover:bg-[var(--tenant-color)] group-hover:text-white">NL</span>
           )}
           <span className="min-w-0">
-            <span className="block truncate font-display text-xl font-extrabold tracking-tight text-[#2D1F18] sm:text-2xl">{site.name}</span>
-            <span className="hidden text-[11px] font-bold uppercase tracking-[0.22em] text-[#7A5A4E]/60 sm:block">Tin đăng tuyển chọn</span>
+            <span className="block truncate font-display text-xl font-extrabold tracking-tight text-[#2D1F18] sm:text-2xl">Nice Land</span>
+            <span className="hidden text-[11px] font-bold uppercase tracking-[0.22em] text-[#7A5A4E]/60 sm:block">Nền tảng giao dịch</span>
           </span>
         </TenantLink>
         <nav className="hidden items-center gap-1 rounded-full border border-[#7A5A4E]/10 bg-white/85 p-1.5 text-xs font-extrabold uppercase tracking-[0.12em] text-[#7A5A4E]/80 shadow-[0_10px_24px_rgba(45,31,24,0.08)] lg:flex" aria-label="Điều hướng website">
@@ -260,11 +260,8 @@ export function PersonalFooter({ site }: { site: Site }) {
         <div className="relative">
           <div className="absolute inset-0 -translate-y-3 translate-x-3 rounded-[1.75rem] bg-[#ead5c4] opacity-50 sm:-translate-y-4 sm:translate-x-4"></div>
           <div className="relative flex flex-col justify-between rounded-[1.75rem] border border-black/5 bg-white p-6 shadow-[0_20px_60px_rgba(124,58,36,0.06)] transition-transform duration-300 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <strong className="font-display text-xl font-medium text-[#2d1f18]">{site.name}</strong>
-                <p className="text-xs text-[#7a5a4e] font-medium mt-1">Đối tác tin đăng của bạn</p>
-              </div>
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-black/5 pb-4">
+              <strong className="font-display text-lg font-medium text-[#2d1f18]">Thông tin liên hệ</strong>
               <div className="flex gap-2">
                 <a href={site.facebookUrl ?? "#"} aria-label="Facebook" className="grid size-8 place-items-center rounded-full border border-black/5 text-[#7a5a4e] hover:bg-[var(--tenant-color)] hover:text-white transition-colors"><Facebook size={14} /></a>
                 <a href="#" aria-label="Instagram" className="grid size-8 place-items-center rounded-full border border-black/5 text-[#7a5a4e] hover:bg-[var(--tenant-color)] hover:text-white transition-colors"><Instagram size={14} /></a>
