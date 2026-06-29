@@ -17,9 +17,29 @@ import { ContactForm } from "@/components/marketing/contact-form";
 import { Faq } from "@/components/marketing/faq";
 import { ThemeShowcase } from "@/components/marketing/theme-showcase";
 import { MobileNavigation } from "@/components/shared/mobile-navigation";
-import { plans, properties } from "@/lib/data";
-import { formatPrice } from "@/lib/format";
-import { getPlatformStats } from "@/lib/server-api";
+import { properties } from "@/lib/data";
+import { getPlatformStats, getPublicPlans } from "@/lib/server-api";
+import type { SubscriptionPlan } from "@nice-land/contracts";
+
+function getPlanPresentation(plan: SubscriptionPlan) {
+  const isPopular = plan.code === "PROFESSIONAL";
+  const isTrial = plan.price === 0;
+
+  return {
+    popular: isPopular,
+    description: isTrial
+      ? `Trải nghiệm ${plan.durationDays} ngày với bộ công cụ cốt lõi để bắt đầu website.`
+      : plan.maxPosts >= 100
+        ? "Cho đội nhóm cần vận hành nội dung thường xuyên và tối ưu trải nghiệm khách hàng."
+        : "Dành cho môi giới cá nhân bắt đầu xây dựng thương hiệu với dữ liệu rõ ràng.",
+    features: [
+      `${new Intl.NumberFormat("vi-VN").format(plan.maxPosts)} tin đăng`,
+      `${plan.maxImagesPerPost} ảnh mỗi tin`,
+      `Chu kỳ ${plan.durationDays} ngày`,
+      isTrial ? "Hỗ trợ tiêu chuẩn" : isPopular ? "Hỗ trợ ưu tiên" : "Website theo thương hiệu",
+    ],
+  };
+}
 
 export default async function LandingPage({
   searchParams,
@@ -30,6 +50,7 @@ export default async function LandingPage({
   const selectedPlan = query.plan?.slice(0, 120);
   const initialThemePreference = query.theme === "cold" ? "cold" : "warm";
   const stats = await getPlatformStats();
+  const plans = await getPublicPlans();
   const featuredPreview = properties[0];
 
   return (
@@ -141,8 +162,8 @@ export default async function LandingPage({
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     {[
-                      ["85%", "CTA rõ hơn"],
-                      ["24/7", "website hoạt động"],
+                      ["CTA", "hiển thị nổi bật"],
+                      ["LIVE", "website sẵn sàng"],
                     ].map(([value, label]) => (
                       <div key={label} className="rounded-xl bg-white p-3">
                         <strong className="block font-display text-xl text-moss">{value}</strong>
@@ -185,13 +206,44 @@ export default async function LandingPage({
                 new Intl.NumberFormat("vi-VN").format(stats.totalPosts) + "+",
                 "tin đăng được quản lý",
               ],
-              ["99,9%", "thời gian hoạt động"],
+              [
+                new Intl.NumberFormat("vi-VN").format(stats.totalThemes),
+                "giao diện đang vận hành",
+              ],
             ].map(([value, label], index) => (
               <div key={label} className="flex flex-col sm:flex-row items-center gap-3 sm:justify-start">
                 <strong className="font-display text-4xl font-semibold text-gradient drop-shadow-sm">{value}</strong>
                 <span className="text-sm font-medium text-ink/60 uppercase tracking-wider">{label}</span>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Theme Showcase */}
+      <section id="themes" className="warm-surface relative overflow-hidden py-24 sm:py-32">
+        <div className="page-shell relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-16" data-reveal="soft">
+            <SectionHeading
+              eyebrow="Giao diện thiết kế chuẩn mực"
+              title="Khẳng định phong cách riêng của bạn."
+              align="center"
+            />
+            <p className="mt-6 text-lg leading-relaxed text-ink/70">
+              Xem trực tiếp cả hai phong cách <strong className="text-moss">Warm</strong> và <strong className="text-moss">Cold</strong> ngay trên landing page, rồi chọn giao diện phù hợp để bắt đầu website của bạn.
+            </p>
+          </div>
+          <div data-reveal="up">
+            <ThemeShowcase selectedPlan={selectedPlan} />
+          </div>
+          <div className="mt-10 flex justify-center" data-reveal="soft">
+            <Link
+              href="/themes"
+              className="button-secondary !min-h-11 !px-5 !py-2.5"
+            >
+              Xem gallery đầy đủ
+              <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
       </section>
@@ -297,94 +349,76 @@ export default async function LandingPage({
               align="center"
             />
           </div>
-          <div className="mt-16 grid items-stretch gap-8 lg:grid-cols-3" data-reveal-group>
-            {plans.map((plan) => (
-              <article
-                key={plan.name}
-                className={`motion-card relative flex flex-col rounded-3xl p-8 sm:p-10 ${plan.popular
-                  ? "bg-gradient-to-b from-moss to-ink text-white border-none shadow-[0_20px_50px_rgba(49,92,69,0.3)] transform lg:-translate-y-4 lg:hover:-translate-y-6"
-                  : "glass-card bg-white/70"
-                  }`}
-              >
-                {plan.popular && (
-                  <div className="absolute inset-0 bg-gold/10 rounded-3xl blur-2xl z-0 pointer-events-none"></div>
-                )}
+          {plans.length === 0 ? (
+            <div className="mt-16 glass-card rounded-3xl p-8 text-center text-sm font-medium text-ink/60">
+              Bảng giá đang được cập nhật. Vui lòng quay lại sau ít phút.
+            </div>
+          ) : (
+            <div className="mt-16 grid items-stretch gap-8 lg:grid-cols-3" data-reveal-group>
+              {plans.map((plan) => {
+                const presentation = getPlanPresentation(plan);
 
-                <div className="relative z-10 flex-1">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-display text-3xl font-medium">{plan.name}</h3>
-                    {plan.popular && (
-                      <span className="bg-gold px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-ink shadow-sm">
-                        Phổ biến
-                      </span>
+                return (
+                  <article
+                    key={plan.id}
+                    className={`motion-card relative flex flex-col rounded-3xl p-8 sm:p-10 ${presentation.popular
+                      ? "bg-gradient-to-b from-moss to-ink text-white border-none shadow-[0_20px_50px_rgba(49,92,69,0.3)] transform lg:-translate-y-4 lg:hover:-translate-y-6"
+                      : "glass-card bg-white/70"
+                      }`}
+                  >
+                    {presentation.popular && (
+                      <div className="absolute inset-0 bg-gold/10 rounded-3xl blur-2xl z-0 pointer-events-none"></div>
                     )}
-                  </div>
-                  <p className={`min-h-[3rem] text-sm leading-relaxed ${plan.popular ? "text-white/70" : "text-ink/60"}`}>
-                    {plan.description}
-                  </p>
 
-                  <div className="mt-8 flex items-baseline gap-1">
-                    <strong className="font-display text-5xl font-semibold tracking-tight">
-                      {plan.price === 0 ? "Miễn phí" : new Intl.NumberFormat("vi-VN").format(plan.price)}
-                    </strong>
-                    <span className={`text-sm font-medium ${plan.popular ? "text-white/60" : "text-ink/50"}`}>
-                      {plan.price === 0 ? "2 tuần" : "đ/tháng"}
-                    </span>
-                  </div>
+                    <div className="relative z-10 flex-1">
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="font-display text-3xl font-medium">{plan.name}</h3>
+                        {presentation.popular && (
+                          <span className="bg-gold px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-ink shadow-sm">
+                            Phổ biến
+                          </span>
+                        )}
+                      </div>
+                      <p className={`min-h-[3rem] text-sm leading-relaxed ${presentation.popular ? "text-white/70" : "text-ink/60"}`}>
+                        {presentation.description}
+                      </p>
 
-                  <div className={`my-8 h-px w-full ${plan.popular ? "bg-white/20" : "bg-ink/10"}`} />
+                      <div className="mt-8 flex items-baseline gap-1">
+                        <strong className="font-display text-5xl font-semibold tracking-tight">
+                          {plan.price === 0 ? "Miễn phí" : new Intl.NumberFormat("vi-VN").format(plan.price)}
+                        </strong>
+                        <span className={`text-sm font-medium ${presentation.popular ? "text-white/60" : "text-ink/50"}`}>
+                          {plan.price === 0 ? `${plan.durationDays} ngày` : "đ/tháng"}
+                        </span>
+                      </div>
 
-                  <ul className="space-y-5 text-sm font-medium">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-3">
-                        <Check className={`mt-0.5 shrink-0 ${plan.popular ? "text-gold" : "text-moss"}`} size={18} />
-                        <span className={plan.popular ? "text-white/90" : "text-ink/80"}>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                      <div className={`my-8 h-px w-full ${presentation.popular ? "bg-white/20" : "bg-ink/10"}`} />
 
-                <Link
-                  href={`/themes?plan=${encodeURIComponent(plan.name)}`}
-                  className={`mt-10 relative z-10 w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-6 text-sm font-bold transition-all ${plan.popular
-                    ? "bg-gold text-ink hover:bg-white hover:shadow-lg hover:-translate-y-0.5"
-                    : "bg-white border-2 border-ink/5 text-ink hover:bg-moss hover:text-white hover:border-moss shadow-sm hover:-translate-y-0.5"
-                    }`}
-                >
-                  Chọn gói {plan.name}
-                  <ArrowRight size={16} />
-                </Link>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+                      <ul className="space-y-5 text-sm font-medium">
+                        {presentation.features.map((feature) => (
+                          <li key={feature} className="flex items-start gap-3">
+                            <Check className={`mt-0.5 shrink-0 ${presentation.popular ? "text-gold" : "text-moss"}`} size={18} />
+                            <span className={presentation.popular ? "text-white/90" : "text-ink/80"}>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
-      {/* Featured Theme Showcase */}
-      <section id="themes" className="warm-surface relative overflow-hidden py-24 sm:py-32">
-        <div className="page-shell relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-16" data-reveal="soft">
-            <SectionHeading
-              eyebrow="Giao diện thiết kế chuẩn mực"
-              title="Khẳng định phong cách riêng của bạn."
-              align="center"
-            />
-            <p className="mt-6 text-lg leading-relaxed text-ink/70">
-              Xem trực tiếp cả hai phong cách <strong className="text-moss">Warm</strong> và <strong className="text-moss">Cold</strong> ngay trên landing page, rồi chọn giao diện phù hợp để bắt đầu website của bạn.
-            </p>
-          </div>
-          <div data-reveal="up">
-            <ThemeShowcase selectedPlan={selectedPlan} />
-          </div>
-          <div className="mt-10 flex justify-center" data-reveal="soft">
-            <Link
-              href="/themes"
-              className="button-secondary !min-h-11 !px-5 !py-2.5"
-            >
-              Xem gallery đầy đủ
-              <ArrowRight size={16} />
-            </Link>
-          </div>
+                    <Link
+                      href={`/themes?plan=${encodeURIComponent(plan.name)}`}
+                      className={`mt-10 relative z-10 w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-6 text-sm font-bold transition-all ${presentation.popular
+                        ? "bg-gold text-ink hover:bg-white hover:shadow-lg hover:-translate-y-0.5"
+                        : "bg-white border-2 border-ink/5 text-ink hover:bg-moss hover:text-white hover:border-moss shadow-sm hover:-translate-y-0.5"
+                        }`}
+                    >
+                      Chọn gói {plan.name}
+                      <ArrowRight size={16} />
+                    </Link>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 

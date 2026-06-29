@@ -11,6 +11,15 @@ Muc tieu cua ke hoach nay la bien he theme hien tai tu muc "co the them theme mo
 - Uu tien composition theo theme cho `header`, `home`, `detail`, `footer`, `broker-intro` thay vi tiep tuc tang nhanh `if/else` trong page chung.
 - Theme moi phai di qua cung mot checklist ky thuat: contract, DB, registry, renderer, CSS, demo, admin selection, test parity.
 
+## Guardrails
+
+- Khong thay doi business logic cua tenant, listing, lead flow, pagination, auth, hay subscription trong ke hoach nay. Chi duoc phep thay doi wiring/theme composition va presentation layer phuc vu mo rong theme.
+- Khong sua hanh vi cua Warm va Cold theme dang chay, tru khi co bug presentation ro rang va co test bao ve.
+- CSS moi phai duoc co lap theo namespace theme hoac semantic class ro rang. Khong dua theme moi bang cach override lan rong vao class chung.
+- Khong dung `!important` cho thuoc tinh CSS moi, tru khi dang bao ve mot surface cu bat kha khang va co ghi chu ly do. Mac dinh xem `!important` la khong duoc phep.
+- Uu tien them semantic class cho theme-specific surface thay vi tang do uu tien selector.
+- Moi thay doi presentation quan trong phai co verification bang `typecheck`, `test`, va manual check tren Warm + Cold de tranh regression.
+
 ## Current Assessment
 
 - Co san:
@@ -33,6 +42,7 @@ Muc tieu cua ke hoach nay la bien he theme hien tai tu muc "co the them theme mo
 Acceptance criteria:
 - [ ] Them theme moi khong can sua nhieu helper rieng le.
 - [ ] Theme key khong hop le van fallback ve default an toan.
+- [ ] Khong co thay doi nao lam anh huong business logic ngoai he theme registry.
 
 Verification:
 - [ ] `corepack pnpm --filter @nice-land/web test`
@@ -55,6 +65,7 @@ Estimated scope: Medium
 Acceptance criteria:
 - [ ] Theme moi khong can sua nhieu logic trong public pages chung.
 - [ ] Home va detail cung dung cung he composition/theme slots.
+- [ ] Theme composition moi khong thay doi hanh vi listing, lead form, hay public filtering.
 
 Verification:
 - [ ] `corepack pnpm --filter @nice-land/web typecheck`
@@ -84,6 +95,7 @@ Estimated scope: Medium
 Acceptance criteria:
 - [ ] Moi theme co preview rieng tu registry.
 - [ ] Landing showcase va `/themes` luon mo dung demo cua theme.
+- [ ] Demo wiring moi khong can them override CSS ngoai namespace cua theme.
 
 Verification:
 - [ ] `corepack pnpm --filter @nice-land/web test`
@@ -107,6 +119,7 @@ Estimated scope: Medium
 Acceptance criteria:
 - [ ] Them theme moi khong can chen hardcoded theme card o nhieu noi.
 - [ ] Theme metadata dung chung mot nguon cho onboarding, tenant admin va superadmin.
+- [ ] Admin flow chi them metadata theme, khong sua logic luu/truy van ngoai pham vi field theme.
 
 Verification:
 - [ ] `corepack pnpm --filter @nice-land/web typecheck`
@@ -130,6 +143,7 @@ Estimated scope: Small-Medium
 Acceptance criteria:
 - [ ] Team co checklist ro rang de them theme thu 3, 4, 5.
 - [ ] Test fail neu theme moi thieu surface hoac metadata bat buoc.
+- [ ] Checklist bat buoc xac nhan khong them `!important` moi neu khong co ly do duoc review.
 
 Verification:
 - [ ] `corepack pnpm --filter @nice-land/web test`
@@ -149,16 +163,19 @@ Estimated scope: Small
 
 Su dung checklist nay moi khi them mot theme public moi:
 
+- [ ] Xac nhan scope chi la theme/presentation, khong dong vao business logic khac.
 - [ ] Them key moi vao `publicThemeSchema` trong contracts.
 - [ ] Cap nhat enum `PublicTheme` trong Prisma schema va migration.
 - [ ] Them metadata theme vao `publicThemes`.
 - [ ] Them stylesheet rieng trong `apps/web/public/themes/`.
+- [ ] Dung namespace/theme semantic classes, khong override tran lan vao class chung.
 - [ ] Them thumbnail renderer hoac map thumbnail vao registry.
 - [ ] Them homepage renderer cho theme moi.
 - [ ] Kiem tra detail/header/footer composition cua theme moi.
 - [ ] Tao demo slug va mock/demo data cho preview theme.
 - [ ] Hien thi theme moi trong landing showcase va `/themes`.
 - [ ] Hien thi theme moi trong tenant admin / superadmin selection.
+- [ ] Kiem tra khong them `!important` moi, hoac neu bat buoc phai ghi ro ly do va surface can bao ve.
 - [ ] Bo sung test parity cho registry, demo href, va fallback behavior.
 - [ ] Verify `contracts build`, `database build`, `api-client build`, `api build`, `web typecheck`, `web test`.
 
@@ -169,8 +186,9 @@ Su dung checklist nay moi khi them mot theme public moi:
 | Theme moi lam lech detail page | High | Tach composition sớm cho detail va footer |
 | Preview/demo mo sai theme | Medium | Dua `demoSlug` vao registry thay vi mapping ngoai le |
 | Admin UI hardcode theme cards | Medium | Render theme selection tu registry |
-| CSS theme moi dung style chung sai muc | Medium | Tang semantic classes cho theme-specific surfaces |
+| CSS theme moi dung style chung sai muc | Medium | Tang semantic classes cho theme-specific surfaces, tranh selector uu tien cao va tranh `!important` |
 | Contract / DB / frontend lech nhau | High | Build theo thu tu: contracts -> database -> api-client -> api -> web |
+| Refactor theme vo tinh tac dong business logic | High | Giu scope presentation-only, test lai Warm + Cold sau moi phase |
 
 ## Open Questions
 

@@ -43,7 +43,7 @@ export function ColdHeader({ site }: { site: Site }) {
           <nav className="flex flex-col p-4 text-base font-semibold" aria-label="Điều hướng website trên di động">
             {[
               ["Tin đăng", "#properties"],
-              ["Phân tích", "#about"],
+              ["Tư Vấn", "#about"],
               ["Liên hệ", "#contact"],
             ].map(([label, href]) => (
               <TenantLink key={label} slug={site.slug} href={href} className="border-b border-white/10 px-3 py-4">

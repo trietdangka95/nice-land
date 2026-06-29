@@ -1,4 +1,5 @@
 import type { PropertyPost, Site } from "@/lib/types";
+import type { SubscriptionPlan } from "@nice-land/contracts";
 import { resolvePublicTheme } from "@/lib/public-themes";
 import {
   getPublicPost as getMockPost,
@@ -337,16 +338,35 @@ export async function getTenantPost(
 export async function getPlatformStats(): Promise<{
   totalSites: number;
   totalPosts: number;
+  totalThemes: number;
 }> {
   try {
     const response = await fetch(`${apiUrl}/v1/public/stats`, {
       next: { revalidate: 3600 },
     });
     if (!response.ok) {
-      return { totalSites: 200, totalPosts: 48000 };
+      return { totalSites: 0, totalPosts: 0, totalThemes: 0 };
     }
-    return (await response.json()) as { totalSites: number; totalPosts: number };
+    return (await response.json()) as {
+      totalSites: number;
+      totalPosts: number;
+      totalThemes: number;
+    };
   } catch {
-    return { totalSites: 200, totalPosts: 48000 };
+    return { totalSites: 0, totalPosts: 0, totalThemes: 0 };
+  }
+}
+
+export async function getPublicPlans(): Promise<SubscriptionPlan[]> {
+  try {
+    const response = await fetch(`${apiUrl}/v1/public/plans`, {
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) {
+      return [];
+    }
+    return (await response.json()) as SubscriptionPlan[];
+  } catch {
+    return [];
   }
 }

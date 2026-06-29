@@ -200,3 +200,111 @@ describe("GET /v1/public/site", () => {
     });
   });
 });
+
+describe("GET /v1/public/stats", () => {
+  it("returns platform stats directly from the repository without hard-coded floors", async () => {
+    const publicSiteRepository: PublicSiteRepository = {
+      findPublicConfig: async () => null,
+      getPlatformStats: async () => ({
+        totalSites: 3,
+        totalPosts: 17,
+        totalThemes: 2,
+      }),
+    };
+
+    const app = buildApp(
+      loadConfig({
+        NODE_ENV: "test",
+        LOG_LEVEL: "silent",
+        ROOT_DOMAIN: "nice-land.vn",
+      }),
+      { tenantRepository, publicSiteRepository },
+    );
+    apps.push(app);
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/v1/public/stats",
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual({
+      totalSites: 3,
+      totalPosts: 17,
+      totalThemes: 2,
+    });
+  });
+});
+
+describe("GET /v1/public/plans", () => {
+  it("returns active pricing plans from the repository for the landing page", async () => {
+    const publicSiteRepository: PublicSiteRepository = {
+      findPublicConfig: async () => null,
+      listPublicPlans: async () => ([
+        {
+          id: "trial",
+          name: "Trải nghiệm",
+          code: "TRIAL",
+          maxPosts: 10,
+          maxImagesPerPost: 3,
+          price: 0,
+          durationDays: 14,
+          isActive: true,
+          siteCount: 2,
+        },
+        {
+          id: "starter",
+          name: "Khởi đầu",
+          code: "STARTER",
+          maxPosts: 30,
+          maxImagesPerPost: 10,
+          price: 299000,
+          durationDays: 30,
+          isActive: true,
+          siteCount: 4,
+        },
+      ]),
+    };
+
+    const app = buildApp(
+      loadConfig({
+        NODE_ENV: "test",
+        LOG_LEVEL: "silent",
+        ROOT_DOMAIN: "nice-land.vn",
+      }),
+      { tenantRepository, publicSiteRepository },
+    );
+    apps.push(app);
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/v1/public/plans",
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual([
+      {
+        id: "trial",
+        name: "Trải nghiệm",
+        code: "TRIAL",
+        maxPosts: 10,
+        maxImagesPerPost: 3,
+        price: 0,
+        durationDays: 14,
+        isActive: true,
+        siteCount: 2,
+      },
+      {
+        id: "starter",
+        name: "Khởi đầu",
+        code: "STARTER",
+        maxPosts: 30,
+        maxImagesPerPost: 10,
+        price: 299000,
+        durationDays: 30,
+        isActive: true,
+        siteCount: 4,
+      },
+    ]);
+  });
+});

@@ -32,13 +32,50 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
   }
 
   async getPlatformStats() {
-    const [totalSites, totalPosts] = await Promise.all([
+    const [totalSites, totalPosts, activeThemes] = await Promise.all([
       prisma.site.count({ where: { isActive: true, deletedAt: null } }),
       prisma.propertyPost.count({ where: { status: "PUBLISHED", deletedAt: null } }),
+      prisma.site.findMany({
+        where: { isActive: true, deletedAt: null },
+        distinct: ["themeKey"],
+        select: { themeKey: true },
+      }),
     ]);
+
     return {
-      totalSites: Math.max(totalSites, 200),
-      totalPosts: Math.max(totalPosts, 48000),
+      totalSites,
+      totalPosts,
+      totalThemes: activeThemes.length,
     };
+  }
+
+  async listPublicPlans() {
+    const plans = await prisma.subscriptionPlan.findMany({
+      where: { isActive: true },
+      orderBy: { price: "asc" },
+      select: {
+        id: true,
+        name: true,
+        code: true,
+        maxPosts: true,
+        maxImagesPerPost: true,
+        price: true,
+        durationDays: true,
+        isActive: true,
+        _count: { select: { sites: true } },
+      },
+    });
+
+    return plans.map((plan) => ({
+      id: plan.id,
+      name: plan.name,
+      code: plan.code,
+      maxPosts: plan.maxPosts,
+      maxImagesPerPost: plan.maxImagesPerPost,
+      price: plan.price.toNumber(),
+      durationDays: plan.durationDays,
+      isActive: plan.isActive,
+      siteCount: plan._count.sites,
+    }));
   }
 }

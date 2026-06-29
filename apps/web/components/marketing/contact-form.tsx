@@ -163,7 +163,10 @@ export function ContactForm({
         return null;
       })()}
 
-      <button className="button-primary mt-2 bg-gold text-ink hover:bg-white" disabled={loading}>
+      <button
+        className="button-primary mt-2 bg-gold text-ink hover:bg-white hover:text-ink"
+        disabled={loading}
+      >
         {loading ? "Đang gửi..." : "Nhận tư vấn miễn phí"}
         {!loading && <ArrowRight size={17} aria-hidden="true" />}
       </button>

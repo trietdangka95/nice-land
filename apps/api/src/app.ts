@@ -209,6 +209,12 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
         return options.publicSiteRepository!.getPlatformStats!();
       });
     }
+
+    if (options.publicSiteRepository.listPublicPlans) {
+      app.get("/v1/public/plans", async () => {
+        return options.publicSiteRepository!.listPublicPlans!();
+      });
+    }
   }
 
   if (options.superAdminRepository) {

@@ -1,4 +1,4 @@
-import type { PublicTheme } from "@nice-land/contracts";
+import type { PublicTheme, SubscriptionPlan } from "@nice-land/contracts";
 
 export interface PublicSiteConfig {
   id: string;
@@ -21,5 +21,10 @@ export interface PublicSiteConfig {
 
 export interface PublicSiteRepository {
   findPublicConfig(siteId: string): Promise<PublicSiteConfig | null>;
-  getPlatformStats?(): Promise<{ totalSites: number; totalPosts: number }>;
+  getPlatformStats?(): Promise<{
+    totalSites: number;
+    totalPosts: number;
+    totalThemes: number;
+  }>;
+  listPublicPlans?(): Promise<SubscriptionPlan[]>;
 }
