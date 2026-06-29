@@ -39,12 +39,15 @@ export function useTenantRouting(slug?: string) {
     [isPathBased, pathname, slug]
   );
 
-  return {
-    isPathBased,
-    getPath,
-    push: (path: string) => router.push(getPath(path)),
-    replace: (path: string) => router.replace(getPath(path)),
-    prefetch: (path: string) => router.prefetch(getPath(path)),
-    refresh: () => router.refresh(),
-  };
+  return useMemo(
+    () => ({
+      isPathBased,
+      getPath,
+      push: (path: string) => router.push(getPath(path)),
+      replace: (path: string) => router.replace(getPath(path)),
+      prefetch: (path: string) => router.prefetch(getPath(path)),
+      refresh: () => router.refresh(),
+    }),
+    [isPathBased, getPath, router]
+  );
 }
