@@ -108,7 +108,7 @@ export default async function LandingPage({
             </div>
 
             <h1 className="mt-6 text-balance font-display text-4xl font-semibold leading-[1.02] min-[420px]:text-5xl sm:text-6xl lg:text-[68px]">
-              Website tin đăng <span className="text-gradient">mang tên bạn.</span>
+              Website tin đăng <span className="text-gradient">mang thương hiệu bạn.</span>
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-ink/70 sm:text-lg">

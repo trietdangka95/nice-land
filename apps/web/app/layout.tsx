@@ -12,7 +12,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Nice Land — Website tin đăng mang tên bạn",
+    default: "Nice Land — Website tin đăng mang thương hiệu bạn",
     template: "%s | Nice Land",
   },
   description:
