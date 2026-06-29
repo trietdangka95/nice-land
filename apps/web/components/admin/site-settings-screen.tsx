@@ -7,6 +7,7 @@ import { createTenantApi } from "@/lib/api";
 import { revalidateTenant } from "@/app/actions";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
+import { ImageUploadInput } from "@/components/shared/image-upload-input";
 
 const colors = ["#315c45", "#8b5a3c", "#24405e", "#6b4f7d", "#9a6d22"];
 
@@ -121,9 +122,9 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
             <TextField label="Địa chỉ" value={form.address} onChange={(value) => setField("address", value)} required wide />
             <TextField label="Số Zalo" value={form.zaloPhone ?? ""} onChange={(value) => setField("zaloPhone", value)} />
             <TextField label="Facebook URL" type="url" value={form.facebookUrl ?? ""} onChange={(value) => setField("facebookUrl", value)} />
-            <TextField label="Logo URL" type="url" value={form.logo ?? ""} onChange={(value) => setField("logo", value)} />
-            <TextField label="Ảnh banner URL" type="url" value={form.banner ?? ""} onChange={(value) => setField("banner", value)} wide />
-            <TextField label="Avatar môi giới URL" type="url" value={form.brokerAvatar ?? ""} onChange={(value) => setField("brokerAvatar", value)} />
+            <ImageUploadInput label="Logo" value={form.logo ?? ""} onChange={(value) => setField("logo", value)} folder="logo" presignGenericImage={(input) => client.presignGenericImage(input)} />
+            <ImageUploadInput label="Ảnh banner" value={form.banner ?? ""} onChange={(value) => setField("banner", value)} folder="banner" presignGenericImage={(input) => client.presignGenericImage(input)} wide />
+            <ImageUploadInput label="Avatar môi giới" value={form.brokerAvatar ?? ""} onChange={(value) => setField("brokerAvatar", value)} folder="avatars" presignGenericImage={(input) => client.presignGenericImage(input)} />
             <TextField label="Tên môi giới" value={form.brokerName ?? ""} onChange={(value) => setField("brokerName", value)} />
             <TextAreaField label="Mô tả môi giới" value={form.brokerBio ?? ""} onChange={(value) => setField("brokerBio", value)} wide />
           </div>

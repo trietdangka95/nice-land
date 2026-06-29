@@ -27,6 +27,7 @@ import type {
   PostImageStorage,
 } from "./modules/uploads/post-image-service.js";
 import { registerPostImageRoutes } from "./modules/uploads/post-image-routes.js";
+import { registerGenericImageRoutes } from "./modules/uploads/generic-image-routes.js";
 import type { AdminSiteRepository } from "./modules/sites/admin-site-repository.js";
 import { registerAdminSiteRoutes } from "./modules/sites/admin-site-routes.js";
 import type { SuperAdminRepository } from "./modules/superadmin/superadmin-repository.js";
@@ -391,6 +392,12 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
       tenantRepository: options.tenantRepository,
       accessTokens: options.accessTokens,
       ...options.postImageDependencies,
+    });
+    void registerGenericImageRoutes(app, {
+      config,
+      tenantRepository: options.tenantRepository,
+      accessTokens: options.accessTokens,
+      storage: options.postImageDependencies.storage,
     });
   }
 

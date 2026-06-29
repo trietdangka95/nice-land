@@ -14,6 +14,7 @@ import type {
   ImageCompleteInput,
   ImagePresignInput,
   ImageReorderInput,
+  GenericImagePresignInput,
   LoginInput,
   ResetPasswordInput,
   UpdateProfileInput,
@@ -234,6 +235,17 @@ export function createApiClient(options: ApiClientOptions) {
         `/v1/admin/posts/${encodeURIComponent(postId)}/images/${encodeURIComponent(imageId)}`,
         { method: "DELETE" },
       ),
+    presignGenericImage: (input: GenericImagePresignInput) =>
+      request<{
+        uploadUrl: string;
+        objectKey: string;
+        publicUrl: string;
+        expiresIn: number;
+        headers: Record<string, string>;
+      }>("/v1/admin/uploads/presign", {
+        method: "POST",
+        body: JSON.stringify(input),
+      }),
     getSiteSettings: () =>
       request<SiteSettings>("/v1/admin/site-config"),
     updateSiteSettings: (input: SiteSettingsInput) =>

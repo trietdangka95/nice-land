@@ -195,6 +195,13 @@ export const imageReorderInputSchema = z.object({
     }),
 });
 
+export const genericImagePresignInputSchema = z.object({
+  fileName: z.string().trim().min(1).max(180),
+  mimeType: z.enum(["image/jpeg", "image/png", "image/webp"]),
+  size: z.coerce.number().int().positive().max(8 * 1024 * 1024),
+  folder: z.enum(["logo", "banner", "avatars", "assets"]),
+});
+
 const optionalUrlSchema = z
   .string()
   .trim()
@@ -347,6 +354,7 @@ export type PropertyCategoryInput = z.infer<
 export type ImagePresignInput = z.infer<typeof imagePresignInputSchema>;
 export type ImageCompleteInput = z.infer<typeof imageCompleteInputSchema>;
 export type ImageReorderInput = z.infer<typeof imageReorderInputSchema>;
+export type GenericImagePresignInput = z.infer<typeof genericImagePresignInputSchema>;
 export type SiteSettingsInput = z.infer<typeof siteSettingsInputSchema>;
 export type RenewalRequestInput = z.infer<typeof renewalRequestInputSchema>;
 export type RequestStatus = z.infer<typeof requestStatusSchema>;
