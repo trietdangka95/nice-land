@@ -7,10 +7,35 @@ export const sites: Site[] = [
     slug: "demo",
     tagline: "Trải nghiệm website mẫu của Nice Land",
     logoMark: "NL",
+    brokerAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
+    brokerName: "Nguyen Hoang Long",
+    brokerBio: "Chuyên viên tư vấn tập trung vào nhà phố và bất động sản nghỉ dưỡng, đồng hành cùng khách hàng từ bước định vị nhu cầu đến chốt giao dịch rõ ràng.",
     themeKey: "WARM_MINIMAL",
     themeColor: "#315c45",
     phone: "1900 1234",
     email: "demo@nice-land.vn",
+    address: "Văn phòng Nice Land, TP. Hồ Chí Minh",
+    facebookUrl: "https://facebook.com",
+    zaloPhone: "19001234",
+    isActive: true,
+    subscriptionStatus: "ACTIVE",
+    subscriptionEnd: "2029-12-31",
+    plan: "Chuyên nghiệp",
+    createdAt: "2026-06-21",
+  },
+  {
+    id: "site-demo-cold",
+    name: "Nice Land Cold Demo",
+    slug: "demo-cold",
+    tagline: "Trải nghiệm website mẫu Cold Theme của Nice Land",
+    logoMark: "NL",
+    brokerAvatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80",
+    brokerName: "Tran Minh Quan",
+    brokerBio: "Tư vấn bất động sản theo hướng dữ liệu, ưu tiên sản phẩm cao cấp, pháp lý minh bạch và chiến lược đầu tư có luận điểm rõ ràng.",
+    themeKey: "COLD_MODERN",
+    themeColor: "#0f4c81",
+    phone: "1900 1234",
+    email: "cold-demo@nice-land.vn",
     address: "Văn phòng Nice Land, TP. Hồ Chí Minh",
     facebookUrl: "https://facebook.com",
     zaloPhone: "19001234",
@@ -26,6 +51,9 @@ export const sites: Site[] = [
     slug: "minhphat",
     tagline: "Chọn đúng nơi, dựng đúng tổ ấm",
     logoMark: "MP",
+    brokerAvatar: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80",
+    brokerName: "Minh Phat Nguyen",
+    brokerBio: "Hơn 8 năm đồng hành cùng khách hàng tại Đà Nẵng, chuyên tư vấn nhà ở thực, bất động sản ven biển và sản phẩm có tiềm năng khai thác dài hạn.",
     themeKey: "WARM_MINIMAL",
     themeColor: "#315c45",
     phone: "0903 868 979",
@@ -45,6 +73,9 @@ export const sites: Site[] = [
     slug: "anland",
     tagline: "Không gian sống bình yên giữa lòng thành phố",
     logoMark: "AL",
+    brokerAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80",
+    brokerName: "An Nguyen",
+    brokerBio: "Tập trung vào nhu cầu an cư cho gia đình trẻ, ưu tiên khu dân cư ổn định, sản phẩm dễ ở và giá trị sử dụng bền vững.",
     themeKey: "WARM_MINIMAL",
     themeColor: "#8b5a3c",
     phone: "0912 333 558",
@@ -62,6 +93,9 @@ export const sites: Site[] = [
     slug: "gialoc",
     tagline: "Đồng hành cùng giá trị bền vững",
     logoMark: "GL",
+    brokerAvatar: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?auto=format&fit=crop&w=800&q=80",
+    brokerName: "Gia Loc Tran",
+    brokerBio: "Tư vấn đầu tư trung hạn và đất nền khu vực vệ tinh, chú trọng nhịp tăng trưởng hạ tầng và kiểm soát rủi ro pháp lý.",
     themeKey: "WARM_MINIMAL",
     themeColor: "#24405e",
     phone: "0988 445 221",
@@ -74,6 +108,10 @@ export const sites: Site[] = [
     createdAt: "2025-11-20",
   },
 ];
+
+function normalizeMockSiteId(siteId: string) {
+  return siteId === "site-demo-cold" ? "site-demo" : siteId;
+}
 
 export const properties: PropertyPost[] = [
   {
@@ -387,7 +425,9 @@ export function getSiteBySlug(slug: string) {
 
 export function getPublicPosts(siteId: string) {
   return properties.filter(
-    (post) => post.siteId === siteId && ["PUBLISHED", "SOLD"].includes(post.status),
+    (post) =>
+      post.siteId === normalizeMockSiteId(siteId) &&
+      ["PUBLISHED", "SOLD"].includes(post.status),
   );
 }
 

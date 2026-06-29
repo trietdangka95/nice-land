@@ -1,7 +1,8 @@
-import type { PropertyPost, PropertyType, Site } from "@/lib/types";
+import type { PropertyPost, PropertyType, PublicTheme, Site } from "@/lib/types";
 
 export interface PublicThemeHomeProps {
   site: Site;
+  theme: PublicTheme;
   featured: PropertyPost;
   posts: PropertyPost[];
   total: number;

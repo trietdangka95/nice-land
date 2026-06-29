@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+.tenant-public[data-public-theme="COLD_MODERN"] {
+  --cold-navy: #071a2f;
+  --cold-midnight: #03111f;
+  --cold-ink: #0b1d35;
+  --cold-indigo: #12223f;
+  --cold-muted: #5f7085;
+  --cold-border: #d7e1ea;
+  --cold-surface: #f7fafc;
+  --cold-surface-2: #edf3f8;
+  --cold-accent: #6ee7ff;
+  --cold-accent-strong: #38d5f8;
+  --cold-accent-dark: #027fa4;
+  --tenant-surface: var(--cold-surface);
+  --tenant-card-radius: 4px;
+  --tenant-body-font: 'Inter', Arial, "Helvetica Neue", sans-serif;
+  --tenant-display-font: 'Inter', Arial, "Helvetica Neue", sans-serif;
+  --tenant-content-width: 1360px;
+  background: var(--tenant-surface);
+  color: var(--cold-ink);
+  font-family: var(--tenant-body-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .page-shell {
+  max-width: var(--tenant-content-width);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .font-display,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-brand-name,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-card-title,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-title {
+  font-family: var(--tenant-display-font);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] :is(button, a, input, select) {
+  border-radius: 0;
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] :focus-visible {
+  outline: 3px solid rgba(110, 231, 255, 0.85);
+  outline-offset: 3px;
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-hero {
+  background:
+    linear-gradient(180deg, rgba(247, 250, 252, 0.98), rgba(237, 243, 248, 1)),
+    linear-gradient(90deg, rgba(7, 26, 47, 0.06) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(7, 26, 47, 0.05) 1px, transparent 1px);
+  background-size: auto, 72px 72px, 72px 72px;
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-listing {
+  background: var(--cold-surface-2) !important;
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-about {
+  background: #ffffff !important;
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-gallery-grid,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-main-image,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-thumbnails > div,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-contact-card {
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-contact-card {
+  border: 1px solid var(--cold-border);
+  background: #ffffff;
+  box-shadow: 0 22px 60px rgba(3, 17, 31, 0.08);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-badge,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-primary-action,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-lead-form-submit {
+  background: var(--cold-accent);
+  color: var(--cold-midnight);
+  border-color: var(--cold-accent);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-primary-action:hover,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-lead-form-submit:hover {
+  background: var(--cold-accent-strong);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-secondary-action {
+  border-color: var(--cold-navy);
+  background: var(--cold-navy);
+  color: #ffffff;
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-secondary-action:hover {
+  background: var(--cold-midnight);
+  border-color: var(--cold-midnight);
+  color: #ffffff;
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-tertiary-action {
+  border-color: var(--cold-border);
+  background: #ffffff;
+  color: var(--cold-ink);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-tertiary-action:hover {
+  border-color: var(--cold-accent);
+  color: var(--cold-accent-dark);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-price,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-contact-label,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-location-icon,
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-share-action:hover {
+  color: var(--cold-accent-dark);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-contact-mark {
+  background: var(--cold-navy);
+  color: var(--cold-accent);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-lead-form-input {
+  border-color: var(--cold-border);
+  background: #ffffff;
+  color: var(--cold-ink);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-lead-form-input::placeholder {
+  color: var(--cold-muted);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-lead-form-input:focus {
+  border-color: var(--cold-accent);
+}
+
+.tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-layout {
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 4rem;
+}
+
+@media (max-width: 1023px) {
+  .tenant-public[data-public-theme="COLD_MODERN"] .tenant-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3rem;
+  }
+}

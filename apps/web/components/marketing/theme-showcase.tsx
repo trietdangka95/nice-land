@@ -1,14 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import type { PublicTheme } from "@nice-land/contracts";
 import {
   getPublicThemeDemoHref,
   publicThemes,
 } from "@/lib/public-themes";
 import { ThemeThumbnail } from "@/components/site/theme-thumbnail";
 
+function themePreferenceFromKey(theme: PublicTheme) {
+  return theme === "COLD_MODERN" ? "cold" : "warm";
+}
+
+function buildThemeSignupHref(theme: PublicTheme, plan?: string) {
+  const params = new URLSearchParams({ theme: themePreferenceFromKey(theme) });
+  if (plan) params.set("plan", plan);
+  return `/?${params.toString()}#contact`;
+}
+
 export function ThemeShowcase({
-  selectedPlan: _selectedPlan,
+  selectedPlan,
   compact = false,
 }: {
   selectedPlan?: string;
@@ -17,6 +28,8 @@ export function ThemeShowcase({
   return (
     <div className={`grid gap-6 ${compact ? "md:grid-cols-2 xl:grid-cols-4" : "md:grid-cols-2"}`}>
       {publicThemes.map((theme) => {
+        const preference = themePreferenceFromKey(theme.key);
+
         return (
           <article
             key={theme.key}
@@ -30,6 +43,9 @@ export function ThemeShowcase({
                 <ThemeThumbnail theme={theme.key} />
                 <div className="absolute inset-0 z-10" />
               </span>
+              <span className="absolute left-4 top-4 rounded-full border border-white/70 bg-white/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-ink shadow-sm">
+                {preference} theme
+              </span>
               <span className="absolute bottom-4 right-4 rounded-full bg-moss/90 backdrop-blur-md shadow-lg border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 group-hover:bg-moss group-hover:scale-105">
                 Xem mẫu
               </span>
@@ -42,13 +58,20 @@ export function ThemeShowcase({
               <p className="mt-4 border-l-2 border-gold/70 pl-3 text-xs leading-5 text-ink/50 italic">
                 {theme.direction}
               </p>
-              <div className="mt-6">
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href={getPublicThemeDemoHref(theme.key)}
-                  className="group/btn flex min-h-12 items-center justify-center gap-2 rounded-xl border border-ink/10 bg-white px-4 text-sm font-semibold text-ink shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all hover:border-ink/20 hover:bg-ink/5 hover:shadow-md"
+                  className="group/btn flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-ink/10 bg-white px-4 text-sm font-semibold text-ink shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all hover:border-ink/20 hover:bg-ink/5 hover:shadow-md"
                 >
                   Xem website
                   <ArrowRight size={16} className="transition-transform group-hover/btn:translate-x-1" />
+                </Link>
+                <Link
+                  href={buildThemeSignupHref(theme.key, selectedPlan)}
+                  className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-moss px-4 text-sm font-bold text-white transition-colors hover:bg-ink"
+                >
+                  Chọn giao diện này
+                  <ArrowRight size={16} />
                 </Link>
               </div>
             </div>

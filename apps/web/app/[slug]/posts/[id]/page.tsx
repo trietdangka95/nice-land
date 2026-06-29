@@ -4,6 +4,7 @@ import { TenantLink } from "@/components/shared/tenant-link";
 import { notFound } from "next/navigation";
 import { TenantHeader } from "@/components/site/tenant-header";
 import { PersonalHeader, PersonalFooter } from "@/components/site/public-theme-home/chrome";
+import { ColdFooter, ColdHeader } from "@/components/site/public-theme-home/cold-modern";
 import { getTenantPost, getTenantSite } from "@/lib/server-api";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
 import { PropertyEngagement } from "@/components/site/property-engagement";
@@ -11,6 +12,7 @@ import { TrackedContactLink } from "@/components/site/tracked-contact-link";
 import { resolvePublicTheme } from "@/lib/public-themes";
 import { PublicThemeStylesheet } from "@/components/site/public-theme-stylesheet";
 import { PropertyGallery } from "@/components/site/property-gallery";
+import { BrokerIntroSection } from "@/components/site/broker-intro-section";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3002";
 
@@ -72,7 +74,13 @@ export default async function PropertyDetailPage({
     >
       <PublicThemeStylesheet theme={renderedTheme} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      {renderedTheme === "WARM_MINIMAL" ? <PersonalHeader site={site} /> : <TenantHeader site={site} />}
+      {renderedTheme === "WARM_MINIMAL" ? (
+        <PersonalHeader site={site} />
+      ) : renderedTheme === "COLD_MODERN" ? (
+        <ColdHeader site={site} />
+      ) : (
+        <TenantHeader site={site} />
+      )}
       <div className="page-shell py-6">
         <TenantLink href="" slug={slug} className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-ink/55 transition-colors hover:text-ink">
           <ChevronLeft size={16} />
@@ -87,7 +95,7 @@ export default async function PropertyDetailPage({
       <section className="tenant-detail-layout page-shell grid gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_360px]">
         <article className="tenant-detail-content" data-reveal="left">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-[var(--tenant-color)] px-3 py-2 text-[10px] font-extrabold uppercase tracking-widest text-white shadow-sm">
+            <span className="tenant-detail-badge rounded-full bg-[var(--tenant-color)] px-3 py-2 text-[10px] font-extrabold uppercase tracking-widest text-white shadow-sm">
               {propertyTypeLabels[post.type]}
             </span>
             <span className="rounded-full border border-ink/10 bg-white/60 px-3 py-2 text-xs font-semibold text-ink/45">Mã tin: {post.id.toUpperCase()}</span>
@@ -96,13 +104,13 @@ export default async function PropertyDetailPage({
             {post.title}
           </h1>
           <p className="mt-4 flex items-center gap-2 text-sm text-ink/55">
-            <MapPin size={17} className="text-[var(--tenant-color)]" />
+            <MapPin size={17} className="tenant-detail-location-icon text-[var(--tenant-color)]" />
             {post.ward && `${post.ward}, `}{post.district}, {post.province}
           </p>
           <div className="tenant-detail-facts mt-8 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border border-ink/10 bg-white/70 p-5 shadow-[0_12px_36px_rgba(23,33,27,0.05)]">
               <span className="block text-xs uppercase tracking-wider text-ink/40">Mức giá</span>
-              <strong className="mt-1 block font-display text-3xl text-[var(--tenant-color)]">
+              <strong className="tenant-detail-price mt-1 block font-display text-3xl text-[var(--tenant-color)]">
                 {formatPrice(post.price, post.type)}
               </strong>
             </div>
@@ -143,9 +151,9 @@ export default async function PropertyDetailPage({
 
         <aside className="tenant-detail-aside" data-reveal="right">
           <div className="tenant-contact-card sticky top-24 border border-ink/10 bg-white p-6 shadow-soft transition-transform duration-300 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--tenant-color)]">Chuyên viên phụ trách</p>
+            <p className="tenant-detail-contact-label text-xs font-bold uppercase tracking-[0.18em] text-[var(--tenant-color)]">Chuyên viên phụ trách</p>
             <div className="mt-5 flex items-center gap-4">
-              <div className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-full bg-[var(--tenant-color)] font-display text-xl text-white">
+              <div className="tenant-detail-contact-mark grid size-14 shrink-0 place-items-center overflow-hidden rounded-full bg-[var(--tenant-color)] font-display text-xl text-white">
                 {site.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -164,28 +172,33 @@ export default async function PropertyDetailPage({
                 </p>
               </div>
             </div>
-            <TrackedContactLink slug={slug} postId={post.id} source="PHONE_CLICK" href={`tel:${site.phone.replace(/\s/g, "")}`} className={`mt-6 flex min-h-13 items-center justify-center gap-2 px-5 py-4 text-sm font-bold text-white transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${renderedTheme === "WARM_MINIMAL" ? "rounded-full bg-[var(--tenant-color)]" : "bg-[var(--tenant-color)]"}`}>
+            <TrackedContactLink slug={slug} postId={post.id} source="PHONE_CLICK" href={`tel:${site.phone.replace(/\s/g, "")}`} className={`tenant-detail-primary-action mt-6 flex min-h-13 items-center justify-center gap-2 px-5 py-4 text-sm font-bold text-white transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${renderedTheme === "WARM_MINIMAL" ? "rounded-full bg-[var(--tenant-color)]" : "bg-[var(--tenant-color)]"}`}>
               <Phone size={17} />
               Gọi {site.phone}
             </TrackedContactLink>
             {site.zaloPhone && (
-              <TrackedContactLink slug={slug} postId={post.id} source="ZALO_CLICK" href={`https://zalo.me/${site.zaloPhone.replace(/\D/g, "")}`} className={`mt-3 flex min-h-13 items-center justify-center gap-2 border border-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-[var(--tenant-color)] transition-colors duration-200 hover:bg-[var(--tenant-color)] hover:text-white active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full" : ""}`}>
+              <TrackedContactLink slug={slug} postId={post.id} source="ZALO_CLICK" href={`https://zalo.me/${site.zaloPhone.replace(/\D/g, "")}`} className={`tenant-detail-secondary-action mt-3 flex min-h-13 items-center justify-center gap-2 border border-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-[var(--tenant-color)] transition-colors duration-200 hover:bg-[var(--tenant-color)] hover:text-white active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full" : ""}`}>
                 Nhắn Zalo
               </TrackedContactLink>
             )}
-            <a href={`mailto:${site.email}`} className={`mt-3 flex min-h-13 items-center justify-center gap-2 border px-5 py-4 text-sm font-bold transition-colors duration-200 active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full border-black/5 bg-[#f8f6f0] hover:bg-white" : "border-ink/15"}`}>
+            <a href={`mailto:${site.email}`} className={`tenant-detail-tertiary-action mt-3 flex min-h-13 items-center justify-center gap-2 border px-5 py-4 text-sm font-bold transition-colors duration-200 active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full border-black/5 bg-[#f8f6f0] hover:bg-white" : "border-ink/15"}`}>
               <Mail size={17} />
               Gửi email
             </a>
             <PropertyEngagement slug={slug} postId={post.id} />
             <div className="mt-6 flex items-center justify-center gap-6 border-t border-ink/10 pt-5 text-ink/45">
-              <button className="transition-colors hover:text-[var(--tenant-color)]" aria-label="Chia sẻ tin đăng"><Share2 size={18} /></button>
-              <a href={site.facebookUrl} className="transition-colors hover:text-[var(--tenant-color)]" aria-label="Chia sẻ Facebook"><Facebook size={18} /></a>
+              <button className="tenant-detail-share-action transition-colors hover:text-[var(--tenant-color)]" aria-label="Chia sẻ tin đăng"><Share2 size={18} /></button>
+              <a href={site.facebookUrl} className="tenant-detail-share-action transition-colors hover:text-[var(--tenant-color)]" aria-label="Chia sẻ Facebook"><Facebook size={18} /></a>
             </div>
           </div>
         </aside>
       </section>
-      {renderedTheme === "WARM_MINIMAL" && <PersonalFooter site={site} />}
+      <BrokerIntroSection site={site} theme={renderedTheme} />
+      {renderedTheme === "WARM_MINIMAL" ? (
+        <PersonalFooter site={site} />
+      ) : renderedTheme === "COLD_MODERN" ? (
+        <ColdFooter site={site} />
+      ) : null}
     </main>
   );
 }

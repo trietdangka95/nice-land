@@ -5,7 +5,8 @@ export type PublicTheme =
   | "CLASSIC_ESTATE"
   | "MODERN_GRID"
   | "EDITORIAL"
-  | "WARM_MINIMAL";
+  | "WARM_MINIMAL"
+  | "COLD_MODERN";
 
 export interface Site {
   id: string;
@@ -15,6 +16,9 @@ export interface Site {
   logoMark: string;
   logo?: string;
   banner?: string;
+  brokerAvatar?: string;
+  brokerName?: string;
+  brokerBio?: string;
   themeKey: PublicTheme;
   themeColor: string;
   phone: string;

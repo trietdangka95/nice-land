@@ -7,6 +7,9 @@ export interface PublicSiteConfig {
   tagline: string | null;
   logo: string | null;
   banner: string | null;
+  brokerAvatar: string | null;
+  brokerName: string | null;
+  brokerBio: string | null;
   themeKey: PublicTheme;
   themeColor: string | null;
   phone: string | null;

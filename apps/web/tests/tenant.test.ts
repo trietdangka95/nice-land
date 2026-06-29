@@ -3,6 +3,7 @@ import { assertTenantAccess, parseTenantSlug, tenantWhere } from "@/lib/tenant";
 import { findActiveNavigationHref } from "@/lib/navigation";
 import { siteSettingsToAdminIdentity } from "@/lib/admin-site";
 import { buildPublicPostsHref } from "@/lib/pagination";
+import { getTenantPosts } from "@/lib/server-api";
 
 describe("parseTenantSlug", () => {
   it("extracts a production tenant subdomain", () => {
@@ -66,9 +67,12 @@ describe("tenant admin identity", () => {
         slug: "an-phu",
         tagline: null,
         logo: null,
-      banner: null,
-      themeKey: "CLASSIC_ESTATE",
-      themeColor: "#315c45",
+        banner: null,
+        brokerAvatar: null,
+        brokerName: null,
+        brokerBio: null,
+        themeKey: "CLASSIC_ESTATE",
+        themeColor: "#315c45",
         phone: "0909000000",
         email: "admin@example.com",
         address: "Hồ Chí Minh",
@@ -108,5 +112,33 @@ describe("public post pagination", () => {
         sort: "newest",
       }),
     ).toBe("/minhphat#properties");
+  });
+
+});
+
+describe("demo public posts", () => {
+  it("filters demo listings by property type", async () => {
+    const listing = await getTenantPosts("demo", "site-demo", {
+      type: "LAND",
+      page: 1,
+      limit: 12,
+    });
+
+    expect(listing.total).toBe(1);
+    expect(listing.items).toHaveLength(1);
+    expect(listing.items.every((post) => post.type === "LAND")).toBe(true);
+  });
+
+  it("serves the cold demo slug with the cold theme and shared listings", async () => {
+    const { getTenantSite } = await import("@/lib/server-api");
+    const site = await getTenantSite("demo-cold");
+    const listing = await getTenantPosts("demo-cold", "site-demo-cold", {
+      page: 1,
+      limit: 3,
+    });
+
+    expect(site?.themeKey).toBe("COLD_MODERN");
+    expect(listing.items.length).toBeGreaterThan(0);
+    expect(listing.items.every((item) => item.siteId === "site-demo")).toBe(true);
   });
 });

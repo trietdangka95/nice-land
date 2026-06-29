@@ -154,6 +154,7 @@ export default async function TenantHomePage({
       <PublicThemeStylesheet theme={renderedTheme} />
       <ThemeHome
         site={site}
+        theme={renderedTheme}
         featured={featured}
         posts={listing.items}
         total={listing.total}

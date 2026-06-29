@@ -11,9 +11,10 @@ const apiUrl = getApiBaseUrl();
 const allowMockFallback =
   process.env.NODE_ENV !== "production" ||
   process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";
+const mockDemoSlugs = new Set(["demo", "demo-cold"]);
 
 function mockSite(slug: string) {
-  if (slug === "demo") return getMockSite(slug);
+  if (mockDemoSlugs.has(slug)) return getMockSite(slug);
   return allowMockFallback ? getMockSite(slug) : undefined;
 }
 
@@ -39,9 +40,41 @@ function logoMark(name: string) {
     .toUpperCase();
 }
 
+function filterMockPosts(
+  siteId: string,
+  options: {
+    q?: string;
+    type?: PropertyPost["type"];
+    province?: string;
+    sort?: "newest" | "price_asc" | "price_desc";
+  },
+) {
+  const keyword = options.q?.trim().toLowerCase();
+  const province = options.province?.trim().toLowerCase();
+  const items = getMockPosts(siteId).filter((post) => {
+    if (options.type && post.type !== options.type) return false;
+    if (province && post.province.toLowerCase() !== province) return false;
+    if (!keyword) return true;
+
+    return [post.title, post.description, post.address, post.district, post.province]
+      .join(" ")
+      .toLowerCase()
+      .includes(keyword);
+  });
+
+  return items.sort((left, right) => {
+    if (options.sort === "price_asc") return left.price - right.price;
+    if (options.sort === "price_desc") return right.price - left.price;
+    return (
+      new Date(right.createdAt).getTime() -
+      new Date(left.createdAt).getTime()
+    );
+  });
+}
+
 export async function getTenantSite(slug: string): Promise<Site | undefined> {
   const fallback = mockSite(slug);
-  if (slug === "demo" && fallback) {
+  if (mockDemoSlugs.has(slug) && fallback) {
     return fallback;
   }
 
@@ -62,6 +95,9 @@ export async function getTenantSite(slug: string): Promise<Site | undefined> {
         slug,
         tagline: "",
         logoMark: "WT",
+        brokerAvatar: undefined,
+        brokerName: undefined,
+        brokerBio: undefined,
         themeKey: resolvePublicTheme("warm-minimal"),
         themeColor: "#315c45",
         phone: "",
@@ -82,6 +118,9 @@ export async function getTenantSite(slug: string): Promise<Site | undefined> {
       tagline: string | null;
       logo: string | null;
       banner: string | null;
+      brokerAvatar: string | null;
+      brokerName: string | null;
+      brokerBio: string | null;
       themeKey: string;
       themeColor: string | null;
       phone: string | null;
@@ -98,6 +137,9 @@ export async function getTenantSite(slug: string): Promise<Site | undefined> {
       logoMark: logoMark(site.name),
       logo: site.logo ?? undefined,
       banner: site.banner ?? undefined,
+      brokerAvatar: site.brokerAvatar ?? undefined,
+      brokerName: site.brokerName ?? undefined,
+      brokerBio: site.brokerBio ?? undefined,
       themeKey: resolvePublicTheme(site.themeKey),
       themeColor: site.themeColor ?? "#315c45",
       phone: site.phone ?? "",
@@ -145,8 +187,8 @@ export async function getTenantPosts(
   if (options.province) query.set("province", options.province);
   if (options.sort) query.set("sort", options.sort);
 
-  if (slug === "demo") {
-    const items = getMockPosts("site-demo");
+  if (mockDemoSlugs.has(slug)) {
+    const items = filterMockPosts(siteId, options);
     const page = options.page ?? 1;
     const limit = options.limit ?? 12;
     return {
@@ -238,8 +280,8 @@ export async function getTenantPost(
   siteId: string,
   postId: string,
 ): Promise<PropertyPost | undefined> {
-  if (slug === "demo") {
-    return getMockPost("site-demo", postId);
+  if (mockDemoSlugs.has(slug)) {
+    return getMockPost(siteId, postId);
   }
 
   try {

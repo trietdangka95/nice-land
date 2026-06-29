@@ -9,8 +9,10 @@ import { plans } from "@/lib/data";
 import type { SystemSetting } from "@nice-land/contracts";
 
 export function ContactForm({
+  initialThemePreference = "warm",
   selectedPlan,
 }: {
+  initialThemePreference?: "warm" | "cold";
   selectedPlan?: string;
 }) {
   const toast = useToast();
@@ -18,6 +20,7 @@ export function ContactForm({
   const [loading, setLoading] = useState(false);
   const [bankInfo, setBankInfo] = useState<SystemSetting | null>(null);
   const [phone, setPhone] = useState("");
+  const [themePreference, setThemePreference] = useState<"warm" | "cold">(initialThemePreference);
 
   useEffect(() => {
     let active = true;
@@ -47,6 +50,7 @@ export function ContactForm({
         phone: String(form.get("phone") ?? ""),
         email: String(form.get("email") ?? ""),
         message: selection,
+        themePreference,
       });
       setSubmitted(true);
       toast.success(
@@ -118,6 +122,25 @@ export function ContactForm({
           placeholder="ten-email@gmail.com"
         />
       </label>
+      <fieldset className="grid gap-3">
+        <legend className="text-sm font-semibold">Giao diện mong muốn</legend>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <ThemePreferenceCard
+            value="warm"
+            label="Warm"
+            description="Ấm áp, gần gũi, phù hợp môi giới cá nhân."
+            selected={themePreference === "warm"}
+            onSelect={setThemePreference}
+          />
+          <ThemePreferenceCard
+            value="cold"
+            label="Cold"
+            description="Navy/cyan sắc nét, hiện đại và chuyên nghiệp."
+            selected={themePreference === "cold"}
+            onSelect={setThemePreference}
+          />
+        </div>
+      </fieldset>
       <label className="grid gap-2 text-sm font-semibold">
         Bạn đang cần gì?
         <textarea
@@ -145,5 +168,47 @@ export function ContactForm({
         {!loading && <ArrowRight size={17} aria-hidden="true" />}
       </button>
     </form>
+  );
+}
+
+function ThemePreferenceCard({
+  value,
+  label,
+  description,
+  selected,
+  onSelect,
+}: {
+  value: "warm" | "cold";
+  label: string;
+  description: string;
+  selected: boolean;
+  onSelect: (value: "warm" | "cold") => void;
+}) {
+  const isCold = value === "cold";
+
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(value)}
+      aria-pressed={selected}
+      className={`grid gap-3 border p-4 text-left transition-colors ${
+        selected
+          ? "border-gold bg-white/15"
+          : "border-white/15 bg-white/5 hover:border-white/35"
+      }`}
+    >
+      <span className="grid h-24 grid-cols-[0.9fr_1.1fr] gap-2 overflow-hidden border border-white/10 bg-white/10 p-2">
+        <span className={isCold ? "bg-[#071a2f]" : "bg-[#f1e8dd]"} />
+        <span className="grid gap-2">
+          <span className={isCold ? "bg-[#6ee7ff]" : "bg-[#b25e43]"} />
+          <span className={isCold ? "bg-[#edf3f8]" : "bg-[#fffaf3]"} />
+          <span className={isCold ? "bg-[#d7e1ea]" : "bg-[#ead5c4]"} />
+        </span>
+      </span>
+      <span>
+        <span className="block text-sm font-extrabold text-white">{label}</span>
+        <span className="mt-1 block text-xs leading-5 text-white/60">{description}</span>
+      </span>
+    </button>
   );
 }

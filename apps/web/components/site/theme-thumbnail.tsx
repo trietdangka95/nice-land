@@ -48,7 +48,40 @@ function PersonalThumbnail() {
   );
 }
 
+function ColdThumbnail() {
+  return (
+    <div className="flex h-full flex-col bg-[#edf3f8] p-3">
+      <div className="mb-3 flex items-center justify-between border border-[#c9d7e3] bg-[#071a2f] px-2 py-1.5">
+        <div className="h-3 w-12 bg-[#6ee7ff]"></div>
+        <div className="flex gap-1">
+          <div className="h-2 w-8 bg-white/30"></div>
+          <div className="h-2 w-8 bg-white/30"></div>
+        </div>
+      </div>
+      <div className="grid flex-1 grid-cols-[0.8fr_1.2fr] gap-2">
+        <div className="border border-[#c9d7e3] bg-white p-2">
+          <div className="h-2 w-10 bg-[#027fa4]"></div>
+          <div className="mt-2 h-5 w-full bg-[#071a2f]"></div>
+          <div className="mt-1 h-5 w-3/4 bg-[#071a2f]"></div>
+          <div className="mt-4 h-3 w-16 bg-[#6ee7ff]"></div>
+        </div>
+        <div className="grid gap-2">
+          <div className="border border-[#c9d7e3] bg-white p-1.5">
+            <Photo src={house} className="h-12 w-full" />
+            <div className="mt-1 h-2 w-16 bg-[#071a2f]"></div>
+          </div>
+          <div className="border border-[#c9d7e3] bg-white p-1.5">
+            <Photo src={townhouse} className="h-12 w-full" />
+            <div className="mt-1 h-2 w-14 bg-[#071a2f]"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ThemeThumbnail({ theme }: { theme: PublicTheme }) {
-  getPublicTheme(theme);
+  const definition = getPublicTheme(theme);
+  if (definition.thumbnailRenderer === "cold-modern") return <ColdThumbnail />;
   return <PersonalThumbnail />;
 }

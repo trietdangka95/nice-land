@@ -16,6 +16,9 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
         tagline: true,
         logo: true,
         banner: true,
+        brokerAvatar: true,
+        brokerName: true,
+        brokerBio: true,
         themeKey: true,
         themeColor: true,
         phone: true,
@@ -25,7 +28,7 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
         zaloPhone: true,
       },
     });
-    return site ? { ...site, themeKey: "WARM_MINIMAL" as const } : null;
+    return site;
   }
 
   async getPlatformStats() {

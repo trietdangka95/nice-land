@@ -9,9 +9,11 @@ import {
 } from "@/lib/public-themes";
 
 describe("public theme registry", () => {
-  it("exposes only the default warm minimal theme", () => {
-    expect(publicThemes).toHaveLength(1);
-    expect(publicThemes[0]?.key).toBe("WARM_MINIMAL");
+  it("exposes warm and cold public themes", () => {
+    expect(publicThemes.map((theme) => theme.key)).toEqual([
+      "WARM_MINIMAL",
+      "COLD_MODERN",
+    ]);
   });
 
   it("falls back safely for unknown or missing theme keys", () => {
@@ -54,7 +56,10 @@ describe("public theme registry", () => {
     const stylesheets = publicThemes.map((theme) =>
       getPublicThemeStylesheet(theme.key),
     );
-    expect(stylesheets).toEqual(["/themes/warm-minimal.css"]);
+    expect(stylesheets).toEqual([
+      "/themes/warm-minimal.css",
+      "/themes/cold-modern.css",
+    ]);
   });
 
   it("uses the default theme stylesheet for an unknown key", () => {
@@ -63,8 +68,16 @@ describe("public theme registry", () => {
     );
   });
 
-  it("builds sample website URLs without theme preview query state", () => {
+  it("builds sample website URLs without visitor theme query state", () => {
     expect(getPublicThemeDemoHref("EDITORIAL")).toBe("/demo");
     expect(getPublicThemeDemoHref("WARM_MINIMAL", "anland")).toBe("/anland");
+    expect(getPublicThemeDemoHref("COLD_MODERN")).toBe("/demo-cold");
+  });
+
+  it("resolves the cold modern theme independently", () => {
+    expect(resolvePublicTheme("COLD_MODERN")).toBe("COLD_MODERN");
+    expect(getPublicThemeStylesheet("COLD_MODERN")).toBe(
+      "/themes/cold-modern.css",
+    );
   });
 });

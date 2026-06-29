@@ -55,6 +55,7 @@ enum PublicTheme {
   MODERN_GRID
   EDITORIAL
   WARM_MINIMAL
+  COLD_MODERN
 }
 
 model Site {
@@ -64,6 +65,9 @@ model Site {
   tagline            String?
   logo               String?
   banner             String?
+  brokerAvatar       String?
+  brokerName         String?
+  brokerBio          String?
   themeKey           PublicTheme            @default(CLASSIC_ESTATE)
   themeColor         String?
   phone              String?
@@ -358,6 +362,7 @@ model ContactRequest {
   phone     String
   email     String?
   message   String?
+  themePreference String    @default("warm") @map("theme_preference")
   status    RequestStatus @default(NEW)
   source    String?
   createdAt DateTime      @default(now())

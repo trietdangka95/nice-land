@@ -16,6 +16,9 @@ const settingsSelect = {
   tagline: true,
   logo: true,
   banner: true,
+  brokerAvatar: true,
+  brokerName: true,
+  brokerBio: true,
   themeKey: true,
   themeColor: true,
   phone: true,
@@ -31,7 +34,6 @@ function serializeSettings(
 ) {
   return {
     ...site,
-    themeKey: "WARM_MINIMAL" as const,
     themeColor: site.themeColor ?? "#315c45",
     phone: site.phone ?? "",
     email: site.email ?? "",
@@ -68,6 +70,9 @@ export class PrismaAdminSiteRepository implements AdminSiteRepository {
           tagline: input.tagline || null,
           logo: input.logo || null,
           banner: input.banner || null,
+          brokerAvatar: input.brokerAvatar || null,
+          brokerName: input.brokerName || null,
+          brokerBio: input.brokerBio || null,
           themeColor: input.themeColor,
           phone: input.phone,
           email: input.email,

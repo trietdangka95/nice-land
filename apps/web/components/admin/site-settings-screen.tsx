@@ -15,6 +15,9 @@ const emptySettings: SiteSettingsInput = {
   tagline: "",
   logo: "",
   banner: "",
+  brokerAvatar: "",
+  brokerName: "",
+  brokerBio: "",
   themeColor: colors[0],
   phone: "",
   email: "",
@@ -42,6 +45,9 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
           tagline: settings.tagline,
           logo: settings.logo,
           banner: settings.banner,
+          brokerAvatar: settings.brokerAvatar,
+          brokerName: settings.brokerName,
+          brokerBio: settings.brokerBio,
           themeColor: settings.themeColor,
           phone: settings.phone,
           email: settings.email,
@@ -117,6 +123,9 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
             <TextField label="Facebook URL" type="url" value={form.facebookUrl ?? ""} onChange={(value) => setField("facebookUrl", value)} />
             <TextField label="Logo URL" type="url" value={form.logo ?? ""} onChange={(value) => setField("logo", value)} />
             <TextField label="Ảnh banner URL" type="url" value={form.banner ?? ""} onChange={(value) => setField("banner", value)} wide />
+            <TextField label="Avatar môi giới URL" type="url" value={form.brokerAvatar ?? ""} onChange={(value) => setField("brokerAvatar", value)} />
+            <TextField label="Tên môi giới" value={form.brokerName ?? ""} onChange={(value) => setField("brokerName", value)} />
+            <TextAreaField label="Mô tả môi giới" value={form.brokerBio ?? ""} onChange={(value) => setField("brokerBio", value)} wide />
           </div>
           {error && <p className="mt-5 border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}
           <button className="button-primary mt-7 disabled:opacity-60" disabled={saving}>
@@ -185,6 +194,30 @@ function TextField({
     <label className={`grid gap-2 text-sm font-bold text-ink/80 ${wide ? "sm:col-span-2" : ""}`}>
       {label}
       <input type={type} value={value} onChange={(event) => onChange(event.target.value)} required={required} className="h-12 min-w-0 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" />
+    </label>
+  );
+}
+
+function TextAreaField({
+  label,
+  value,
+  onChange,
+  wide = false,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  wide?: boolean;
+}) {
+  return (
+    <label className={`grid gap-2 text-sm font-bold text-ink/80 ${wide ? "sm:col-span-2" : ""}`}>
+      {label}
+      <textarea
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        rows={4}
+        className="min-h-32 min-w-0 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 py-3 font-normal focus:bg-white transition-colors"
+      />
     </label>
   );
 }

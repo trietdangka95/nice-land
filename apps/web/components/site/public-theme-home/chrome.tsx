@@ -161,30 +161,30 @@ export function EditorialHeader({ site }: { site: Site }) {
 
 export function PersonalHeader({ site }: { site: Site }) {
   return (
-    <header className="tenant-header sticky top-0 z-40 border-b border-black/5 bg-[#fdf6ee]/90 text-[#2d1f18] shadow-[0_10px_30px_rgba(45,31,24,0.04)] backdrop-blur-xl">
-      <div className="page-shell flex min-h-20 items-center justify-between gap-5">
-        <TenantLink slug={site.slug} href="" className="group flex min-w-0 items-center gap-3">
+    <header className="tenant-header sticky top-0 z-40 border-b border-[#7A5A4E]/10 bg-[#fffaf3]/95 text-[#2d1f18] shadow-[0_14px_34px_rgba(45,31,24,0.07)] backdrop-blur-xl">
+      <div className="page-shell flex min-h-24 items-center justify-between gap-6 py-3">
+        <TenantLink slug={site.slug} href="" className="group flex min-w-0 items-center gap-4">
           {site.logo ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={site.logo} alt={`Logo ${site.name}`} className="h-10 w-auto object-contain drop-shadow-sm" />
+            <img src={site.logo} alt={`Logo ${site.name}`} className="h-14 w-auto object-contain drop-shadow-sm" />
           ) : (
-            <span className="grid size-10 shrink-0 place-items-center rounded-full font-display text-sm font-bold bg-[#7A5A4E]/10 text-[#7A5A4E] border border-[#7A5A4E]/20 shadow-inner transition-colors duration-200 group-hover:bg-[var(--tenant-color)] group-hover:text-white">{site.logoMark}</span>
+            <span className="grid size-14 shrink-0 place-items-center rounded-full border border-[#7A5A4E]/20 bg-[#7A5A4E]/10 font-display text-base font-bold text-[#7A5A4E] shadow-inner transition-colors duration-200 group-hover:bg-[var(--tenant-color)] group-hover:text-white">{site.logoMark}</span>
           )}
           <span className="min-w-0">
-            <span className="block truncate font-display text-lg font-extrabold tracking-tight text-[#2D1F18]">{site.name}</span>
-            <span className="hidden text-[10px] font-bold uppercase tracking-[0.18em] text-[#7A5A4E]/55 sm:block">Tin đăng tuyển chọn</span>
+            <span className="block truncate font-display text-xl font-extrabold tracking-tight text-[#2D1F18] sm:text-2xl">{site.name}</span>
+            <span className="hidden text-[11px] font-bold uppercase tracking-[0.22em] text-[#7A5A4E]/60 sm:block">Tin đăng tuyển chọn</span>
           </span>
         </TenantLink>
-        <nav className="hidden items-center gap-1 rounded-full border border-black/5 bg-white/70 p-1 text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#7A5A4E]/75 shadow-sm lg:flex" aria-label="Điều hướng website">
-          <TenantLink slug={site.slug} href="#properties" className="rounded-full px-4 py-2.5 transition-colors hover:bg-[#f1ebd9] hover:text-[var(--tenant-color)]">Tin đăng</TenantLink>
-          <TenantLink slug={site.slug} href="#about" className="rounded-full px-4 py-2.5 transition-colors hover:bg-[#f1ebd9] hover:text-[var(--tenant-color)]">Tư vấn</TenantLink>
-          <TenantLink slug={site.slug} href="#contact" className="rounded-full px-4 py-2.5 transition-colors hover:bg-[#f1ebd9] hover:text-[var(--tenant-color)]">Liên hệ</TenantLink>
+        <nav className="hidden items-center gap-1 rounded-full border border-[#7A5A4E]/10 bg-white/85 p-1.5 text-xs font-extrabold uppercase tracking-[0.12em] text-[#7A5A4E]/80 shadow-[0_10px_24px_rgba(45,31,24,0.08)] lg:flex" aria-label="Điều hướng website">
+          <TenantLink slug={site.slug} href="#properties" className="rounded-full px-6 py-3 transition-colors hover:bg-[#f1ebd9] hover:text-[var(--tenant-color)]">Tin đăng</TenantLink>
+          <TenantLink slug={site.slug} href="#about" className="rounded-full px-6 py-3 transition-colors hover:bg-[#f1ebd9] hover:text-[var(--tenant-color)]">Tư vấn</TenantLink>
+          <TenantLink slug={site.slug} href="#contact" className="rounded-full px-6 py-3 transition-colors hover:bg-[#f1ebd9] hover:text-[var(--tenant-color)]">Liên hệ</TenantLink>
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
-          <a href={site.facebookUrl ?? "#"} aria-label="Facebook" className="grid size-10 place-items-center rounded-full border border-black/10 bg-white/60 text-[var(--tenant-color)] transition-colors duration-200 hover:bg-white"><Facebook size={15} /></a>
-          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--tenant-color)] px-5 text-xs font-extrabold text-white shadow-[0_12px_26px_rgba(124,58,36,0.16)] transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"><Phone size={15} />Gọi trực tiếp</a>
+          <a href={site.facebookUrl ?? "#"} aria-label="Facebook" className="grid size-14 place-items-center rounded-full border border-[#7A5A4E]/10 bg-white/75 text-[var(--tenant-color)] shadow-sm transition-colors duration-200 hover:bg-white"><Facebook size={18} /></a>
+          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex min-h-14 items-center gap-2.5 rounded-full bg-[var(--tenant-color)] px-7 text-sm font-extrabold text-white shadow-[0_16px_30px_rgba(49,92,69,0.22)] transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"><Phone size={18} />Gọi trực tiếp</a>
         </div>
-        <MobileMenu site={site} triggerClassName="grid size-11 place-items-center rounded-full border border-black/10 bg-white/60 text-[var(--tenant-color)] lg:hidden" />
+        <MobileMenu site={site} triggerClassName="grid size-12 place-items-center rounded-full border border-[#7A5A4E]/10 bg-white/75 text-[var(--tenant-color)] shadow-sm lg:hidden" />
       </div>
     </header>
   );

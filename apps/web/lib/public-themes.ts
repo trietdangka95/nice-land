@@ -7,12 +7,12 @@ export interface PublicThemeDefinition {
   direction: string;
   previewClassName: string;
   stylesheetHref: string;
-  homeRenderer: "personal-broker";
-  thumbnailRenderer: "personal-broker";
-  headerComposition: "personal-signature";
-  footerComposition: "personal-contact";
-  fontStyle: "friendly";
-  density: "airy";
+  homeRenderer: "personal-broker" | "cold-modern";
+  thumbnailRenderer: "personal-broker" | "cold-modern";
+  headerComposition: "personal-signature" | "cold-architectural";
+  footerComposition: "personal-contact" | "cold-grid";
+  fontStyle: "friendly" | "geometric";
+  density: "airy" | "precise";
   surfaces: readonly PublicThemeSurface[];
 }
 
@@ -45,9 +45,25 @@ export const publicThemes: readonly PublicThemeDefinition[] = [
     density: "airy",
     surfaces: requiredPublicThemeSurfaces,
   },
+  {
+    key: "COLD_MODERN",
+    name: "Cold Modern",
+    description: "Giao diện sắc nét với navy, cyan và bố cục kiến trúc cho listing cao cấp.",
+    direction: "Modern real estate website lạnh, sắc cạnh, chuyên nghiệp và ưu tiên độ tin cậy.",
+    previewClassName: "bg-[#e8f1f8] text-[#0b1d35]",
+    stylesheetHref: "/themes/cold-modern.css",
+    homeRenderer: "cold-modern",
+    thumbnailRenderer: "cold-modern",
+    headerComposition: "cold-architectural",
+    footerComposition: "cold-grid",
+    fontStyle: "geometric",
+    density: "precise",
+    surfaces: requiredPublicThemeSurfaces,
+  },
 ] as const;
 
-export function resolvePublicTheme(_value: unknown): PublicTheme {
+export function resolvePublicTheme(value: unknown): PublicTheme {
+  if (value === "COLD_MODERN" || value === "WARM_MINIMAL") return value;
   return DEFAULT_PUBLIC_THEME;
 }
 
@@ -61,8 +77,8 @@ export function getPublicThemeStylesheet(value: unknown) {
 }
 
 export function getPublicThemeDemoHref(
-  _theme: PublicTheme,
-  slug = "demo",
+  theme: PublicTheme,
+  slug = theme === "COLD_MODERN" ? "demo-cold" : "demo",
 ) {
   return `/${slug}`;
 }

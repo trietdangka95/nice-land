@@ -3,6 +3,7 @@ import { TenantLink } from "@/components/shared/tenant-link";
 import { ArrowRight, Award, HeartHandshake, Phone, ShieldCheck, Mail, MapPin } from "lucide-react";
 import { PersonalFooter, PersonalHeader } from "./chrome";
 import { PropertyBrowser } from "@/components/site/property-browser";
+import { BrokerIntroSection } from "@/components/site/broker-intro-section";
 import { formatPrice } from "@/lib/format";
 import type { PublicThemeHomeProps } from "./types";
 
@@ -114,6 +115,7 @@ export function PersonalBrokerHome(model: PublicThemeHomeProps) {
           />
         </div>
       </section>
+      <BrokerIntroSection site={site} theme={model.theme} />
       <PersonalFooter site={site} />
     </>
   );

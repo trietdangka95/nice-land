@@ -9,6 +9,7 @@ import { createTenantApi } from "@/lib/api";
 
 import { WarmBrowser } from "./browser-variants/warm";
 import { DefaultBrowser } from "./browser-variants/default";
+import { ColdBrowser } from "./browser-variants/cold";
 
 export interface BrowserVariantProps {
   query: string;
@@ -23,6 +24,7 @@ export interface BrowserVariantProps {
   setSort: (s: string) => void;
   categories: PropertyCategory[];
   applyFilters: (e?: React.FormEvent<HTMLFormElement> | React.MouseEvent) => void;
+  applyCategoryFilter: (categoryId: string) => void;
   posts: PropertyPost[];
   slug: string;
   total: number;
@@ -58,7 +60,7 @@ export function PropertyBrowser({
   initialCategoryId?: string;
   initialProvince?: string;
   initialSort?: "newest" | "price_asc" | "price_desc";
-  variant?: "warm" | "default";
+  variant?: "warm" | "cold" | "default";
 }) {
   const router = useRouter();
   const client = useMemo(() => createTenantApi(slug), [slug]);
@@ -81,30 +83,57 @@ export function PropertyBrowser({
     };
   }, [client]);
 
-  function applyFilters(event?: React.FormEvent<HTMLFormElement> | React.MouseEvent) {
-    if (event && "preventDefault" in event) {
-      event.preventDefault();
-    }
+  function normalizedType(nextType = type): "ALL" | PropertyType {
+    return ["LAND", "HOUSE", "APARTMENT", "RENTAL"].includes(nextType)
+      ? (nextType as PropertyType)
+      : "ALL";
+  }
+
+  function pushFilters(overrides: Partial<{
+    q: string;
+    type: string;
+    categoryId: string;
+    province: string;
+    sort: string;
+  }> = {}) {
     router.push(
       buildPublicPostsHref(slug, {
         page: 1,
-        q: query,
-        type: type as any,
-        categoryId,
-        province,
-        sort: sort as any,
+        q: overrides.q ?? query,
+        type: normalizedType(overrides.type ?? type),
+        categoryId: overrides.categoryId ?? categoryId,
+        province: overrides.province ?? province,
+        sort: (overrides.sort ?? sort) as "newest" | "price_asc" | "price_desc",
       }),
     );
   }
 
+  function selectType(nextType: string) {
+    setType(nextType);
+    setCategoryId("");
+  }
+
+  function applyFilters(event?: React.FormEvent<HTMLFormElement> | React.MouseEvent) {
+    if (event && "preventDefault" in event) {
+      event.preventDefault();
+    }
+    pushFilters();
+  }
+
+  function applyCategoryFilter(nextCategoryId: string) {
+    setCategoryId(nextCategoryId);
+    pushFilters({ categoryId: nextCategoryId });
+  }
+
   const props: BrowserVariantProps = {
     query, setQuery,
-    type, setType,
+    type, setType: selectType,
     categoryId, setCategoryId,
     province, setProvince,
     sort, setSort,
     categories,
     applyFilters,
+    applyCategoryFilter,
     posts, 
     slug, 
     total, 
@@ -115,6 +144,8 @@ export function PropertyBrowser({
   switch (variant) {
     case "warm":
       return <WarmBrowser {...props} />;
+    case "cold":
+      return <ColdBrowser {...props} />;
     case "default":
     default:
       return <DefaultBrowser {...props} />;

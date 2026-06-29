@@ -1,0 +1,4 @@
+ALTER TYPE "PublicTheme" ADD VALUE IF NOT EXISTS 'COLD_MODERN';
+
+ALTER TABLE "ContactRequest"
+ADD COLUMN "theme_preference" TEXT NOT NULL DEFAULT 'warm';

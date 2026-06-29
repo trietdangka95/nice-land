@@ -20,13 +20,13 @@ export function WarmBrowser({
   type,
   setType,
   categoryId,
-  setCategoryId,
   province,
   setProvince,
   sort,
   setSort,
   categories,
   applyFilters,
+  applyCategoryFilter,
   posts,
   slug,
   total,
@@ -89,7 +89,8 @@ export function WarmBrowser({
       <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
         <button
           type="button"
-          onClick={() => setCategoryId("")}
+          onClick={() => applyCategoryFilter("")}
+          aria-pressed={categoryId === ""}
           className={`rounded-full px-4 py-2 text-sm font-extrabold transition-colors ${categoryId === "" ? "bg-[var(--tenant-color)] text-white" : "bg-white text-[#7a5a4e]"}`}
         >
           Tất cả danh mục
@@ -102,7 +103,8 @@ export function WarmBrowser({
               <button
                 key={category.id}
                 type="button"
-                onClick={() => setCategoryId(category.id)}
+                onClick={() => applyCategoryFilter(category.id)}
+                aria-pressed={active}
                 className={`rounded-full px-4 py-2 text-sm font-extrabold transition-colors ${active ? "bg-[var(--tenant-color)] text-white" : "bg-white text-[#7a5a4e]"}`}
               >
                 {category.name}

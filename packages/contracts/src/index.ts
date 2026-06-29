@@ -21,6 +21,7 @@ export const publicThemeSchema = z.enum([
   "MODERN_GRID",
   "EDITORIAL",
   "WARM_MINIMAL",
+  "COLD_MODERN",
 ]);
 
 export const tenantHostSchema = z
@@ -35,6 +36,7 @@ export const contactRequestInputSchema = z.object({
   phone: z.string().trim().min(8).max(20),
   email: z.string().trim().email().optional().or(z.literal("")),
   message: z.string().trim().max(2000).optional(),
+  themePreference: z.enum(["warm", "cold"]).default("warm"),
 });
 
 export const propertyLeadInputSchema = z.object({
@@ -207,6 +209,9 @@ export const siteSettingsInputSchema = z.object({
   tagline: z.string().trim().max(240).nullable().optional(),
   logo: optionalUrlSchema,
   banner: optionalUrlSchema,
+  brokerAvatar: optionalUrlSchema,
+  brokerName: z.string().trim().max(160).nullable().optional(),
+  brokerBio: z.string().trim().max(1000).nullable().optional(),
   themeColor: z
     .string()
     .trim()
@@ -251,6 +256,10 @@ export const superAdminSiteCreateSchema = z.object({
   phone: z.string().trim().min(8).max(20),
   email: z.string().trim().email().max(180),
   address: z.string().trim().max(300).nullable().optional(),
+  brokerAvatar: optionalUrlSchema,
+  brokerName: z.string().trim().max(160).nullable().optional(),
+  brokerBio: z.string().trim().max(1000).nullable().optional(),
+  themeKey: z.enum(["WARM_MINIMAL", "COLD_MODERN"]),
   planId: z.string().uuid(),
   subscriptionEnd: z.coerce.date(),
   adminName: z.string().trim().min(2).max(160),
@@ -264,6 +273,10 @@ export const superAdminSiteUpdateSchema = z.object({
   phone: z.string().trim().min(8).max(20),
   email: z.string().trim().email().max(180),
   address: z.string().trim().max(300).nullable().optional(),
+  brokerAvatar: optionalUrlSchema,
+  brokerName: z.string().trim().max(160).nullable().optional(),
+  brokerBio: z.string().trim().max(1000).nullable().optional(),
+  themeKey: z.enum(["WARM_MINIMAL", "COLD_MODERN"]),
   planId: z.string().uuid().nullable(),
   subscriptionStatus: subscriptionStatusSchema,
   subscriptionEnd: z.coerce.date().nullable(),
@@ -352,6 +365,9 @@ export interface SuperAdminSite {
   phone: string | null;
   email: string | null;
   address: string | null;
+  brokerAvatar: string | null;
+  brokerName: string | null;
+  brokerBio: string | null;
   themeKey: PublicTheme;
   isActive: boolean;
   subscriptionStatus: SubscriptionStatus;
@@ -417,6 +433,7 @@ export interface SuperAdminContact {
   phone: string;
   email: string | null;
   message: string | null;
+  themePreference: "warm" | "cold";
   status: RequestStatus;
   source: string | null;
   createdAt: string;
@@ -480,6 +497,9 @@ export interface SiteSettings {
   tagline: string | null;
   logo: string | null;
   banner: string | null;
+  brokerAvatar: string | null;
+  brokerName: string | null;
+  brokerBio: string | null;
   themeKey: PublicTheme;
   themeColor: string;
   phone: string;

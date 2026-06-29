@@ -16,8 +16,6 @@ import {
 } from "./superadmin-repository.js";
 import { writeAuditLog } from "../audit/audit-log-service.js";
 
-const DEFAULT_SITE_THEME = "WARM_MINIMAL" as const;
-
 const siteSelect = {
   id: true,
   name: true,
@@ -25,6 +23,9 @@ const siteSelect = {
   phone: true,
   email: true,
   address: true,
+  brokerAvatar: true,
+  brokerName: true,
+  brokerBio: true,
   themeKey: true,
   isActive: true,
   subscriptionStatus: true,
@@ -65,7 +66,10 @@ async function mapSite(site: SelectedSite) {
     phone: site.phone,
     email: site.email,
     address: site.address,
-    themeKey: DEFAULT_SITE_THEME,
+    brokerAvatar: site.brokerAvatar,
+    brokerName: site.brokerName,
+    brokerBio: site.brokerBio,
+    themeKey: site.themeKey,
     isActive: site.isActive,
     subscriptionStatus: site.subscriptionStatus,
     subscriptionStart: site.subscriptionStart?.toISOString() ?? null,
@@ -183,7 +187,10 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
             phone: input.phone,
             email: input.email,
             address: input.address || null,
-            themeKey: DEFAULT_SITE_THEME,
+            brokerAvatar: input.brokerAvatar || null,
+            brokerName: input.brokerName || null,
+            brokerBio: input.brokerBio || null,
+            themeKey: input.themeKey,
             planId: input.planId,
             subscriptionStatus: "ACTIVE",
             subscriptionStart: new Date(),
@@ -231,7 +238,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
           details: {
             slug: input.slug,
             planId: input.planId,
-            themeKey: DEFAULT_SITE_THEME,
+            themeKey: input.themeKey,
           },
         });
         return site;
@@ -258,9 +265,13 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
           phone: input.phone,
           email: input.email,
           address: input.address || null,
+          brokerAvatar: input.brokerAvatar || null,
+          brokerName: input.brokerName || null,
+          brokerBio: input.brokerBio || null,
           planId: input.planId,
           subscriptionStatus: input.subscriptionStatus,
           subscriptionEnd: input.subscriptionEnd,
+          themeKey: input.themeKey,
         },
         });
         if (exists.slug !== input.slug) {
@@ -278,6 +289,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
           details: {
             planId: input.planId,
             status: input.subscriptionStatus,
+            themeKey: input.themeKey,
           },
         });
       });
@@ -449,7 +461,11 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
 
   async listContacts() {
     const items = await prisma.contactRequest.findMany({ orderBy: { createdAt: "desc" }, take: 100 });
-    return items.map((item) => ({ ...item, createdAt: item.createdAt.toISOString() }));
+    return items.map((item) => ({
+      ...item,
+      themePreference: item.themePreference === "cold" ? "cold" as const : "warm" as const,
+      createdAt: item.createdAt.toISOString(),
+    }));
   }
 
   async updateContactStatus(id: string, status: "NEW" | "IN_PROGRESS" | "DONE" | "REJECTED", actorId: string) {

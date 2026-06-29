@@ -15,6 +15,7 @@ import { Logo } from "@/components/marketing/logo";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { ContactForm } from "@/components/marketing/contact-form";
 import { Faq } from "@/components/marketing/faq";
+import { ThemeShowcase } from "@/components/marketing/theme-showcase";
 import { MobileNavigation } from "@/components/shared/mobile-navigation";
 import { plans, properties } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
@@ -23,10 +24,11 @@ import { getPlatformStats } from "@/lib/server-api";
 export default async function LandingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string }>;
+  searchParams: Promise<{ plan?: string; theme?: string }>;
 }) {
   const query = await searchParams;
   const selectedPlan = query.plan?.slice(0, 120);
+  const initialThemePreference = query.theme === "cold" ? "cold" : "warm";
   const stats = await getPlatformStats();
   const featuredPreview = properties[0];
 
@@ -368,48 +370,20 @@ export default async function LandingPage({
               align="center"
             />
             <p className="mt-6 text-lg leading-relaxed text-ink/70">
-              Giao diện <strong className="text-moss">Personal Broker</strong> tập trung vào việc làm nổi bật uy tín và câu chuyện của bạn. Thiết kế tinh tế, sang trọng, tương thích hoàn hảo trên mọi thiết bị.
+              Xem trực tiếp cả hai phong cách <strong className="text-moss">Warm</strong> và <strong className="text-moss">Cold</strong> ngay trên landing page, rồi chọn giao diện phù hợp để bắt đầu website của bạn.
             </p>
           </div>
-
-          <div className="relative mx-auto max-w-5xl group" data-reveal="up">
-            {/* Ambient Shadow / Glow behind the mockup */}
-            <div className="absolute -inset-1 bg-gradient-to-b from-moss/20 to-gold/20 rounded-[2rem] blur-2xl opacity-70 group-hover:opacity-100 transition duration-1000 pointer-events-none"></div>
-
-            <div className="relative rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] ring-1 ring-ink/10 transition-transform duration-700 hover:-translate-y-2">
-              {/* Browser Toolbar */}
-              <div className="flex items-center bg-[#f1f1f1] px-4 py-3 border-b border-ink/5">
-                <div className="flex gap-2">
-                  <div className="size-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"></div>
-                  <div className="size-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></div>
-                  <div className="size-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
-                </div>
-                <div className="mx-auto flex h-6 w-1/2 items-center justify-center rounded-md bg-white text-[11px] font-medium text-ink/40 shadow-sm border border-ink/5">
-                  demo.nice-land.id.vn
-                </div>
-              </div>
-
-              {/* Iframe Content */}
-              <div className="relative bg-white aspect-[4/3] sm:aspect-[16/10] overflow-hidden">
-                <iframe
-                  src="/demo"
-                  className="w-full h-full border-none"
-                  title="Personal Broker Theme Preview"
-                />
-              </div>
-            </div>
-
-            {/* CTA Overlay or Button below */}
-            <div className="relative z-10 mt-12 flex justify-center">
-              <Link
-                href="/demo"
-                target="_blank"
-                className="button-primary group/btn flex items-center gap-2 shadow-lg hover:shadow-xl"
-              >
-                Trải nghiệm toàn màn hình
-                <ArrowRight size={16} className="transition-transform group-hover/btn:translate-x-1" />
-              </Link>
-            </div>
+          <div data-reveal="up">
+            <ThemeShowcase selectedPlan={selectedPlan} />
+          </div>
+          <div className="mt-10 flex justify-center" data-reveal="soft">
+            <Link
+              href="/themes"
+              className="button-secondary !min-h-11 !px-5 !py-2.5"
+            >
+              Xem gallery đầy đủ
+              <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
       </section>
@@ -437,6 +411,7 @@ export default async function LandingPage({
           </div>
           <div className="glass-dark rounded-3xl p-6 sm:p-10">
             <ContactForm
+              initialThemePreference={initialThemePreference}
               selectedPlan={selectedPlan}
             />
           </div>
