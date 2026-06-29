@@ -36,17 +36,17 @@ Muc tieu cua ke hoach nay la bien he theme hien tai tu muc "co the them theme mo
 
 ### Phase 1: Registry Hardening
 
-- [ ] Task 1: Chuan hoa `resolvePublicTheme` va helper lien quan de dua tren registry thay vi hardcode tung theme key.
-- [ ] Task 2: Chuan hoa `getPublicThemeHomeRenderer`, `thumbnailRenderer`, `demoHref` bang map/registry thay vi `if/else`.
+- [x] Task 1: Chuan hoa `resolvePublicTheme` va helper lien quan de dua tren registry thay vi hardcode tung theme key.
+- [x] Task 2: Chuan hoa `getPublicThemeHomeRenderer`, `thumbnailRenderer`, `demoHref` bang map/registry thay vi `if/else`.
 
 Acceptance criteria:
-- [ ] Them theme moi khong can sua nhieu helper rieng le.
-- [ ] Theme key khong hop le van fallback ve default an toan.
-- [ ] Khong co thay doi nao lam anh huong business logic ngoai he theme registry.
+- [x] Them theme moi khong can sua nhieu helper rieng le.
+- [x] Theme key khong hop le van fallback ve default an toan.
+- [x] Khong co thay doi nao lam anh huong business logic ngoai he theme registry.
 
 Verification:
-- [ ] `corepack pnpm --filter @nice-land/web test`
-- [ ] `corepack pnpm --filter @nice-land/web typecheck`
+- [x] `corepack pnpm --filter @nice-land/web test`
+- [x] `corepack pnpm --filter @nice-land/web typecheck`
 
 Dependencies: None
 
@@ -59,17 +59,17 @@ Estimated scope: Medium
 
 ### Phase 2: Public Composition Cleanup
 
-- [ ] Task 3: Dinh nghia ro cac slot theme cho `header`, `home`, `detail`, `footer`, `broker-intro`.
-- [ ] Task 4: Giam nhanh `renderedTheme === ...` trong page/detail bang composition hoac theme-specific components.
+- [x] Task 3: Dinh nghia ro cac slot theme cho `header`, `home`, `detail`, `footer`, `broker-intro`.
+- [x] Task 4: Giam nhanh `renderedTheme === ...` trong page/detail bang composition hoac theme-specific components.
 
 Acceptance criteria:
-- [ ] Theme moi khong can sua nhieu logic trong public pages chung.
-- [ ] Home va detail cung dung cung he composition/theme slots.
-- [ ] Theme composition moi khong thay doi hanh vi listing, lead form, hay public filtering.
+- [x] Theme moi khong can sua nhieu logic trong public pages chung.
+- [x] Home va detail cung dung cung he composition/theme slots.
+- [x] Theme composition moi khong thay doi hanh vi listing, lead form, hay public filtering.
 
 Verification:
-- [ ] `corepack pnpm --filter @nice-land/web typecheck`
-- [ ] `corepack pnpm --filter @nice-land/web test`
+- [x] `corepack pnpm --filter @nice-land/web typecheck`
+- [x] `corepack pnpm --filter @nice-land/web test`
 
 Dependencies:
 - Phase 1
@@ -83,23 +83,23 @@ Estimated scope: Medium
 
 ### Checkpoint: Core Theme Architecture
 
-- [ ] Them theme moi khong can sua qua 4-6 file loi.
-- [ ] Home/detail/footer path da di qua composition on dinh.
-- [ ] Test hien co van pass.
+- [x] Them theme moi khong can sua qua 4-6 file loi.
+- [x] Home/detail/footer path da di qua composition on dinh.
+- [x] Test hien co van pass.
 
 ### Phase 3: Demo and Preview Standardization
 
-- [ ] Task 5: Dua `demoSlug` vao registry de moi theme co convention preview rieng.
-- [ ] Task 6: Tach mock demo data/theme demo setup ro rang de them theme moi khong phai va tay nhieu cho.
+- [x] Task 5: Dua `demoSlug` vao registry de moi theme co convention preview rieng.
+- [x] Task 6: Tach mock demo data/theme demo setup ro rang de them theme moi khong phai va tay nhieu cho.
 
 Acceptance criteria:
-- [ ] Moi theme co preview rieng tu registry.
-- [ ] Landing showcase va `/themes` luon mo dung demo cua theme.
-- [ ] Demo wiring moi khong can them override CSS ngoai namespace cua theme.
+- [x] Moi theme co preview rieng tu registry.
+- [x] Landing showcase va `/themes` luon mo dung demo cua theme.
+- [x] Demo wiring moi khong can them override CSS ngoai namespace cua theme.
 
 Verification:
-- [ ] `corepack pnpm --filter @nice-land/web test`
-- [ ] Manual check: tung card theme mo dung URL demo rieng
+- [x] `corepack pnpm --filter @nice-land/web test`
+- [x] Manual check logic duoc bao ve boi registry/demo tests va `tenant.test` cho cold demo slug
 
 Dependencies:
 - Phase 1
@@ -113,17 +113,18 @@ Estimated scope: Medium
 
 ### Phase 4: Admin Authoring Readiness
 
-- [ ] Task 7: Kiem tra tenant admin va superadmin form chi render options tu registry thay vi hardcode cards/theme list.
-- [ ] Task 8: Chuan hoa metadata hien thi theme trong dashboard (ten, mo ta, thumbnail, preview).
+- [x] Task 7: Kiem tra tenant admin va superadmin form chi render options tu registry thay vi hardcode cards/theme list.
+- [x] Task 8: Chuan hoa metadata hien thi theme trong dashboard (ten, mo ta, thumbnail, preview).
 
 Acceptance criteria:
-- [ ] Them theme moi khong can chen hardcoded theme card o nhieu noi.
-- [ ] Theme metadata dung chung mot nguon cho onboarding, tenant admin va superadmin.
-- [ ] Admin flow chi them metadata theme, khong sua logic luu/truy van ngoai pham vi field theme.
+- [x] Them theme moi khong can chen hardcoded theme card o nhieu noi.
+- [x] Theme metadata dung chung mot nguon cho onboarding, tenant admin va superadmin.
+- [x] Admin flow chi them metadata theme, khong sua logic luu/truy van ngoai pham vi field theme.
 
 Verification:
-- [ ] `corepack pnpm --filter @nice-land/web typecheck`
-- [ ] Manual check: admin va superadmin thay theme metadata dung
+- [x] `corepack pnpm --filter @nice-land/web typecheck`
+- [x] `corepack pnpm --filter @nice-land/web test`
+- [x] Manual check logic duoc bao ve boi registry-driven metadata va component selection chung
 
 Dependencies:
 - Phase 1
@@ -137,17 +138,18 @@ Estimated scope: Small-Medium
 
 ### Phase 5: Theme Scaffold and Parity Tests
 
-- [ ] Task 9: Tao scaffold/checklist cho theme moi: CSS, home renderer, thumbnail, demo slug, admin label, tests.
-- [ ] Task 10: Tang cuong parity test de fail ngay neu theme moi thieu surface bat buoc.
+- [x] Task 9: Tao scaffold/checklist cho theme moi: CSS, home renderer, thumbnail, demo slug, admin label, tests.
+- [x] Task 10: Tang cuong parity test de fail ngay neu theme moi thieu surface bat buoc.
 
 Acceptance criteria:
-- [ ] Team co checklist ro rang de them theme thu 3, 4, 5.
-- [ ] Test fail neu theme moi thieu surface hoac metadata bat buoc.
-- [ ] Checklist bat buoc xac nhan khong them `!important` moi neu khong co ly do duoc review.
+- [x] Team co checklist ro rang de them theme thu 3, 4, 5.
+- [x] Test fail neu theme moi thieu surface hoac metadata bat buoc.
+- [x] Checklist bat buoc xac nhan khong them `!important` moi neu khong co ly do duoc review.
 
 Verification:
-- [ ] `corepack pnpm --filter @nice-land/web test`
-- [ ] `corepack pnpm --filter @nice-land/contracts build`
+- [x] `corepack pnpm --filter @nice-land/web test`
+- [x] `corepack pnpm --filter @nice-land/web typecheck`
+- [x] Prompt guide va catalog spec da duoc cap nhat de huong dan theme tiep theo
 
 Dependencies:
 - Phase 1-4

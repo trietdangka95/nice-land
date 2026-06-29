@@ -4,14 +4,14 @@ import type { PublicTheme } from "@nice-land/contracts";
 import { Logo } from "@/components/marketing/logo";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { ThemeThumbnail } from "@/components/site/theme-thumbnail";
-import { getPublicThemeDemoHref, publicThemes } from "@/lib/public-themes";
-
-function themePreferenceFromKey(theme: PublicTheme) {
-  return theme === "COLD_MODERN" ? "cold" : "warm";
-}
+import {
+  getPublicThemeDemoHref,
+  getPublicThemePreference,
+  publicThemes,
+} from "@/lib/public-themes";
 
 function buildThemeSignupHref(theme: PublicTheme, plan?: string) {
-  const params = new URLSearchParams({ theme: themePreferenceFromKey(theme) });
+  const params = new URLSearchParams({ theme: getPublicThemePreference(theme) });
   if (plan) params.set("plan", plan);
   return `/?${params.toString()}#contact`;
 }
@@ -48,7 +48,7 @@ export default async function ThemeGalleryPage({
           </div>
           <div className="relative mx-auto grid max-w-6xl gap-6 lg:grid-cols-2" data-reveal="up">
             {publicThemes.map((theme) => {
-              const preference = themePreferenceFromKey(theme.key);
+              const preference = getPublicThemePreference(theme.key);
 
               return (
                 <article key={theme.key} className="overflow-hidden rounded-2xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.12)] ring-1 ring-ink/10">

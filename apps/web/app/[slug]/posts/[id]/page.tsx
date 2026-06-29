@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import { ChevronLeft, Facebook, Mail, MapPin, Maximize2, Phone, Share2 } from "lucide-react";
 import { TenantLink } from "@/components/shared/tenant-link";
 import { notFound } from "next/navigation";
-import { TenantHeader } from "@/components/site/tenant-header";
-import { PersonalHeader, PersonalFooter } from "@/components/site/public-theme-home/chrome";
-import { ColdFooter, ColdHeader } from "@/components/site/public-theme-home/cold-modern";
 import { getTenantPost, getTenantSite } from "@/lib/server-api";
 import { formatPrice, propertyTypeLabels } from "@/lib/format";
 import { PropertyEngagement } from "@/components/site/property-engagement";
@@ -13,6 +10,11 @@ import { resolvePublicTheme } from "@/lib/public-themes";
 import { PublicThemeStylesheet } from "@/components/site/public-theme-stylesheet";
 import { PropertyGallery } from "@/components/site/property-gallery";
 import { BrokerIntroSection } from "@/components/site/broker-intro-section";
+import {
+  getPublicThemeDetailComposition,
+  getPublicThemeFooterComponent,
+  getPublicThemeHeaderComponent,
+} from "@/components/site/public-theme-composition";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3002";
 
@@ -45,6 +47,9 @@ export default async function PropertyDetailPage({
   const post = await getTenantPost(slug, site.id, id);
   if (!post) notFound();
   const renderedTheme = resolvePublicTheme(site.themeKey);
+  const ThemeHeader = getPublicThemeHeaderComponent(renderedTheme);
+  const ThemeFooter = getPublicThemeFooterComponent(renderedTheme);
+  const detailComposition = getPublicThemeDetailComposition(renderedTheme);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",
@@ -74,13 +79,7 @@ export default async function PropertyDetailPage({
     >
       <PublicThemeStylesheet theme={renderedTheme} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      {renderedTheme === "WARM_MINIMAL" ? (
-        <PersonalHeader site={site} />
-      ) : renderedTheme === "COLD_MODERN" ? (
-        <ColdHeader site={site} />
-      ) : (
-        <TenantHeader site={site} />
-      )}
+      <ThemeHeader site={site} />
       <div className="page-shell py-6">
         <TenantLink href="" slug={slug} className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-ink/55 transition-colors hover:text-ink">
           <ChevronLeft size={16} />
@@ -172,16 +171,16 @@ export default async function PropertyDetailPage({
                 </p>
               </div>
             </div>
-            <TrackedContactLink slug={slug} postId={post.id} source="PHONE_CLICK" href={`tel:${site.phone.replace(/\s/g, "")}`} className={`tenant-detail-primary-action mt-6 flex min-h-13 items-center justify-center gap-2 px-5 py-4 text-sm font-bold text-white transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${renderedTheme === "WARM_MINIMAL" ? "rounded-full bg-[var(--tenant-color)]" : "bg-[var(--tenant-color)]"}`}>
+            <TrackedContactLink slug={slug} postId={post.id} source="PHONE_CLICK" href={`tel:${site.phone.replace(/\s/g, "")}`} className={`tenant-detail-primary-action mt-6 flex min-h-13 items-center justify-center gap-2 px-5 py-4 text-sm font-bold text-white transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${detailComposition.primaryActionClassName}`}>
               <Phone size={17} />
               Gọi {site.phone}
             </TrackedContactLink>
             {site.zaloPhone && (
-              <TrackedContactLink slug={slug} postId={post.id} source="ZALO_CLICK" href={`https://zalo.me/${site.zaloPhone.replace(/\D/g, "")}`} className={`tenant-detail-secondary-action mt-3 flex min-h-13 items-center justify-center gap-2 border border-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-[var(--tenant-color)] transition-colors duration-200 hover:bg-[var(--tenant-color)] hover:text-white active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full" : ""}`}>
+              <TrackedContactLink slug={slug} postId={post.id} source="ZALO_CLICK" href={`https://zalo.me/${site.zaloPhone.replace(/\D/g, "")}`} className={`tenant-detail-secondary-action mt-3 flex min-h-13 items-center justify-center gap-2 border border-[var(--tenant-color)] px-5 py-4 text-sm font-bold text-[var(--tenant-color)] transition-colors duration-200 hover:bg-[var(--tenant-color)] hover:text-white active:scale-[0.98] ${detailComposition.secondaryActionClassName}`}>
                 Nhắn Zalo
               </TrackedContactLink>
             )}
-            <a href={`mailto:${site.email}`} className={`tenant-detail-tertiary-action mt-3 flex min-h-13 items-center justify-center gap-2 border px-5 py-4 text-sm font-bold transition-colors duration-200 active:scale-[0.98] ${renderedTheme === "WARM_MINIMAL" ? "rounded-full border-black/5 bg-[#f8f6f0] hover:bg-white" : "border-ink/15"}`}>
+            <a href={`mailto:${site.email}`} className={`tenant-detail-tertiary-action mt-3 flex min-h-13 items-center justify-center gap-2 border px-5 py-4 text-sm font-bold transition-colors duration-200 active:scale-[0.98] ${detailComposition.tertiaryActionClassName}`}>
               <Mail size={17} />
               Gửi email
             </a>
@@ -194,11 +193,7 @@ export default async function PropertyDetailPage({
         </aside>
       </section>
       <BrokerIntroSection site={site} theme={renderedTheme} />
-      {renderedTheme === "WARM_MINIMAL" ? (
-        <PersonalFooter site={site} />
-      ) : renderedTheme === "COLD_MODERN" ? (
-        <ColdFooter site={site} />
-      ) : null}
+      {ThemeFooter ? <ThemeFooter site={site} /> : null}
     </main>
   );
 }

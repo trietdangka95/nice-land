@@ -8,16 +8,42 @@ import { api } from "@/lib/api";
 import { revalidateTenant } from "@/app/actions";
 import { getValidationFieldMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
+import { ThemeOptionCard } from "@/components/shared/theme-option-card";
+import {
+  DEFAULT_PUBLIC_THEME,
+  publicThemes,
+  resolvePublicTheme,
+} from "@/lib/public-themes";
+
+type AssignablePublicTheme = (typeof publicThemes)[number]["key"];
+
+interface SuperAdminSiteFormState {
+  name: string;
+  slug: string;
+  phone: string;
+  email: string;
+  address: string;
+  planId: string;
+  brokerAvatar: string;
+  brokerName: string;
+  brokerBio: string;
+  subscriptionEnd: string;
+  subscriptionStatus: SubscriptionStatus;
+  themeKey: AssignablePublicTheme;
+  adminName: string;
+  adminUsername: string;
+  adminPassword: string;
+}
 
 export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
   const router = useRouter();
   const toast = useToast();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<SuperAdminSiteFormState>({
     name: "", slug: "", phone: "", email: "", address: "", planId: "",
     brokerAvatar: "", brokerName: "", brokerBio: "",
     subscriptionEnd: "", subscriptionStatus: "ACTIVE" as SubscriptionStatus,
-    themeKey: "WARM_MINIMAL" as Extract<PublicTheme, "WARM_MINIMAL" | "COLD_MODERN">,
+    themeKey: DEFAULT_PUBLIC_THEME as AssignablePublicTheme,
     adminName: "", adminUsername: "", adminPassword: "",
   });
   const [saving, setSaving] = useState(false);
@@ -30,7 +56,7 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
         ...current, name: site.name, slug: site.slug, phone: site.phone ?? "",
         email: site.email ?? "", address: site.address ?? "", planId: site.plan?.id ?? "",
         brokerAvatar: site.brokerAvatar ?? "", brokerName: site.brokerName ?? "", brokerBio: site.brokerBio ?? "",
-        themeKey: site.themeKey === "COLD_MODERN" ? "COLD_MODERN" : "WARM_MINIMAL",
+        themeKey: resolvePublicTheme(site.themeKey) as AssignablePublicTheme,
         subscriptionEnd: site.subscriptionEnd?.slice(0, 10) ?? "",
         subscriptionStatus: site.subscriptionStatus,
       }))).catch((requestError) => setError(requestError.message));
@@ -95,20 +121,17 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
         <fieldset className="mt-8 grid gap-3">
           <legend className="text-sm font-bold text-ink/80">Theme website</legend>
           <div className="grid gap-3 sm:grid-cols-2">
-            <ThemeAssignmentCard
-              value="WARM_MINIMAL"
-              label="Warm"
-              description="Gần gũi, ấm áp, phù hợp môi giới cá nhân."
-              selected={form.themeKey === "WARM_MINIMAL"}
-              onSelect={(value) => field("themeKey", value)}
-            />
-            <ThemeAssignmentCard
-              value="COLD_MODERN"
-              label="Cold"
-              description="Navy/cyan sắc nét, hiện đại và chuyên nghiệp."
-              selected={form.themeKey === "COLD_MODERN"}
-              onSelect={(value) => field("themeKey", value)}
-            />
+            {publicThemes.map((theme) => (
+              <ThemeOptionCard
+                key={theme.key}
+                value={theme.key}
+                label={theme.preferenceLabel}
+                description={theme.description}
+                previewSwatches={theme.previewSwatches}
+                selected={form.themeKey === theme.key}
+                onSelect={(value) => field("themeKey", value)}
+              />
+            ))}
           </div>
         </fieldset>
         </section>
@@ -155,46 +178,4 @@ function Field({ label, value, onChange, type = "text", required = false }: { la
 
 function TextAreaField({ label, value, onChange, wide = false }: { label: string; value: string; onChange: (value: string) => void; wide?: boolean }) {
   return <label className={`grid gap-2 text-sm font-bold text-ink/80 ${wide ? "sm:col-span-2" : ""}`}>{label}<textarea value={value} onChange={(e) => onChange(e.target.value)} rows={4} className="min-h-32 min-w-0 rounded-xl bg-white/50 border border-ink/5 px-4 py-3 font-normal focus:bg-white transition-colors" /></label>;
-}
-
-function ThemeAssignmentCard({
-  value,
-  label,
-  description,
-  selected,
-  onSelect,
-}: {
-  value: Extract<PublicTheme, "WARM_MINIMAL" | "COLD_MODERN">;
-  label: string;
-  description: string;
-  selected: boolean;
-  onSelect: (value: Extract<PublicTheme, "WARM_MINIMAL" | "COLD_MODERN">) => void;
-}) {
-  const isCold = value === "COLD_MODERN";
-
-  return (
-    <button
-      type="button"
-      onClick={() => onSelect(value)}
-      aria-pressed={selected}
-      className={`grid gap-3 rounded-xl border p-4 text-left transition-colors ${
-        selected
-          ? "border-moss bg-moss/10"
-          : "border-ink/10 bg-white/50 hover:bg-white"
-      }`}
-    >
-      <span className="grid h-24 grid-cols-[0.9fr_1.1fr] gap-2 overflow-hidden rounded-lg border border-ink/10 bg-white p-2">
-        <span className={isCold ? "bg-[#071a2f]" : "bg-[#f1e8dd]"} />
-        <span className="grid gap-2">
-          <span className={isCold ? "bg-[#6ee7ff]" : "bg-[#b25e43]"} />
-          <span className={isCold ? "bg-[#edf3f8]" : "bg-[#fffaf3]"} />
-          <span className={isCold ? "bg-[#d7e1ea]" : "bg-[#ead5c4]"} />
-        </span>
-      </span>
-      <span>
-        <span className="block text-sm font-extrabold text-ink">{label}</span>
-        <span className="mt-1 block text-xs leading-5 text-ink/55">{description}</span>
-      </span>
-    </button>
-  );
 }

@@ -1,4 +1,5 @@
 import type { PropertyPost, Site } from "@/lib/types";
+import { resolvePublicThemeDemoDataSiteId } from "@/lib/public-themes";
 
 export const sites: Site[] = [
   {
@@ -108,10 +109,6 @@ export const sites: Site[] = [
     createdAt: "2025-11-20",
   },
 ];
-
-function normalizeMockSiteId(siteId: string) {
-  return siteId === "site-demo-cold" ? "site-demo" : siteId;
-}
 
 export const properties: PropertyPost[] = [
   {
@@ -426,7 +423,7 @@ export function getSiteBySlug(slug: string) {
 export function getPublicPosts(siteId: string) {
   return properties.filter(
     (post) =>
-      post.siteId === normalizeMockSiteId(siteId) &&
+      post.siteId === resolvePublicThemeDemoDataSiteId(siteId) &&
       ["PUBLISHED", "SOLD"].includes(post.status),
   );
 }

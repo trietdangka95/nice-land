@@ -1,12 +1,25 @@
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_PUBLIC_THEME,
-  publicThemes,
-  getPublicThemeStylesheet,
+  getPublicThemeByDemoSlug,
   getPublicThemeDemoHref,
+  getPublicThemePreferenceLabel,
+  getPublicThemePreference,
+  publicThemes,
+  getPublicTheme,
+  getPublicThemeStylesheet,
+  isPublicThemeDemoSlug,
   requiredPublicThemeSurfaces,
+  resolvePublicThemeDemoDataSiteId,
   resolvePublicTheme,
 } from "@/lib/public-themes";
+import {
+  getPublicThemeBrokerIntroComposition,
+  getPublicThemeDetailComposition,
+  getPublicThemeFooterComponent,
+  getPublicThemeHeaderComponent,
+} from "@/components/site/public-theme-composition";
+import { getPublicThemeHomeRenderer } from "@/components/site/public-theme-home";
 
 describe("public theme registry", () => {
   it("exposes warm and cold public themes", () => {
@@ -23,6 +36,7 @@ describe("public theme registry", () => {
 
   it("always resolves supported legacy theme keys to the default theme", () => {
     expect(resolvePublicTheme("EDITORIAL")).toBe(DEFAULT_PUBLIC_THEME);
+    expect(resolvePublicTheme("classic-estate")).toBe(DEFAULT_PUBLIC_THEME);
   });
 
   it("requires feature-parity surfaces from every theme", () => {
@@ -44,6 +58,7 @@ describe("public theme registry", () => {
   it("uses the personal header and footer composition", () => {
     expect(publicThemes[0]?.headerComposition).toBe("personal-signature");
     expect(publicThemes[0]?.footerComposition).toBe("personal-contact");
+    expect(publicThemes[0]?.detailComposition).toBe("personal-soft");
   });
 
   it("documents the real-estate design direction", () => {
@@ -79,5 +94,48 @@ describe("public theme registry", () => {
     expect(getPublicThemeStylesheet("COLD_MODERN")).toBe(
       "/themes/cold-modern.css",
     );
+  });
+
+  it("keeps demo slugs inside the registry instead of helper branches", () => {
+    expect(getPublicTheme("WARM_MINIMAL").demoSlug).toBe("demo");
+    expect(getPublicTheme("COLD_MODERN").demoSlug).toBe("demo-cold");
+  });
+
+  it("resolves preview metadata from the registry", () => {
+    expect(getPublicThemePreference("WARM_MINIMAL")).toBe("warm");
+    expect(getPublicThemePreference("COLD_MODERN")).toBe("cold");
+    expect(getPublicThemePreferenceLabel("warm")).toBe("Warm");
+    expect(getPublicThemePreferenceLabel("cold")).toBe("Cold");
+    expect(getPublicThemeByDemoSlug("demo-cold")?.key).toBe("COLD_MODERN");
+    expect(isPublicThemeDemoSlug("demo")).toBe(true);
+    expect(isPublicThemeDemoSlug("minhphat")).toBe(false);
+  });
+
+  it("keeps demo content site resolution inside the registry", () => {
+    expect(resolvePublicThemeDemoDataSiteId("site-demo-cold")).toBe(
+      "site-demo",
+    );
+    expect(resolvePublicThemeDemoDataSiteId("site-demo")).toBe("site-demo");
+  });
+
+  it("requires each theme to provide complete preview metadata", () => {
+    for (const theme of publicThemes) {
+      expect(theme.preferenceLabel.length).toBeGreaterThan(0);
+      expect(theme.demoSlug.length).toBeGreaterThan(0);
+      expect(theme.demoSiteId.length).toBeGreaterThan(0);
+      expect(theme.demoDataSiteId.length).toBeGreaterThan(0);
+      expect(theme.previewSwatches).toHaveLength(4);
+      expect(getPublicThemeDemoHref(theme.key)).toBe(`/${theme.demoSlug}`);
+    }
+  });
+
+  it("requires runtime compositions for every registered theme", () => {
+    for (const theme of publicThemes) {
+      expect(getPublicThemeHomeRenderer(theme.key)).toBeTypeOf("function");
+      expect(getPublicThemeHeaderComponent(theme.key)).toBeTypeOf("function");
+      expect(getPublicThemeBrokerIntroComposition(theme.key)).toBeDefined();
+      expect(getPublicThemeDetailComposition(theme.key)).toBeDefined();
+      expect(getPublicThemeFooterComponent(theme.key)).toBeTypeOf("function");
+    }
   });
 });

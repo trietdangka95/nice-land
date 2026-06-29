@@ -4,24 +4,52 @@
 
 Nice Land cung cấp nhiều giao diện website bất động sản có cùng dữ liệu và
 tính năng nhưng khác rõ về cách trình bày. Khách hàng phải nhận ra phong cách
-của từng theme ngay từ thumbnail và có thể mở website mẫu đầy đủ trước khi
-chọn.
+của từng theme ngay từ thumbnail, có thể mở website mẫu đầy đủ trước khi chọn,
+và superadmin có thể gán theme cho tenant mà không phải chạm code UI thủ công.
 
-## Confirmed Theme Directions
+## Current Public Themes
 
-1. `CLASSIC_ESTATE` — Luxury Showcase: ảnh bất động sản toàn màn hình, nhịp
-   chữ sang trọng, phù hợp môi giới phân khúc cao cấp.
-2. `MODERN_GRID` — Search First: tìm kiếm và bộ lọc là trọng tâm, mật độ tin
-   cao, phù hợp môi giới có nhiều sản phẩm.
-3. `EDITORIAL` — Property Editorial: bố cục tạp chí bất đối xứng, ảnh lớn,
-   phù hợp bộ sưu tập bất động sản tuyển chọn.
-4. `WARM_MINIMAL` — Personal Broker: lấy thương hiệu và sự tin cậy của môi
-   giới cá nhân làm trọng tâm.
+1. `WARM_MINIMAL`
+   - Preference: `warm`
+   - Direction: Personal Broker
+   - Character: ấm, gần gũi, nhấn mạnh độ tin cậy và liên hệ trực tiếp
+2. `COLD_MODERN`
+   - Preference: `cold`
+   - Direction: Cold Modern
+   - Character: navy/cyan sắc nét, bố cục chính xác, cảm giác chuyên nghiệp
+
+## Registry Contract
+
+Theme mới chỉ được xem là hoàn chỉnh khi có đủ metadata trong
+`apps/web/lib/public-themes.ts`:
+
+- `key`
+- `preference`
+- `preferenceLabel`
+- `name`
+- `description`
+- `direction`
+- `demoSlug`
+- `demoSiteId`
+- `demoDataSiteId`
+- `previewSwatches`
+- `stylesheetHref`
+- `homeRenderer`
+- `thumbnailRenderer`
+- `headerComposition`
+- `footerComposition`
+- `detailComposition`
+- `fontStyle`
+- `density`
+- `surfaces`
 
 ## Architecture
 
+- Theme catalog metadata và theme runtime renderer là hai lớp riêng:
+  - catalog metadata: tên, mô tả, preview, demo wiring, onboarding/admin labels
+  - runtime renderer: home/detail/header/footer/broker-intro composition
 - Registry theme là nguồn dữ liệu duy nhất cho metadata, stylesheet, homepage
-  renderer và thumbnail renderer.
+  renderer, thumbnail renderer, preview wiring và admin selection.
 - Mỗi theme có module presentation riêng.
 - API, tenant data, search/filter, pagination và property detail dùng chung.
 - Theme không thay đổi quyền hạn hoặc dữ liệu tenant.
@@ -30,9 +58,12 @@ chọn.
 
 ## Testing Strategy
 
-- Unit test xác nhận mọi theme có direction, renderer và thumbnail riêng.
+- Unit test xác nhận mọi theme có:
+  - surface parity
+  - preview metadata parity
+  - home/detail/header/footer/broker-intro composition parity
 - Typecheck và production build toàn web.
-- Browser verification tại 320px, 768px, 1024px và desktop.
+- Browser verification tại 320px, 768px, 1024px và desktop khi tạo theme mới.
 
 ## Boundaries
 
@@ -42,11 +73,10 @@ chọn.
 
 ## Success Criteria
 
-- Bốn thumbnail mô phỏng một phần website thật, không dùng chung wireframe.
-- Bốn homepage có header và footer composition riêng; không dùng cùng markup
-  rồi chỉ thay màu/font.
-- Bốn homepage khác rõ ở hero/search/listing hierarchy và typography.
-- Listing card compact, ưu tiên ảnh, tiêu đề, giá, diện tích và vị trí; Search
-  First hiển thị 4 cột desktop theo ảnh tham khảo.
-- Tất cả theme vẫn tìm kiếm, lọc, phân trang và mở chi tiết tin được.
-- Registry có thể mở rộng mà không thêm nhánh điều kiện vào route page.
+- Mỗi theme có thumbnail mô phỏng website thật, không dùng placeholder chung.
+- Mỗi theme có homepage, header, footer và detail composition riêng hoặc khai
+  báo rõ composition dùng chung có chủ đích.
+- Theme mới không yêu cầu thêm `if/else` vào route page public.
+- Theme mới không yêu cầu hard-code card ở onboarding hay superadmin form.
+- Registry có thể mở rộng mà không thêm override CSS tràn lan hoặc `!important`
+  mới.

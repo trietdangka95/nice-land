@@ -4,16 +4,13 @@ import { ArrowRight } from "lucide-react";
 import type { PublicTheme } from "@nice-land/contracts";
 import {
   getPublicThemeDemoHref,
+  getPublicThemePreference,
   publicThemes,
 } from "@/lib/public-themes";
 import { ThemeThumbnail } from "@/components/site/theme-thumbnail";
 
-function themePreferenceFromKey(theme: PublicTheme) {
-  return theme === "COLD_MODERN" ? "cold" : "warm";
-}
-
 function buildThemeSignupHref(theme: PublicTheme, plan?: string) {
-  const params = new URLSearchParams({ theme: themePreferenceFromKey(theme) });
+  const params = new URLSearchParams({ theme: getPublicThemePreference(theme) });
   if (plan) params.set("plan", plan);
   return `/?${params.toString()}#contact`;
 }
@@ -28,7 +25,7 @@ export function ThemeShowcase({
   return (
     <div className={`grid gap-6 ${compact ? "md:grid-cols-2 xl:grid-cols-4" : "md:grid-cols-2"}`}>
       {publicThemes.map((theme) => {
-        const preference = themePreferenceFromKey(theme.key);
+        const preference = getPublicThemePreference(theme.key);
 
         return (
           <article

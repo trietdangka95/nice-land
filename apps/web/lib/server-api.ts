@@ -1,6 +1,9 @@
 import type { PropertyPost, Site } from "@/lib/types";
 import type { SubscriptionPlan } from "@nice-land/contracts";
-import { resolvePublicTheme } from "@/lib/public-themes";
+import {
+  isPublicThemeDemoSlug,
+  resolvePublicTheme,
+} from "@/lib/public-themes";
 import {
   getPublicPost as getMockPost,
   getPublicPosts as getMockPosts,
@@ -12,10 +15,9 @@ const apiUrl = getApiBaseUrl();
 const allowMockFallback =
   process.env.NODE_ENV !== "production" ||
   process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";
-const mockDemoSlugs = new Set(["demo", "demo-cold"]);
 
 function mockSite(slug: string) {
-  if (mockDemoSlugs.has(slug)) return getMockSite(slug);
+  if (isPublicThemeDemoSlug(slug)) return getMockSite(slug);
   return allowMockFallback ? getMockSite(slug) : undefined;
 }
 
@@ -75,7 +77,7 @@ function filterMockPosts(
 
 export async function getTenantSite(slug: string): Promise<Site | undefined> {
   const fallback = mockSite(slug);
-  if (mockDemoSlugs.has(slug) && fallback) {
+  if (isPublicThemeDemoSlug(slug) && fallback) {
     return fallback;
   }
 
@@ -188,7 +190,7 @@ export async function getTenantPosts(
   if (options.province) query.set("province", options.province);
   if (options.sort) query.set("sort", options.sort);
 
-  if (mockDemoSlugs.has(slug)) {
+  if (isPublicThemeDemoSlug(slug)) {
     const items = filterMockPosts(siteId, options);
     const page = options.page ?? 1;
     const limit = options.limit ?? 12;
@@ -281,7 +283,7 @@ export async function getTenantPost(
   siteId: string,
   postId: string,
 ): Promise<PropertyPost | undefined> {
-  if (mockDemoSlugs.has(slug)) {
+  if (isPublicThemeDemoSlug(slug)) {
     return getMockPost(siteId, postId);
   }
 
