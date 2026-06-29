@@ -344,7 +344,7 @@ export async function getPlatformStats(): Promise<{
 }> {
   try {
     const response = await fetch(`${apiUrl}/v1/public/stats`, {
-      next: { revalidate: 3600 },
+      cache: "no-store",
     });
     if (!response.ok) {
       return { totalSites: 0, totalPosts: 0, totalThemes: 0 };
@@ -354,7 +354,8 @@ export async function getPlatformStats(): Promise<{
       totalPosts: number;
       totalThemes: number;
     };
-  } catch {
+  } catch (error) {
+    console.error("❌ Lỗi khi fetch getPlatformStats:", error);
     return { totalSites: 0, totalPosts: 0, totalThemes: 0 };
   }
 }
@@ -362,13 +363,14 @@ export async function getPlatformStats(): Promise<{
 export async function getPublicPlans(): Promise<SubscriptionPlan[]> {
   try {
     const response = await fetch(`${apiUrl}/v1/public/plans`, {
-      next: { revalidate: 3600 },
+      cache: "no-store",
     });
     if (!response.ok) {
       return [];
     }
     return (await response.json()) as SubscriptionPlan[];
-  } catch {
+  } catch (error) {
+    console.error("❌ Lỗi khi fetch getPublicPlans:", error);
     return [];
   }
 }
