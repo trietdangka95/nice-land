@@ -208,7 +208,7 @@ export function LuxuryFooter({ site }: { site: Site }) {
           </div>
         </div>
         <div className="flex flex-col justify-between gap-3 pt-6 text-[10px] uppercase tracking-[0.2em] opacity-50 sm:flex-row">
-          <span>{site.name}</span><span>Powered by Nice Land</span>
+          <span>{site.name}</span><span>Powered by Triet Dang</span>
         </div>
       </div>
     </footer>
