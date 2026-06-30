@@ -7,6 +7,350 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Site {
+  id                  String                @id @default(uuid())
+  name                String
+  slug                String                @unique
+  tagline             String?
+  logo                String?
+  banner              String?
+  themeColor          String?
+  phone               String?
+  email               String?
+  address             String?
+  facebookUrl         String?
+  zaloPhone           String?
+  isActive            Boolean               @default(true)
+  subscriptionStatus  SubscriptionStatus    @default(TRIAL)
+  subscriptionStart   DateTime?
+  subscriptionEnd     DateTime?
+  planId              String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  deletedAt           DateTime?
+  themeKey            PublicTheme           @default(CLASSIC_ESTATE)
+  brokerAvatar        String?
+  brokerBio           String?
+  brokerName          String?
+  auditLogs           AuditLog[]
+  contactRequests     ContactRequest[]
+  leads               Lead[]
+  notifications       Notification[]
+  categories          PropertyCategory[]
+  posts               PropertyPost[]
+  propertyViews       PropertyView[]
+  refreshSessions     RefreshSession[]
+  renewalRequests     RenewalRequest[]
+  plan                SubscriptionPlan?     @relation(fields: [planId], references: [id], onDelete: Restrict)
+  domains             SiteDomain[]
+  subscriptionHistory SubscriptionHistory[]
+  users               User[]
+
+  @@index([isActive, subscriptionStatus])
+  @@index([planId])
+  @@index([deletedAt])
+}
+
+model SiteDomain {
+  id                String       @id @default(uuid())
+  siteId            String
+  hostname          String       @unique
+  isPrimary         Boolean      @default(false)
+  isPlatform        Boolean      @default(false)
+  status            DomainStatus @default(PENDING)
+  verificationToken String?
+  verifiedAt        DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  site              Site         @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, status])
+}
+
+model User {
+  id                  String               @id @default(uuid())
+  siteId              String?
+  username            String
+  email               String?              @unique
+  passwordHash        String
+  fullName            String?
+  phone               String?
+  role                UserRole
+  isActive            Boolean              @default(true)
+  lastLoginAt         DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  deletedAt           DateTime?
+  auditLogs           AuditLog[]
+  passwordResetTokens PasswordResetToken[]
+  createdPosts        PropertyPost[]       @relation("PostCreatedBy")
+  updatedPosts        PropertyPost[]       @relation("PostUpdatedBy")
+  refreshSessions     RefreshSession[]
+  renewalRequests     RenewalRequest[]     @relation("RenewalRequestedBy")
+  site                Site?                @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@unique([username, siteId])
+  @@index([siteId, role, isActive])
+  @@index([deletedAt])
+}
+
+model RefreshSession {
+  id           String    @id @default(uuid())
+  userId       String
+  siteId       String?
+  tokenHash    String    @unique
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+  lastUsedAt   DateTime?
+  revokedAt    DateTime?
+  replacedById String?
+  createdAt    DateTime  @default(now())
+  site         Site?     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([siteId, revokedAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model PropertyCategory {
+  id        String         @id @default(uuid())
+  siteId    String
+  name      String
+  slug      String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  deletedAt DateTime?
+  type      PropertyType   @default(HOUSE)
+  site      Site           @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  posts     PropertyPost[]
+
+  @@unique([siteId, slug])
+  @@index([siteId, deletedAt])
+}
+
+model PropertyPost {
+  id          String            @id @default(uuid())
+  siteId      String
+  categoryId  String?
+  slug        String
+  title       String
+  description String
+  type        PropertyType
+  price       Decimal?          @db.Decimal(18, 2)
+  area        Float?
+  address     String?
+  province    String?
+  district    String?
+  ward        String?
+  latitude    Float?
+  longitude   Float?
+  legalStatus String?
+  bedrooms    Int?
+  bathrooms   Int?
+  status      PostStatus        @default(DRAFT)
+  publishedAt DateTime?
+  createdById String?
+  updatedById String?
+  version     Int               @default(1)
+  viewCount   Int               @default(0)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deletedAt   DateTime?
+  leads       Lead[]
+  images      PropertyImage[]
+  category    PropertyCategory? @relation(fields: [categoryId], references: [id])
+  createdBy   User?             @relation("PostCreatedBy", fields: [createdById], references: [id])
+  site        Site              @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  updatedBy   User?             @relation("PostUpdatedBy", fields: [updatedById], references: [id])
+  views       PropertyView[]
+
+  @@unique([siteId, slug])
+  @@index([siteId, status, publishedAt])
+  @@index([siteId, type, price])
+  @@index([siteId, province, district])
+  @@index([siteId, deletedAt])
+}
+
+model PropertyImage {
+  id         String       @id @default(uuid())
+  postId     String
+  storageKey String       @unique
+  url        String
+  mimeType   String?
+  size       Int?
+  width      Int?
+  height     Int?
+  altText    String?
+  sortOrder  Int          @default(0)
+  createdAt  DateTime     @default(now())
+  post       PropertyPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, sortOrder])
+}
+
+model PropertyView {
+  id          String       @id @default(uuid())
+  postId      String
+  siteId      String
+  visitorHash String?
+  referrer    String?
+  userAgent   String?
+  viewedAt    DateTime     @default(now())
+  post        PropertyPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  site        Site         @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, viewedAt])
+  @@index([postId, viewedAt])
+}
+
+model Lead {
+  id        String        @id @default(uuid())
+  siteId    String
+  postId    String?
+  name      String
+  phone     String
+  email     String?
+  message   String?
+  source    String?
+  status    RequestStatus @default(NEW)
+  notes     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  post      PropertyPost? @relation(fields: [postId], references: [id])
+  site      Site          @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, status, createdAt])
+  @@index([postId])
+}
+
+model SubscriptionPlan {
+  id               String                @id @default(uuid())
+  name             String                @unique
+  code             String                @unique
+  maxPosts         Int
+  maxImagesPerPost Int
+  price            Decimal               @db.Decimal(18, 2)
+  durationDays     Int
+  isActive         Boolean               @default(true)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  renewalRequests  RenewalRequest[]
+  sites            Site[]
+  history          SubscriptionHistory[]
+}
+
+model RenewalRequest {
+  id            String            @id @default(uuid())
+  siteId        String
+  planId        String?
+  requestedById String
+  status        RequestStatus     @default(NEW)
+  note          String?
+  adminNote     String?
+  requestedAt   DateTime          @default(now())
+  resolvedAt    DateTime?
+  plan          SubscriptionPlan? @relation(fields: [planId], references: [id])
+  requestedBy   User              @relation("RenewalRequestedBy", fields: [requestedById], references: [id])
+  site          Site              @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, status, requestedAt])
+}
+
+model SubscriptionHistory {
+  id        String             @id @default(uuid())
+  siteId    String
+  planId    String?
+  status    SubscriptionStatus
+  startsAt  DateTime
+  endsAt    DateTime?
+  amount    Decimal?           @db.Decimal(18, 2)
+  note      String?
+  createdAt DateTime           @default(now())
+  plan      SubscriptionPlan?  @relation(fields: [planId], references: [id])
+  site      Site               @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, createdAt])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  siteId     String?
+  userId     String?
+  action     String
+  entityType String?
+  entityId   String?
+  details    Json?
+  ipAddress  String?
+  userAgent  String?
+  requestId  String?
+  createdAt  DateTime @default(now())
+  site       Site?    @relation(fields: [siteId], references: [id])
+  user       User?    @relation(fields: [userId], references: [id])
+
+  @@index([siteId, createdAt])
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
+}
+
+model ContactRequest {
+  id              String        @id @default(uuid())
+  siteId          String?
+  name            String
+  phone           String
+  email           String?
+  message         String?
+  status          RequestStatus @default(NEW)
+  source          String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  themePreference String        @default("warm") @map("theme_preference")
+  selectedPlan    String?
+  site            Site?         @relation(fields: [siteId], references: [id])
+
+  @@index([siteId, status, createdAt])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String            @id @default(uuid())
+  siteId    String?
+  scope     NotificationScope
+  type      NotificationType
+  title     String
+  body      String
+  link      String
+  payload   Json?
+  isRead    Boolean           @default(false)
+  readAt    DateTime?
+  createdAt DateTime          @default(now())
+  site      Site?             @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([scope, isRead, createdAt])
+  @@index([siteId, scope, isRead, createdAt])
+}
+
+model SystemSetting {
+  id               String   @id @default("default")
+  bankId           String?
+  bankAccount      String?
+  bankAccountName  String?
+  updatedAt        DateTime @updatedAt
+  supportZaloPhone String?
+}
+
 enum UserRole {
   SUPER_ADMIN
   ADMIN
@@ -68,348 +412,4 @@ enum NotificationType {
   CONTACT_REQUEST_CREATED
   RENEWAL_REQUEST_CREATED
   RENEWAL_REQUEST_UPDATED
-}
-
-model Site {
-  id                 String                 @id @default(uuid())
-  name               String
-  slug               String                 @unique
-  tagline            String?
-  logo               String?
-  banner             String?
-  brokerAvatar       String?
-  brokerName         String?
-  brokerBio          String?
-  themeKey           PublicTheme            @default(CLASSIC_ESTATE)
-  themeColor         String?
-  phone              String?
-  email              String?
-  address            String?
-  facebookUrl        String?
-  zaloPhone          String?
-  isActive           Boolean                @default(true)
-  subscriptionStatus SubscriptionStatus     @default(TRIAL)
-  subscriptionStart  DateTime?
-  subscriptionEnd    DateTime?
-  planId             String?
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
-  deletedAt          DateTime?
-  users              User[]
-  posts              PropertyPost[]
-  categories         PropertyCategory[]
-  auditLogs          AuditLog[]
-  domains            SiteDomain[]
-  refreshSessions    RefreshSession[]
-  renewalRequests    RenewalRequest[]
-  subscriptionHistory SubscriptionHistory[]
-  leads              Lead[]
-  propertyViews      PropertyView[]
-  contactRequests    ContactRequest[]
-  notifications      Notification[]
-  plan               SubscriptionPlan?      @relation(fields: [planId], references: [id], onDelete: Restrict)
-
-  @@index([isActive, subscriptionStatus])
-  @@index([planId])
-  @@index([deletedAt])
-}
-
-model SiteDomain {
-  id           String       @id @default(uuid())
-  siteId       String
-  hostname     String       @unique
-  isPrimary    Boolean      @default(false)
-  isPlatform   Boolean      @default(false)
-  status       DomainStatus @default(PENDING)
-  verificationToken String?
-  verifiedAt   DateTime?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  site         Site         @relation(fields: [siteId], references: [id], onDelete: Cascade)
-
-  @@index([siteId, status])
-}
-
-model User {
-  id                  String               @id @default(uuid())
-  siteId              String?
-  username            String
-  email               String?              @unique
-  passwordHash        String
-  fullName            String?
-  phone               String?
-  role                UserRole
-  isActive            Boolean              @default(true)
-  lastLoginAt         DateTime?
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  deletedAt           DateTime?
-  site                Site?                @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  refreshSessions     RefreshSession[]
-  passwordResetTokens PasswordResetToken[]
-  createdPosts        PropertyPost[]       @relation("PostCreatedBy")
-  updatedPosts        PropertyPost[]       @relation("PostUpdatedBy")
-  auditLogs           AuditLog[]
-  renewalRequests     RenewalRequest[]     @relation("RenewalRequestedBy")
-
-  @@unique([username, siteId])
-  @@index([siteId, role, isActive])
-  @@index([deletedAt])
-}
-
-model RefreshSession {
-  id              String   @id @default(uuid())
-  userId          String
-  siteId          String?
-  tokenHash       String   @unique
-  userAgent       String?
-  ipAddress       String?
-  expiresAt       DateTime
-  lastUsedAt      DateTime?
-  revokedAt       DateTime?
-  replacedById    String?
-  createdAt       DateTime @default(now())
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  site            Site?    @relation(fields: [siteId], references: [id], onDelete: Cascade)
-
-  @@index([userId, expiresAt])
-  @@index([siteId, revokedAt])
-}
-
-model PasswordResetToken {
-  id        String    @id @default(uuid())
-  userId    String
-  tokenHash String    @unique
-  expiresAt DateTime
-  usedAt    DateTime?
-  createdAt DateTime  @default(now())
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, expiresAt])
-}
-
-model PropertyCategory {
-  id        String         @id @default(uuid())
-  siteId    String
-  name      String
-  slug      String
-  type      PropertyType   @default(HOUSE)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  deletedAt DateTime?
-  site      Site           @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  posts     PropertyPost[]
-
-  @@unique([siteId, slug])
-  @@index([siteId, deletedAt])
-}
-
-model PropertyPost {
-  id          String            @id @default(uuid())
-  siteId      String
-  categoryId  String?
-  slug        String
-  title       String
-  description String
-  type        PropertyType
-  price       Decimal?          @db.Decimal(18, 2)
-  area        Float?
-  address     String?
-  province    String?
-  district    String?
-  ward        String?
-  latitude    Float?
-  longitude   Float?
-  legalStatus String?
-  bedrooms    Int?
-  bathrooms   Int?
-  status      PostStatus        @default(DRAFT)
-  publishedAt DateTime?
-  createdById String?
-  updatedById String?
-  version     Int               @default(1)
-  viewCount   Int               @default(0)
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-  deletedAt   DateTime?
-  site        Site              @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  category    PropertyCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  createdBy   User?             @relation("PostCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  updatedBy   User?             @relation("PostUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
-  images      PropertyImage[]
-  views       PropertyView[]
-  leads       Lead[]
-
-  @@unique([siteId, slug])
-  @@index([siteId, status, publishedAt])
-  @@index([siteId, type, price])
-  @@index([siteId, province, district])
-  @@index([siteId, deletedAt])
-}
-
-model PropertyImage {
-  id         String       @id @default(uuid())
-  postId     String
-  storageKey String       @unique
-  url        String
-  mimeType   String?
-  size       Int?
-  width      Int?
-  height     Int?
-  altText    String?
-  sortOrder  Int          @default(0)
-  createdAt  DateTime     @default(now())
-  post       PropertyPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-
-  @@index([postId, sortOrder])
-}
-
-model PropertyView {
-  id         String       @id @default(uuid())
-  postId     String
-  siteId     String
-  visitorHash String?
-  referrer   String?
-  userAgent  String?
-  viewedAt   DateTime     @default(now())
-  post       PropertyPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  site       Site         @relation(fields: [siteId], references: [id], onDelete: Cascade)
-
-  @@index([siteId, viewedAt])
-  @@index([postId, viewedAt])
-}
-
-model Lead {
-  id         String        @id @default(uuid())
-  siteId     String
-  postId     String?
-  name       String
-  phone      String
-  email      String?
-  message    String?
-  source     String?
-  status     RequestStatus @default(NEW)
-  notes      String?
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  site       Site          @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  post       PropertyPost? @relation(fields: [postId], references: [id], onDelete: SetNull)
-
-  @@index([siteId, status, createdAt])
-  @@index([postId])
-}
-
-model SubscriptionPlan {
-  id               String   @id @default(uuid())
-  name             String   @unique
-  code             String   @unique
-  maxPosts         Int
-  maxImagesPerPost Int
-  price            Decimal  @db.Decimal(18, 2)
-  durationDays     Int
-  isActive         Boolean  @default(true)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  sites            Site[]
-  renewalRequests  RenewalRequest[]
-  history          SubscriptionHistory[]
-}
-
-model RenewalRequest {
-  id            String        @id @default(uuid())
-  siteId        String
-  planId        String?
-  requestedById String
-  status        RequestStatus @default(NEW)
-  note          String?
-  adminNote     String?
-  requestedAt   DateTime      @default(now())
-  resolvedAt    DateTime?
-  site          Site          @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  plan          SubscriptionPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
-  requestedBy   User          @relation("RenewalRequestedBy", fields: [requestedById], references: [id], onDelete: Restrict)
-
-  @@index([siteId, status, requestedAt])
-}
-
-model SubscriptionHistory {
-  id          String             @id @default(uuid())
-  siteId      String
-  planId      String?
-  status      SubscriptionStatus
-  startsAt    DateTime
-  endsAt      DateTime?
-  amount      Decimal?           @db.Decimal(18, 2)
-  note        String?
-  createdAt   DateTime           @default(now())
-  site        Site               @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  plan        SubscriptionPlan?  @relation(fields: [planId], references: [id], onDelete: SetNull)
-
-  @@index([siteId, createdAt])
-}
-
-model AuditLog {
-  id        String   @id @default(uuid())
-  siteId    String?
-  userId    String?
-  action    String
-  entityType String?
-  entityId  String?
-  details   Json?
-  ipAddress String?
-  userAgent String?
-  requestId String?
-  createdAt DateTime @default(now())
-  site      Site?    @relation(fields: [siteId], references: [id], onDelete: SetNull)
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([siteId, createdAt])
-  @@index([userId, createdAt])
-  @@index([action, createdAt])
-}
-
-model ContactRequest {
-  id        String        @id @default(uuid())
-  siteId    String?
-  name      String
-  phone     String
-  email     String?
-  message   String?
-  selectedPlan String?
-  themePreference String    @default("warm") @map("theme_preference")
-  status    RequestStatus @default(NEW)
-  source    String?
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  site      Site?         @relation(fields: [siteId], references: [id], onDelete: SetNull)
-
-  @@index([siteId, status, createdAt])
-  @@index([createdAt])
-}
-
-model Notification {
-  id        String            @id @default(uuid())
-  siteId    String?
-  scope     NotificationScope
-  type      NotificationType
-  title     String
-  body      String
-  link      String
-  payload   Json?
-  isRead    Boolean           @default(false)
-  readAt    DateTime?
-  createdAt DateTime          @default(now())
-  site      Site?             @relation(fields: [siteId], references: [id], onDelete: Cascade)
-
-  @@index([scope, isRead, createdAt])
-  @@index([siteId, scope, isRead, createdAt])
-}
-
-model SystemSetting {
-  id              String @id @default("default")
-  bankId          String?
-  bankAccount     String?
-  bankAccountName String?
-  supportZaloPhone String?
-  updatedAt       DateTime @updatedAt
 }
