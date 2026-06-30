@@ -44,11 +44,12 @@ export function ColdBrowser({
   initialCategoryId,
   initialProvince,
   initialSort,
+  isPending,
 }: BrowserVariantProps) {
   const visiblePages = Array.from({ length: Math.min(totalPages, 5) }, (_, index) => index + 1);
 
   return (
-    <div className="cold-browser">
+    <div className="cold-browser relative">
       <form
         onSubmit={applyFilters}
         className="grid gap-px border border-[var(--cold-border)] bg-[var(--cold-border)] lg:grid-cols-[1.2fr_0.8fr_0.7fr_0.7fr_auto]"
@@ -104,10 +105,16 @@ export function ColdBrowser({
         </label>
         <button
           type="submit"
-          className="inline-flex h-14 items-center justify-center gap-2 bg-[var(--cold-accent)] px-7 text-sm font-black uppercase tracking-[0.08em] text-[#03111f] transition-colors hover:bg-[var(--cold-accent-strong)]"
+          className="relative inline-flex h-14 items-center justify-center gap-2 bg-[var(--cold-accent)] px-7 text-sm font-black uppercase tracking-[0.08em] text-[#03111f] transition-colors hover:bg-[var(--cold-accent-strong)]"
         >
-          <SlidersHorizontal size={16} />
-          Tìm kiếm
+          {isPending ? (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="size-4 animate-spin rounded-full border-2 border-black/30 border-t-black" />
+            </div>
+          ) : (
+            <SlidersHorizontal size={16} />
+          )}
+          <span className={isPending ? "opacity-0" : ""}>Tìm kiếm</span>
         </button>
       </form>
 
@@ -142,47 +149,49 @@ export function ColdBrowser({
         Đã tìm thấy <strong className="text-[var(--cold-ink)]">{total}</strong> tin đăng phù hợp
       </p>
 
-      {posts.length > 0 ? (
-        <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {posts.map((post) => (
-            <TenantLink
-              slug={slug}
-              href={`/posts/${post.slug ?? post.id}`}
-              key={post.id}
-              className="group border border-[var(--cold-border)] bg-white transition-transform hover:-translate-y-1"
-            >
-              <div className="relative aspect-[16/10] overflow-hidden bg-[var(--cold-surface-2)]">
-                <Image src={post.images[0]} alt={post.title} fill className="object-cover transition duration-500 group-hover:scale-[1.03]" sizes="(max-width: 768px) 100vw, 33vw" />
-                <span className="absolute left-0 top-0 bg-[var(--cold-navy)] px-3 py-2 text-[10px] font-black uppercase tracking-[0.12em] text-white">
-                  {propertyTypeLabels[post.type]}
-                </span>
-              </div>
-              <div className="grid gap-5 p-5">
-                <div>
-                  <p className="text-lg font-black text-[var(--cold-accent-dark)]">{formatPrice(post.price, post.type)}</p>
-                  <h3 className="mt-2 line-clamp-2 text-xl font-black leading-tight text-[var(--cold-ink)] group-hover:text-[var(--cold-accent-dark)]">{post.title}</h3>
-                </div>
-                <div className="grid grid-cols-[1fr_auto] items-center gap-3 border-t border-[var(--cold-border)] pt-4 text-sm font-bold text-[var(--cold-muted)]">
-                  <span className="flex min-w-0 items-center gap-2">
-                    <MapPin size={16} className="shrink-0 text-[var(--cold-accent-dark)]" />
-                    <span className="truncate">{post.district}, {post.province}</span>
+      <div className={`transition-all duration-300 relative ${isPending ? "opacity-50 blur-[2px] pointer-events-none" : ""}`}>
+        {posts.length > 0 ? (
+          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {posts.map((post) => (
+              <TenantLink
+                slug={slug}
+                href={`/posts/${post.slug ?? post.id}`}
+                key={post.id}
+                className="group border border-[var(--cold-border)] bg-white transition-transform hover:-translate-y-1"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden bg-[var(--cold-surface-2)]">
+                  <Image src={post.images[0]} alt={post.title} fill className="object-cover transition duration-500 group-hover:scale-[1.03]" sizes="(max-width: 768px) 100vw, 33vw" />
+                  <span className="absolute left-0 top-0 bg-[var(--cold-navy)] px-3 py-2 text-[10px] font-black uppercase tracking-[0.12em] text-white">
+                    {propertyTypeLabels[post.type]}
                   </span>
-                  <span className="border border-[var(--cold-border)] px-3 py-1 text-[var(--cold-ink)]">{post.area}m²</span>
                 </div>
-                <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.12em] text-[var(--cold-accent-dark)]">
-                  Chi tiết <ArrowUpRight size={14} />
-                </span>
-              </div>
-            </TenantLink>
-          ))}
-        </div>
-      ) : (
-        <div className="mt-8 border border-dashed border-[var(--cold-border)] bg-white px-6 py-20 text-center">
-          <Search className="mx-auto text-[var(--cold-muted)]" size={34} />
-          <h3 className="mt-4 text-2xl font-black text-[var(--cold-ink)]">Chưa tìm thấy lựa chọn phù hợp</h3>
-          <p className="mt-2 text-sm font-semibold text-[var(--cold-muted)]">Bạn có thể thử đổi khu vực, loại hình hoặc từ khóa.</p>
-        </div>
-      )}
+                <div className="grid gap-5 p-5">
+                  <div>
+                    <p className="text-lg font-black text-[var(--cold-accent-dark)]">{formatPrice(post.price, post.type)}</p>
+                    <h3 className="mt-2 line-clamp-2 text-xl font-black leading-tight text-[var(--cold-ink)] group-hover:text-[var(--cold-accent-dark)]">{post.title}</h3>
+                  </div>
+                  <div className="grid grid-cols-[1fr_auto] items-center gap-3 border-t border-[var(--cold-border)] pt-4 text-sm font-bold text-[var(--cold-muted)]">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <MapPin size={16} className="shrink-0 text-[var(--cold-accent-dark)]" />
+                      <span className="truncate">{post.district}, {post.province}</span>
+                    </span>
+                    <span className="border border-[var(--cold-border)] px-3 py-1 text-[var(--cold-ink)]">{post.area}m²</span>
+                  </div>
+                  <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.12em] text-[var(--cold-accent-dark)]">
+                    Chi tiết <ArrowUpRight size={14} />
+                  </span>
+                </div>
+              </TenantLink>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-8 border border-dashed border-[var(--cold-border)] bg-white px-6 py-20 text-center">
+            <Search className="mx-auto text-[var(--cold-muted)]" size={34} />
+            <h3 className="mt-4 text-2xl font-black text-[var(--cold-ink)]">Chưa tìm thấy lựa chọn phù hợp</h3>
+            <p className="mt-2 text-sm font-semibold text-[var(--cold-muted)]">Bạn có thể thử đổi khu vực, loại hình hoặc từ khóa.</p>
+          </div>
+        )}
+      </div>
 
       {totalPages > 1 && (
         <nav className="mt-10 flex flex-wrap items-center justify-center gap-2" aria-label="Phân trang tin đăng">

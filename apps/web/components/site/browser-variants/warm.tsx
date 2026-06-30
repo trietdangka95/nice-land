@@ -37,11 +37,12 @@ export function WarmBrowser({
   initialCategoryId,
   initialProvince,
   initialSort,
+  isPending,
 }: BrowserVariantProps) {
   const visiblePages = Array.from({ length: Math.min(totalPages, 5) }, (_, index) => index + 1);
 
   return (
-    <div className="variant-warm mx-auto max-w-[1360px]">
+    <div className="variant-warm mx-auto max-w-[1360px] relative">
       <form onSubmit={applyFilters} className="mx-auto flex flex-col md:flex-row items-center gap-3 rounded-3xl md:rounded-full border border-black/5 bg-white p-2 shadow-sm w-full max-w-4xl">
         <label className="relative flex-1 w-full min-w-[200px]">
           <span className="sr-only">Từ khóa</span>
@@ -81,8 +82,13 @@ export function WarmBrowser({
           <option value="price_desc">Giá cao đến thấp</option>
         </select>
 
-        <button type="submit" className="h-12 w-full md:w-auto whitespace-nowrap rounded-full bg-[var(--tenant-color)] px-8 text-sm font-extrabold text-white shadow-[0_12px_30px_rgba(124,58,36,0.16)] transition-transform active:scale-[0.98]">
-          Tìm Kiếm
+        <button type="submit" className="relative h-12 w-full md:w-auto whitespace-nowrap rounded-full bg-[var(--tenant-color)] px-8 text-sm font-extrabold text-white shadow-[0_12px_30px_rgba(124,58,36,0.16)] transition-transform active:scale-[0.98]">
+          {isPending ? (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            </div>
+          ) : null}
+          <span className={isPending ? "opacity-0" : ""}>Tìm Kiếm</span>
         </button>
       </form>
 
@@ -117,41 +123,43 @@ export function WarmBrowser({
         Đã tìm thấy <strong className="text-[#2d1f18]">{total}</strong> tin đăng phù hợp
       </p>
 
-      {posts.length > 0 ? (
-        <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {posts.map((post) => (
-            <TenantLink slug={slug} href={`/posts/${post.slug ?? post.id}`} key={post.id} className="group rounded-[2rem] border border-black/5 bg-white p-3 shadow-[0_12px_35px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-1">
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] bg-[#ead5c4]">
-                <Image src={post.images[0]} alt={post.title} fill className="object-cover transition duration-500 group-hover:scale-[1.04]" sizes="(max-width: 768px) 100vw, 33vw" />
-                <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-extrabold text-[#2d1f18] shadow-sm">
-                  {propertyTypeLabels[post.type]}
-                </span>
-              </div>
-              <div className="p-3">
-                <p className="text-xl font-extrabold text-[var(--tenant-color)]">{formatPrice(post.price, post.type)}</p>
-                <h3 className="mt-2 line-clamp-2 text-lg font-extrabold leading-snug text-[#2d1f18] group-hover:text-[var(--tenant-color)]">{post.title}</h3>
-                <div className="mt-4 grid grid-cols-[1fr_auto] items-center gap-3 text-sm font-bold text-[#7a5a4e]">
-                  <span className="flex min-w-0 items-center gap-2">
-                    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#f1ebd9] text-[#a78a7a]">
-                      <MapPin size={15} />
-                    </span>
-                    <span className="truncate">{post.district}, {post.province}</span>
+      <div className={`transition-all duration-300 relative ${isPending ? "opacity-50 blur-[2px] pointer-events-none" : ""}`}>
+        {posts.length > 0 ? (
+          <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {posts.map((post) => (
+              <TenantLink slug={slug} href={`/posts/${post.slug ?? post.id}`} key={post.id} className="group rounded-[2rem] border border-black/5 bg-white p-3 shadow-[0_12px_35px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-1">
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] bg-[#ead5c4]">
+                  <Image src={post.images[0]} alt={post.title} fill className="object-cover transition duration-500 group-hover:scale-[1.04]" sizes="(max-width: 768px) 100vw, 33vw" />
+                  <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-extrabold text-[#2d1f18] shadow-sm">
+                    {propertyTypeLabels[post.type]}
                   </span>
-                  <span className="rounded-full bg-[#f1ebd9] px-3 py-2">{post.area}m²</span>
                 </div>
-              </div>
-            </TenantLink>
-          ))}
-        </div>
-      ) : (
-        <div className="mx-auto mt-8 max-w-xl rounded-[2rem] bg-white px-6 py-20 text-center shadow-[0_12px_35px_rgba(124,58,36,0.06)]">
-          <div className="mx-auto grid size-20 place-items-center rounded-full bg-[#f1ebd9] text-[#a78a7a]">
-            <Search size={34} />
+                <div className="p-3">
+                  <p className="text-xl font-extrabold text-[var(--tenant-color)]">{formatPrice(post.price, post.type)}</p>
+                  <h3 className="mt-2 line-clamp-2 text-lg font-extrabold leading-snug text-[#2d1f18] group-hover:text-[var(--tenant-color)]">{post.title}</h3>
+                  <div className="mt-4 grid grid-cols-[1fr_auto] items-center gap-3 text-sm font-bold text-[#7a5a4e]">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#f1ebd9] text-[#a78a7a]">
+                        <MapPin size={15} />
+                      </span>
+                      <span className="truncate">{post.district}, {post.province}</span>
+                    </span>
+                    <span className="rounded-full bg-[#f1ebd9] px-3 py-2">{post.area}m²</span>
+                  </div>
+                </div>
+              </TenantLink>
+            ))}
           </div>
-          <h3 className="mt-5 text-2xl font-extrabold text-[#2d1f18]">Chưa tìm thấy lựa chọn phù hợp</h3>
-          <p className="mt-2 text-sm font-semibold text-[#7a5a4e]">Bạn có thể thử đổi khu vực, loại hình hoặc từ khóa.</p>
-        </div>
-      )}
+        ) : (
+          <div className="mx-auto mt-8 max-w-xl rounded-[2rem] bg-white px-6 py-20 text-center shadow-[0_12px_35px_rgba(124,58,36,0.06)]">
+            <div className="mx-auto grid size-20 place-items-center rounded-full bg-[#f1ebd9] text-[#a78a7a]">
+              <Search size={34} />
+            </div>
+            <h3 className="mt-5 text-2xl font-extrabold text-[#2d1f18]">Chưa tìm thấy lựa chọn phù hợp</h3>
+            <p className="mt-2 text-sm font-semibold text-[#7a5a4e]">Bạn có thể thử đổi khu vực, loại hình hoặc từ khóa.</p>
+          </div>
+        )}
+      </div>
 
       {totalPages > 1 && (
         <nav className="mt-12 flex items-center justify-center gap-2 pb-8" aria-label="Phân trang tin đăng">

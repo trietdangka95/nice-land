@@ -15,9 +15,9 @@ const PROVINCES = [
 
 export function DefaultBrowser({
   query, setQuery, type, setType, categoryId, setCategoryId, province, setProvince, sort, setSort, categories, applyFilters,
-  posts, slug, total, page, totalPages, initialQuery, initialType, initialCategoryId, initialProvince, initialSort}: BrowserVariantProps) {
+  posts, slug, total, page, totalPages, initialQuery, initialType, initialCategoryId, initialProvince, initialSort, isPending}: BrowserVariantProps) {
   return (
-    <div className="tenant-property-browser">
+    <div className="tenant-property-browser relative">
       <form
         onSubmit={applyFilters}
         className="tenant-filter grid gap-3 border border-ink/10 bg-white p-3 md:grid-cols-2 xl:grid-cols-[1fr_140px_140px_140px_140px_auto]"
@@ -88,10 +88,16 @@ export function DefaultBrowser({
         </label>
         <button
           type="submit"
-          className="flex h-12 items-center justify-center gap-2 bg-[var(--tenant-color)] px-5 text-sm font-bold text-white"
+          className="flex h-12 items-center justify-center gap-2 bg-[var(--tenant-color)] px-5 text-sm font-bold text-white relative"
         >
-          <SlidersHorizontal size={16} />
-          Áp dụng
+          {isPending ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-[var(--tenant-color)]">
+              <div className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            </div>
+          ) : (
+            <SlidersHorizontal size={16} />
+          )}
+          <span className={isPending ? "opacity-0" : ""}>Áp dụng</span>
         </button>
       </form>
 
@@ -101,23 +107,25 @@ export function DefaultBrowser({
         </p>
       </div>
 
-      {posts.length > 0 ? (
-        <div className="tenant-property-grid mt-6 grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4" data-reveal-group>
-          {posts.map((post) => (
-            <PropertyCard
-              key={post.id}
-              post={post}
-              slug={slug}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="mt-6 border border-dashed border-ink/20 bg-white py-20 text-center">
-          <Search className="mx-auto text-ink/25" size={34} />
-          <h3 className="mt-4 font-display text-2xl">Chưa tìm thấy tin đăng phù hợp</h3>
-          <p className="mt-2 text-sm text-ink/50">Thử thay đổi từ khóa hoặc loại hình đang chọn.</p>
-        </div>
-      )}
+      <div className={`mt-6 transition-all duration-300 relative ${isPending ? "opacity-50 blur-[2px] pointer-events-none" : ""}`}>
+        {posts.length > 0 ? (
+          <div className="tenant-property-grid grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4" data-reveal-group>
+            {posts.map((post) => (
+              <PropertyCard
+                key={post.id}
+                post={post}
+                slug={slug}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="border border-dashed border-ink/20 bg-white py-20 text-center">
+            <Search className="mx-auto text-ink/25" size={34} />
+            <h3 className="mt-4 font-display text-2xl">Chưa tìm thấy tin đăng phù hợp</h3>
+            <p className="mt-2 text-sm text-ink/50">Thử thay đổi từ khóa hoặc loại hình đang chọn.</p>
+          </div>
+        )}
+      </div>
 
       {totalPages > 1 && (
         <nav

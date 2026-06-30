@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useTransition as reactTransition } from "react";
 import { useRouter } from "next/navigation";
 import { buildPublicPostsHref } from "@/lib/pagination";
 import type { PropertyPost, PropertyType } from "@/lib/types";
@@ -35,6 +35,7 @@ export interface BrowserVariantProps {
   initialCategoryId: string;
   initialProvince: string;
   initialSort: string;
+  isPending: boolean;
 }
 
 export function PropertyBrowser({
@@ -89,6 +90,8 @@ export function PropertyBrowser({
       : "ALL";
   }
 
+  const [isPending, startTransition] = reactTransition();
+
   function pushFilters(overrides: Partial<{
     q: string;
     type: string;
@@ -96,16 +99,18 @@ export function PropertyBrowser({
     province: string;
     sort: string;
   }> = {}) {
-    router.push(
-      buildPublicPostsHref(slug, {
-        page: 1,
-        q: overrides.q ?? query,
-        type: normalizedType(overrides.type ?? type),
-        categoryId: overrides.categoryId ?? categoryId,
-        province: overrides.province ?? province,
-        sort: (overrides.sort ?? sort) as "newest" | "price_asc" | "price_desc",
-      }),
-    );
+    startTransition(() => {
+      router.push(
+        buildPublicPostsHref(slug, {
+          page: 1,
+          q: overrides.q ?? query,
+          type: normalizedType(overrides.type ?? type),
+          categoryId: overrides.categoryId ?? categoryId,
+          province: overrides.province ?? province,
+          sort: (overrides.sort ?? sort) as "newest" | "price_asc" | "price_desc",
+        }),
+      );
+    });
   }
 
   function selectType(nextType: string) {
@@ -154,6 +159,7 @@ export function PropertyBrowser({
     total, 
     page, totalPages,
     initialQuery, initialType, initialCategoryId, initialProvince, initialSort,
+    isPending,
   };
 
   switch (variant) {
