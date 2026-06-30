@@ -85,7 +85,7 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
     <>
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-moss">Tài khoản & dịch vụ</p>
       <h1 className="mt-2 font-display text-4xl font-medium">Gói dịch vụ</h1>
-      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="mt-8 flex flex-col gap-6">
         <section className="glass-panel rounded-3xl p-6 sm:p-8">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
