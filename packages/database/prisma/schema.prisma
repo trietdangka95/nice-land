@@ -414,3 +414,15 @@ enum NotificationType {
   RENEWAL_REQUEST_CREATED
   RENEWAL_REQUEST_UPDATED
 }
+
+model PlatformView {
+  id          String   @id @default(cuid())
+  visitorHash String   @map("visitor_hash") @db.VarChar(64)
+  userAgent   String   @map("user_agent") @db.Text
+  referrer    String?  @db.Text
+  viewedAt    DateTime @default(now()) @map("viewed_at")
+
+  @@index([viewedAt])
+  @@index([visitorHash, viewedAt])
+  @@map("platform_views")
+}

@@ -16,16 +16,19 @@ export function SuperAdminDashboardScreen() {
   const toast = useToast();
   const [sites, setSites] = useState<SuperAdminSite[]>([]);
   const [renewals, setRenewals] = useState<SuperAdminRenewalRequest[]>([]);
+  const [landingPageViews, setLandingPageViews] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       api.listSuperAdminSites({ limit: 50 }),
       api.listSuperAdminRenewals(),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000"}/v1/public/stats`).then(res => res.json().catch(() => ({}))),
     ])
-      .then(([siteResult, renewalItems]) => {
+      .then(([siteResult, renewalItems, stats]) => {
         setSites(siteResult.items);
         setRenewals(renewalItems);
+        setLandingPageViews(stats.landingPageViews || 0);
       })
       .catch((requestError) =>
         toast.error(
@@ -53,7 +56,8 @@ export function SuperAdminDashboardScreen() {
         <Link href="/superadmin/sites/create" className="button-primary"><Plus size={17} /> Tạo website mới</Link>
       </div>
       {loading ? <div className="mt-8 h-36 animate-pulse bg-white" /> : <>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <DashboardStat label="Lượt xem Landing" value={`${landingPageViews.toLocaleString("vi-VN")}`} detail="Lượt truy cập trang chủ" icon={Users} tone="green" />
           <DashboardStat label="Website khách hàng" value={`${sites.length}`} detail={`${activeSites} đang hoạt động`} icon={Building2} />
           <DashboardStat label="Tổng tin đăng" value={postCount.toLocaleString("vi-VN")} detail="Chưa gồm tin đã archive" icon={FileText} tone="blue" />
           <DashboardStat label="Yêu cầu gia hạn" value={`${pendingRenewals}`} detail="Đang chờ xử lý" icon={RefreshCw} tone="gold" />

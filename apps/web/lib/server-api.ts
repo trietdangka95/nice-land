@@ -341,22 +341,24 @@ export async function getPlatformStats(): Promise<{
   totalSites: number;
   totalPosts: number;
   totalThemes: number;
+  landingPageViews: number;
 }> {
   try {
     const response = await fetch(`${apiUrl}/v1/public/stats`, {
       cache: "no-store",
     });
     if (!response.ok) {
-      return { totalSites: 0, totalPosts: 0, totalThemes: 0 };
+      return { totalSites: 0, totalPosts: 0, totalThemes: 0, landingPageViews: 0 };
     }
     return (await response.json()) as {
       totalSites: number;
       totalPosts: number;
       totalThemes: number;
+      landingPageViews: number;
     };
   } catch (error) {
     console.error("❌ Lỗi khi fetch getPlatformStats:", error);
-    return { totalSites: 0, totalPosts: 0, totalThemes: 0 };
+    return { totalSites: 0, totalPosts: 0, totalThemes: 0, landingPageViews: 0 };
   }
 }
 

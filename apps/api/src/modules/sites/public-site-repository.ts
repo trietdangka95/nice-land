@@ -25,6 +25,8 @@ export interface PublicSiteRepository {
     totalSites: number;
     totalPosts: number;
     totalThemes: number;
+    landingPageViews: number;
   }>;
   listPublicPlans?(): Promise<SubscriptionPlan[]>;
+  recordPlatformView?(input: { visitorHash: string; userAgent: string; referrer?: string; since: Date }): Promise<boolean>;
 }

@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import { createHash } from "node:crypto";
 import cors from "@fastify/cors";
 import cookie from "@fastify/cookie";
 import {
@@ -218,6 +219,24 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
     if (options.publicSiteRepository.listPublicPlans) {
       app.get("/v1/public/plans", async () => {
         return options.publicSiteRepository!.listPublicPlans!();
+      });
+    }
+
+    if (options.publicSiteRepository.recordPlatformView) {
+      const BOT_PATTERN = /bot|crawler|spider|slurp|preview|facebookexternalhit/i;
+      app.post("/v1/public/platform-views", async (request, reply) => {
+        const userAgent = request.headers["user-agent"] ?? "";
+        if (BOT_PATTERN.test(userAgent)) return reply.status(204).send();
+        const visitorHash = createHash("sha256")
+          .update(`${request.ip}|${userAgent}|${config.JWT_ACCESS_SECRET}`)
+          .digest("hex");
+        await options.publicSiteRepository!.recordPlatformView!({
+          visitorHash,
+          userAgent,
+          referrer: request.headers.referer,
+          since: new Date(Date.now() - 86_400_000),
+        });
+        return reply.status(204).send();
       });
     }
   }

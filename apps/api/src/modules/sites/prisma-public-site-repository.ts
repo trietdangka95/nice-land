@@ -33,7 +33,7 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
   }
 
   async getPlatformStats() {
-    const [totalSites, totalPosts, activeThemes] = await Promise.all([
+    const [totalSites, totalPosts, activeThemes, landingPageViews] = await Promise.all([
       prisma.site.count({ where: { isActive: true, deletedAt: null } }),
       prisma.propertyPost.count({ where: { status: "PUBLISHED", deletedAt: null } }),
       prisma.site.findMany({
@@ -41,12 +41,14 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
         distinct: ["themeKey"],
         select: { themeKey: true },
       }),
+      prisma.platformView.count(),
     ]);
 
     return {
       totalSites,
       totalPosts,
       totalThemes: activeThemes.length,
+      landingPageViews,
     };
   }
 

@@ -21,6 +21,7 @@ import { MobileNavigation } from "@/components/shared/mobile-navigation";
 import { properties } from "@/lib/data";
 import { getPlatformStats, getPublicPlans, getPublicSystemSetting } from "@/lib/server-api";
 import type { SubscriptionPlan } from "@nice-land/contracts";
+import { ViewTracker } from "@/components/marketing/view-tracker";
 
 function getPlanPresentation(plan: SubscriptionPlan) {
   const isPopular = plan.isPopular;
@@ -58,6 +59,7 @@ export default async function LandingPage({
 
   return (
     <main className="overflow-hidden">
+      <ViewTracker />
       <header className="sticky top-0 z-50 border-b border-ink/10 bg-cream/90 backdrop-blur-xl supports-[backdrop-filter]:bg-cream/75">
         <div className="page-shell flex min-h-20 items-center justify-between gap-4">
           <Logo />
