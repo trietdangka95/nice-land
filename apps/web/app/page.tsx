@@ -375,12 +375,14 @@ export default async function LandingPage({
 
                     <div className="relative z-10 flex-1">
                       <div className="flex justify-between items-start mb-4 min-h-[4rem] gap-2">
-                        <h3 className="font-display text-3xl font-medium line-clamp-2">{plan.name}</h3>
-                        {presentation.popular && (
-                          <span className="bg-gold px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-ink shadow-sm">
-                            Phổ biến
-                          </span>
-                        )}
+                        <div className="flex flex-col gap-1 items-start">
+                          <h3 className="font-display text-3xl font-medium line-clamp-2">{plan.name}</h3>
+                          {presentation.popular && (
+                            <span className="bg-gold px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-ink shadow-sm">
+                              Phổ biến
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <p className={`min-h-[3rem] text-sm leading-relaxed ${presentation.popular ? "text-white/70" : "text-ink/60"}`}>
                         {presentation.description}

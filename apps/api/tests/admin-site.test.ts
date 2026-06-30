@@ -90,6 +90,7 @@ function repository(): AdminSiteRepository {
       note: input.note ?? null,
       requestedAt: "2026-06-20T00:00:00.000Z",
     }),
+    listAvailablePlans: async () => [],
   };
 }
 
@@ -290,5 +291,16 @@ describe("tenant admin site routes", () => {
       headers: { ...authHeaders, authorization: "Bearer other" },
     });
     expect(response.statusCode).toBe(403);
+  });
+
+  it("returns available plans successfully without 500 error", async () => {
+    const response = await createApp().inject({
+      method: "GET",
+      url: "/v1/admin/plans",
+      headers: authHeaders,
+    });
+    console.log(response.body);
+    expect(response.statusCode).toBe(200);
+    expect(Array.isArray(response.json())).toBe(true);
   });
 });

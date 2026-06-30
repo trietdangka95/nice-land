@@ -38,7 +38,7 @@ export function AdminShell({
   const pathname = usePathname();
   const router = useTenantRouting(site?.slug);
   const user = useAuth();
-  
+
   const displayName = user.fullName || user.username;
   const initials = user.fullName
     ? user.fullName.split(/\s+/).filter(Boolean).slice(-2).map(p => p[0]).join("").toUpperCase()
@@ -157,7 +157,7 @@ export function AdminShell({
       </aside>
 
       <div className="min-w-0 relative z-10 flex flex-col h-screen">
-        <header className="flex h-20 shrink-0 items-center justify-between border-b border-ink/5 glass-panel px-5 sm:px-8">
+        <header className="flex h-20 shrink-0 items-center justify-between border-b border-ink/5 glass-panel px-5 sm:px-8 relative z-50">
           <div className="flex items-center gap-3">
             <MobileNavigation
               label="Mở menu quản trị"
@@ -179,8 +179,8 @@ export function AdminShell({
                       href={href as string}
                       prefetch={false}
                       className={`flex items-center gap-3 px-3 py-3 text-sm font-semibold transition-all rounded-xl mx-2 ${active
-                          ? "bg-moss/20 text-gold border border-gold/10 shadow-inner"
-                          : "text-white/65 hover:bg-white/5 hover:text-white"
+                        ? "bg-moss/20 text-gold border border-gold/10 shadow-inner"
+                        : "text-white/65 hover:bg-white/5 hover:text-white"
                         }`}
                     >
                       <NavIcon size={18} strokeWidth={1.7} aria-hidden="true" />
@@ -215,10 +215,9 @@ export function AdminShell({
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink/35">
                 {superAdmin ? "Hệ thống" : "Website hiện tại"}
               </p>
-              <button className="mt-1 flex items-center gap-2 text-sm font-bold">
+              <div className="mt-1 flex items-center gap-2 text-sm font-bold">
                 {superAdmin ? "Tất cả website" : site?.name}
-                <ChevronDown size={14} />
-              </button>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">

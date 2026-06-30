@@ -95,7 +95,8 @@ export function SuperAdminSiteForm({ siteId }: { siteId?: string }) {
       router.push("/superadmin/sites"); router.refresh();
     } catch (requestError) {
       toast.error(formatSiteFormError(requestError), "Không thể lưu website");
-    } finally { setSaving(false); }
+      setSaving(false);
+    }
   }
 
   const field = <K extends keyof typeof form>(

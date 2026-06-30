@@ -46,7 +46,6 @@ export function LoginForm({
         getErrorMessage(requestError, "Không thể đăng nhập. Vui lòng thử lại."),
         "Đăng nhập thất bại",
       );
-    } finally {
       setLoading(false);
     }
   }

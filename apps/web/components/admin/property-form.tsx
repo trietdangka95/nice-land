@@ -133,7 +133,6 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
         getErrorMessage(requestError, "Không thể lưu tin đăng."),
         "Không thể lưu tin",
       );
-    } finally {
       setSaving(false);
     }
   }
@@ -267,12 +266,12 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
             <div className="grid gap-5 sm:grid-cols-2">
               <label className="grid gap-2 text-sm font-bold text-ink/80">
                 Loại hình
-                <select 
-                  value={form.type} 
+                <select
+                  value={form.type}
                   onChange={(e) => {
                     field("type", e.target.value as PropertyType);
                     field("categoryId", "");
-                  }} 
+                  }}
                   className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
                 >
                   <option value="HOUSE">Căn liền thổ</option>
@@ -297,7 +296,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
                 </select>
               </label>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-5 sm:grid-cols-2 items-start">
               <div className="grid gap-2 text-sm font-bold text-ink/80">
                 Mức giá (đ)
                 <input value={form.price} onChange={(e) => field("price", e.target.value)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors" type="number" min="0" />
