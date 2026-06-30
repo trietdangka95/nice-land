@@ -42,7 +42,7 @@ const accessTokens = {
 
 const dashboard = {
   postCounts: { total: 12, published: 7, draft: 3, sold: 2 },
-  engagement: { views: 240, leads: 9 },
+  engagement: { views: 240, leads: 9, newLeads: 2 },
   subscription: {
     status: "ACTIVE" as const,
     startsAt: null,
@@ -91,7 +91,7 @@ describe("tenant admin dashboard", () => {
     expect(requestedSiteIds).toEqual(["site-a"]);
     expect(response.json()).toMatchObject({
       postCounts: { total: 12, published: 7, draft: 3, sold: 2 },
-      engagement: { views: 240, leads: 9 },
+      engagement: { views: 240, leads: 9, newLeads: 2 },
     });
   });
 

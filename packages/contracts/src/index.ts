@@ -529,6 +529,7 @@ export interface TenantDashboard {
   engagement: {
     views: number;
     leads: number;
+    newLeads: number;
   };
   subscription: AdminSubscription;
   recentPosts: AdminPost[];

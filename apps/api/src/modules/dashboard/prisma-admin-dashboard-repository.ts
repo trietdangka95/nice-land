@@ -50,6 +50,7 @@ export class PrismaAdminDashboardRepository
       views,
       leads,
       images,
+      newLeads,
     ] = await prisma.$transaction([
       prisma.site.findFirst({
         where: { id: siteId, deletedAt: null },
@@ -107,6 +108,9 @@ export class PrismaAdminDashboardRepository
       prisma.propertyImage.count({
         where: { post: { siteId, deletedAt: null } },
       }),
+      prisma.lead.count({
+        where: { siteId, status: "NEW" },
+      }),
     ]);
 
     if (!site) return null;
@@ -120,7 +124,7 @@ export class PrismaAdminDashboardRepository
         draft,
         sold,
       },
-      engagement: { views, leads },
+      engagement: { views, leads, newLeads },
       subscription: {
         status: site.subscriptionStatus,
         startsAt: site.subscriptionStart?.toISOString() ?? null,

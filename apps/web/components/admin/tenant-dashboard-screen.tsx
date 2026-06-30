@@ -262,8 +262,8 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
                 recentPosts.some((post) => post.images.length === 0)
                   ? "Bổ sung ảnh cho các tin chưa có ảnh"
                   : "Ảnh tin đăng đã đầy đủ",
-                (engagement?.leads ?? 0) > 0
-                  ? `Xử lý ${engagement?.leads} lead mới`
+                (engagement?.newLeads ?? 0) > 0
+                  ? `Xử lý ${engagement?.newLeads} lead mới`
                   : "Theo dõi lead mới từ website",
               ].map((item, index) => (
                 <li key={item} className="flex items-center gap-3">

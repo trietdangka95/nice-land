@@ -7,7 +7,6 @@ import { createTenantApi, api } from "@/lib/api";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
 import { VietQR } from "@/components/shared/viet-qr";
-import { useSearchParams } from "next/navigation";
 
 const statusLabels: Record<AdminSubscription["status"], string> = {
   TRIAL: "Dùng thử",
@@ -19,7 +18,6 @@ const statusLabels: Record<AdminSubscription["status"], string> = {
 
 export function SubscriptionScreen({ slug }: { slug: string }) {
   const client = useMemo(() => createTenantApi(slug), [slug]);
-  const searchParams = useSearchParams();
   const toast = useToast();
   const [subscription, setSubscription] = useState<AdminSubscription | null>(null);
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
@@ -82,18 +80,6 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
   const plan = subscription.plan;
   const remainingPosts = Math.max(0, (plan?.maxPosts ?? 0) - subscription.usage.posts);
   const pending = subscription.latestRenewalRequest && ["NEW", "IN_PROGRESS"].includes(subscription.latestRenewalRequest.status);
-  const highlightRenewalId = searchParams.get("highlightRenewal");
-  const highlightRenewal = subscription.latestRenewalRequest?.id === highlightRenewalId;
-  useEffect(() => {
-    if (!highlightRenewal) return;
-    const frame = window.requestAnimationFrame(() => {
-      document.getElementById("subscription-renewal-highlight")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [highlightRenewal]);
 
   return (
     <>
@@ -132,7 +118,7 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
           <p className="mt-3 text-sm text-white/60">Còn khả dụng {remainingPosts.toLocaleString("vi-VN")} tin đăng.</p>
 
           {pending ? (
-            <div id="subscription-renewal-highlight" className={`mt-7 rounded-2xl border p-5 backdrop-blur-sm ${highlightRenewal ? "border-gold bg-gold/10 shadow-[0_0_0_1px_rgba(207,168,107,0.24)] scroll-mt-28" : "border-white/15 bg-white/5"}`}>
+            <div id="subscription-renewal-highlight" className="mt-7 rounded-2xl border p-5 backdrop-blur-sm border-white/15 bg-white/5">
               <p className="text-sm font-bold text-gold">Yêu cầu đang được xử lý</p>
               <p className="mt-2 text-xs leading-5 text-white/70">
                 Đã gửi ngày {new Date(subscription.latestRenewalRequest!.requestedAt).toLocaleDateString("vi-VN")}.
