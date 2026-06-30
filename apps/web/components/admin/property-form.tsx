@@ -267,7 +267,14 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
             <div className="grid gap-5 sm:grid-cols-2">
               <label className="grid gap-2 text-sm font-bold text-ink/80">
                 Loại hình
-                <select value={form.type} onChange={(e) => field("type", e.target.value as PropertyType)} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors">
+                <select 
+                  value={form.type} 
+                  onChange={(e) => {
+                    field("type", e.target.value as PropertyType);
+                    field("categoryId", "");
+                  }} 
+                  className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors"
+                >
                   <option value="HOUSE">Căn liền thổ</option>
                   <option value="APARTMENT">Căn hộ</option>
                   <option value="LAND">Đất</option>

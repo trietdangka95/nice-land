@@ -120,15 +120,30 @@ export function PropertyBrowser({
     pushFilters();
   }
 
+  function handleCategoryIdChange(nextCategoryId: string) {
+    setCategoryId(nextCategoryId);
+    if (type === "ALL" && nextCategoryId !== "") {
+      const category = categories.find((c) => c.id === nextCategoryId);
+      if (category) {
+        setType(category.type);
+      }
+    }
+  }
+
   function applyCategoryFilter(nextCategoryId: string) {
     setCategoryId(nextCategoryId);
-    pushFilters({ categoryId: nextCategoryId });
+    const category = categories.find((c) => c.id === nextCategoryId);
+    const nextType = category && type === "ALL" ? category.type : type;
+    if (nextType !== type) {
+      setType(nextType);
+    }
+    pushFilters({ categoryId: nextCategoryId, type: nextType });
   }
 
   const props: BrowserVariantProps = {
     query, setQuery,
     type, setType: selectType,
-    categoryId, setCategoryId,
+    categoryId, setCategoryId: handleCategoryIdChange,
     province, setProvince,
     sort, setSort,
     categories,
