@@ -114,7 +114,7 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
       <form onSubmit={save} className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <section className="glass-panel rounded-3xl p-6 sm:p-8">
           <h2 className="font-display text-2xl">Thông tin thương hiệu</h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
+          <div className="mt-6 grid items-start gap-5 sm:grid-cols-2">
             <TextField label="Tên website" value={form.name} onChange={(value) => setField("name", value)} required />
             <TextField label="Slogan" value={form.tagline ?? ""} onChange={(value) => setField("tagline", value)} />
             <TextField label="Số điện thoại" value={form.phone} onChange={(value) => setField("phone", value)} required />
@@ -129,7 +129,7 @@ export function SiteSettingsScreen({ slug }: { slug: string }) {
           <hr className="my-8 border-ink/5" />
           
           <h2 className="font-display text-2xl">Thông tin môi giới</h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
+          <div className="mt-6 grid items-start gap-5 sm:grid-cols-2">
             <ImageUploadInput label="Avatar môi giới" value={form.brokerAvatar ?? ""} onChange={(value) => setField("brokerAvatar", value)} folder="avatars" presignGenericImage={(input) => client.presignGenericImage(input)} previewStyle="avatar" />
             <TextField label="Tên môi giới" value={form.brokerName ?? ""} onChange={(value) => setField("brokerName", value)} />
             <TextAreaField label="Mô tả môi giới" value={form.brokerBio ?? ""} onChange={(value) => setField("brokerBio", value)} wide />
