@@ -44,6 +44,7 @@ services:
       HOST: 0.0.0.0
       PORT: 4000
       DATABASE_URL: postgresql://postgres:change_this_to_a_strong_prod_password@db:5432/nice_land?sslmode=disable
+      APP_URL: ${APP_URL:-https://${ROOT_DOMAIN:-nice-land.id.vn}}
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-nice-land-prod-access-secret-2026}
       ACCESS_TOKEN_TTL_SECONDS: ${ACCESS_TOKEN_TTL_SECONDS:-900}
       REFRESH_TOKEN_TTL_DAYS: ${REFRESH_TOKEN_TTL_DAYS:-30}
