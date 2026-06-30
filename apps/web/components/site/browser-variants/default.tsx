@@ -110,12 +110,17 @@ export function DefaultBrowser({
       <div className={`mt-6 transition-all duration-300 relative ${isPending ? "opacity-50 blur-[2px] pointer-events-none" : ""}`}>
         {posts.length > 0 ? (
           <div className="tenant-property-grid grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4" data-reveal-group>
-            {posts.map((post) => (
-              <PropertyCard
+            {posts.map((post, index) => (
+              <div
                 key={post.id}
-                post={post}
-                slug={slug}
-              />
+                className="animate-fade-in-up opacity-0 fill-mode-forwards"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <PropertyCard
+                  post={post}
+                  slug={slug}
+                />
+              </div>
             ))}
           </div>
         ) : (

@@ -152,12 +152,13 @@ export function ColdBrowser({
       <div className={`transition-all duration-300 relative ${isPending ? "opacity-50 blur-[2px] pointer-events-none" : ""}`}>
         {posts.length > 0 ? (
           <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <TenantLink
                 slug={slug}
                 href={`/posts/${post.slug ?? post.id}`}
                 key={post.id}
-                className="group border border-[var(--cold-border)] bg-white transition-transform hover:-translate-y-1"
+                className="group border border-[var(--cold-border)] bg-white transition-transform hover:-translate-y-1 animate-fade-in-up opacity-0 fill-mode-forwards"
+                style={{ animationDelay: `${index * 50}ms` }}
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-[var(--cold-surface-2)]">
                   <Image src={post.images[0]} alt={post.title} fill className="object-cover transition duration-500 group-hover:scale-[1.03]" sizes="(max-width: 768px) 100vw, 33vw" />

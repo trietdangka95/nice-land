@@ -18,9 +18,7 @@ export function PropertyGallery({
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  const thumbnails = images.slice(1, 3).length
-    ? images.slice(1, 3)
-    : [images[0], images[0]];
+  const thumbnails = images.slice(1, 3);
 
   const openLightbox = (index: number) => {
     setCurrentIndex(index);
@@ -88,7 +86,7 @@ export function PropertyGallery({
 
   return (
     <>
-      <div className="tenant-detail-gallery-grid grid gap-3 md:grid-cols-[1.6fr_1fr]" data-reveal="soft">
+      <div className={`tenant-detail-gallery-grid grid gap-3 ${images.length > 1 ? "md:grid-cols-[1.6fr_1fr]" : "md:grid-cols-1"}`} data-reveal="soft">
         <div
           className="tenant-detail-main-image relative min-h-[380px] overflow-hidden md:min-h-[570px] cursor-pointer group"
           onClick={() => openLightbox(0)}
@@ -99,7 +97,7 @@ export function PropertyGallery({
             fill
             priority
             className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, 65vw"
+            sizes={images.length > 1 ? "(max-width: 768px) 100vw, 65vw" : "100vw"}
           />
           <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10 flex items-center justify-center">
             <span className="opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 bg-black/50 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
@@ -107,24 +105,26 @@ export function PropertyGallery({
             </span>
           </div>
         </div>
-        <div className="tenant-detail-thumbnails grid grid-cols-2 gap-3 md:grid-cols-1">
-          {thumbnails.map((image, i) => (
-            <div
-              key={`${image}-${i}`}
-              className="relative min-h-44 overflow-hidden md:min-h-0 cursor-pointer group"
-              onClick={() => openLightbox(i + 1)}
-            >
-              <Image
-                src={image}
-                alt={`${title} - ảnh ${i + 2}`}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="35vw"
-              />
-              <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
-            </div>
-          ))}
-        </div>
+        {images.length > 1 && (
+          <div className={`tenant-detail-thumbnails grid gap-3 ${thumbnails.length === 1 ? "grid-cols-1 md:grid-cols-1" : "grid-cols-2 md:grid-cols-1"}`}>
+            {thumbnails.map((image, i) => (
+              <div
+                key={`${image}-${i}`}
+                className={`relative min-h-44 overflow-hidden md:min-h-0 cursor-pointer group ${thumbnails.length === 1 ? "md:min-h-[570px]" : ""}`}
+                onClick={() => openLightbox(i + 1)}
+              >
+                <Image
+                  src={image}
+                  alt={`${title} - ảnh ${i + 2}`}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 50vw, 35vw"
+                />
+                <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {lightboxOpen && (

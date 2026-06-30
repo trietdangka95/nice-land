@@ -126,8 +126,14 @@ export function WarmBrowser({
       <div className={`transition-all duration-300 relative ${isPending ? "opacity-50 blur-[2px] pointer-events-none" : ""}`}>
         {posts.length > 0 ? (
           <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {posts.map((post) => (
-              <TenantLink slug={slug} href={`/posts/${post.slug ?? post.id}`} key={post.id} className="group rounded-[2rem] border border-black/5 bg-white p-3 shadow-[0_12px_35px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-1">
+            {posts.map((post, index) => (
+              <TenantLink 
+                slug={slug} 
+                href={`/posts/${post.slug ?? post.id}`} 
+                key={post.id} 
+                className="group rounded-[2rem] border border-black/5 bg-white p-3 shadow-[0_12px_35px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-1 animate-fade-in-up opacity-0 fill-mode-forwards"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] bg-[#ead5c4]">
                   <Image src={post.images[0]} alt={post.title} fill className="object-cover transition duration-500 group-hover:scale-[1.04]" sizes="(max-width: 768px) 100vw, 33vw" />
                   <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-extrabold text-[#2d1f18] shadow-sm">
