@@ -16,12 +16,15 @@ import {
   type AdminSiteRepository,
   PendingRenewalRequestError,
 } from "./admin-site-repository.js";
+import type { NotificationRepository } from "../notifications/notification-repository.js";
+import { buildRenewalRequestCreatedNotification } from "../notifications/notification-content.js";
 
 interface AdminSiteRouteOptions {
   config: AppConfig;
   tenantRepository: TenantSiteRepository;
   accessTokens: AccessTokenService;
   repository: AdminSiteRepository;
+  notificationRepository?: NotificationRepository;
 }
 
 function notFound(requestId: string) {
@@ -85,6 +88,27 @@ export async function registerAdminSiteRoutes(
         input,
         request.auth!.sub,
       );
+      if (options.notificationRepository) {
+        const notification = buildRenewalRequestCreatedNotification(created.id);
+        void options.notificationRepository.create({
+          siteId: request.tenant!.siteId,
+          scope: "SUPER_ADMIN",
+          type: "RENEWAL_REQUEST_CREATED",
+          title: notification.title,
+          body: notification.body,
+          link: notification.link,
+          payload: {
+            ...notification.payload,
+            renewalRequestId: created.id,
+            requestedById: request.auth!.sub,
+          },
+        }).catch((error) => {
+          request.log.error(
+            { err: error, renewalRequestId: created.id, siteId: request.tenant!.siteId },
+            "notification create failed",
+          );
+        });
+      }
       return reply.status(201).send(created);
     } catch (error) {
       if (error instanceof PendingRenewalRequestError) {

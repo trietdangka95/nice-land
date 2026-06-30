@@ -1,13 +1,10 @@
 import { test, expect, beforeAll, afterAll } from "vitest";
 import Fastify from "fastify";
-import { PrismaClient } from "@nice-land/database";
-import { buildApp } from "../../app";
-import { PrismaSuperAdminRepository } from "./prisma-superadmin-repository";
-
-const prisma = new PrismaClient();
+import { buildApp } from "../../app.js";
+import { PrismaSuperAdminRepository } from "./prisma-superadmin-repository.js";
 
 test("GET /v1/public/bank-info returns 200", async () => {
-  const repo = new PrismaSuperAdminRepository(prisma);
+  const repo = new PrismaSuperAdminRepository();
   const app = buildApp({ CORS_ORIGINS: "*", LOG_LEVEL: "silent", COOKIE_SECRET: "test-secret" } as any, { superAdminRepository: repo });
   await app.ready();
 

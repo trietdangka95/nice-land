@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { buildApp } from "../src/app.js";
 import type { AppConfig } from "../src/config.js";
 import type { AccessTokenService } from "../src/modules/auth/token-service.js";
+import type { NotificationRepository } from "../src/modules/notifications/notification-repository.js";
 import type { AdminSiteRepository } from "../src/modules/sites/admin-site-repository.js";
 import { PendingRenewalRequestError } from "../src/modules/sites/admin-site-repository.js";
 import type { TenantSiteRepository } from "../src/modules/tenancy/tenant-resolver.js";
@@ -95,11 +96,21 @@ function repository(): AdminSiteRepository {
 function createApp(
   adminSiteRepository = repository(),
   resolvedTenantRepository = tenantRepository,
+  notificationRepository: NotificationRepository = {
+    create: async () => ({ id: "notification-1", createdAt: "2026-06-20T00:00:00.000Z" }),
+    listTenantAdmin: async () => ({ items: [], unreadCount: 0 }),
+    markTenantAdminRead: async () => false,
+    markAllTenantAdminRead: async () => 0,
+    listSuperAdmin: async () => ({ items: [], unreadCount: 0 }),
+    markSuperAdminRead: async () => false,
+    markAllSuperAdminRead: async () => 0,
+  },
 ) {
   return buildApp(config, {
     tenantRepository: resolvedTenantRepository,
     accessTokens,
     adminSiteRepository,
+    notificationRepository,
   });
 }
 
@@ -218,7 +229,23 @@ describe("tenant admin site routes", () => {
   });
 
   it("creates a tenant-scoped renewal request", async () => {
-    const response = await createApp().inject({
+    const notificationInputs: Parameters<NotificationRepository["create"]>[0][] = [];
+    const response = await createApp(
+      repository(),
+      tenantRepository,
+      {
+        create: async (input) => {
+          notificationInputs.push(input);
+          return { id: "notification-2", createdAt: "2026-06-20T00:00:00.000Z" };
+        },
+        listTenantAdmin: async () => ({ items: [], unreadCount: 0 }),
+        markTenantAdminRead: async () => false,
+        markAllTenantAdminRead: async () => 0,
+        listSuperAdmin: async () => ({ items: [], unreadCount: 0 }),
+        markSuperAdminRead: async () => false,
+        markAllSuperAdminRead: async () => 0,
+      },
+    ).inject({
       method: "POST",
       url: "/v1/admin/renewal-requests",
       headers: authHeaders,
@@ -229,6 +256,14 @@ describe("tenant admin site routes", () => {
       id: "site-a-user-a",
       status: "NEW",
     });
+    expect(notificationInputs).toMatchObject([
+      expect.objectContaining({
+        siteId: "site-a",
+        scope: "SUPER_ADMIN",
+        type: "RENEWAL_REQUEST_CREATED",
+        link: "/superadmin/contacts?highlightRenewal=site-a-user-a",
+      }),
+    ]);
   });
 
   it("returns a clear conflict for a duplicate pending renewal", async () => {

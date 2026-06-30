@@ -3,6 +3,7 @@ import { buildApp } from "../src/app.js";
 import type { AppConfig } from "../src/config.js";
 import type { AccessTokenService } from "../src/modules/auth/token-service.js";
 import type { EngagementRepository } from "../src/modules/engagement/engagement-repository.js";
+import type { NotificationRepository } from "../src/modules/notifications/notification-repository.js";
 
 const config: AppConfig = {
   NODE_ENV: "test", HOST: "127.0.0.1", PORT: 4000, ROOT_DOMAIN: "nice-land.vn",
@@ -36,8 +37,32 @@ function repository(): EngagementRepository {
     getAnalytics: async () => ({ totals: { views: 1, leads: 1 }, dailyViews: [], topPosts: [] }),
   };
 }
-function app(repo = repository()) {
-  return buildApp(config, { tenantRepository, accessTokens, engagementRepository: repo });
+function createNotificationRepository(
+  created: Parameters<NotificationRepository["create"]>[0][] = [],
+): NotificationRepository {
+  return {
+    create: async (input) => {
+      created.push(input);
+      return { id: "notification-1", createdAt: "2026-06-20T00:00:00.000Z" };
+    },
+    listTenantAdmin: async () => ({ items: [], unreadCount: 0 }),
+    markTenantAdminRead: async () => false,
+    markAllTenantAdminRead: async () => 0,
+    listSuperAdmin: async () => ({ items: [], unreadCount: 0 }),
+    markSuperAdminRead: async () => false,
+    markAllSuperAdminRead: async () => 0,
+  };
+}
+function app(
+  repo = repository(),
+  notificationRepository = createNotificationRepository(),
+) {
+  return buildApp(config, {
+    tenantRepository,
+    accessTokens,
+    engagementRepository: repo,
+    notificationRepository,
+  });
 }
 const tenantHeaders = { "x-tenant-host": "minhphat.nice-land.vn" };
 
@@ -54,8 +79,20 @@ describe("engagement routes", () => {
     expect(called).toBe(false);
   });
   it("creates a property lead scoped by tenant", async () => {
-    const response = await app().inject({ method: "POST", url: "/v1/public/posts/post-a/leads", headers: tenantHeaders, payload: { name: "Minh Anh", phone: "0905123456", source: "PROPERTY_FORM" } });
+    const notificationInputs: Parameters<NotificationRepository["create"]>[0][] = [];
+    const response = await app(
+      repository(),
+      createNotificationRepository(notificationInputs),
+    ).inject({ method: "POST", url: "/v1/public/posts/post-a/leads", headers: tenantHeaders, payload: { name: "Minh Anh", phone: "0905123456", source: "PROPERTY_FORM" } });
     expect(response.statusCode).toBe(201);
+    expect(notificationInputs).toMatchObject([
+      expect.objectContaining({
+        siteId: "site-a",
+        scope: "TENANT_ADMIN",
+        type: "LEAD_CREATED",
+        link: "/admin/leads?highlight=lead-a",
+      }),
+    ]);
   });
   it("records phone and Zalo interactions", async () => {
     const response = await app().inject({

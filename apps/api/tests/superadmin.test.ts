@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { buildApp } from "../src/app.js";
 import type { AppConfig } from "../src/config.js";
 import type { AccessTokenService } from "../src/modules/auth/token-service.js";
+import type { NotificationRepository } from "../src/modules/notifications/notification-repository.js";
 import {
   SuperAdminConflictError,
   type SuperAdminRepository,
@@ -59,8 +60,23 @@ const accessTokens = {
     : { sub: "tenant-user", username: "admin", role: "ADMIN" as const, siteId: "site-a" },
 } as AccessTokenService;
 
-function createApp(repo = repository()) {
-  return buildApp(config, { accessTokens, superAdminRepository: repo });
+function createApp(
+  repo = repository(),
+  notificationRepository: NotificationRepository = {
+    create: async () => ({ id: "notification-1", createdAt: "2026-06-20T00:00:00.000Z" }),
+    listTenantAdmin: async () => ({ items: [], unreadCount: 0 }),
+    markTenantAdminRead: async () => false,
+    markAllTenantAdminRead: async () => 0,
+    listSuperAdmin: async () => ({ items: [], unreadCount: 0 }),
+    markSuperAdminRead: async () => false,
+    markAllSuperAdminRead: async () => 0,
+  },
+) {
+  return buildApp(config, {
+    accessTokens,
+    superAdminRepository: repo,
+    notificationRepository,
+  });
 }
 
 const headers = { authorization: "Bearer super" };
@@ -94,6 +110,7 @@ describe("super admin routes", () => {
       method: "POST", url: "/v1/superadmin/sites", headers,
       payload: {
         name: "An Land", slug: "an-land", phone: "0912333558", email: "admin@anland.vn",
+        themeKey: "WARM_MINIMAL",
         planId: site.plan.id, subscriptionEnd: "2027-06-20T00:00:00.000Z",
         adminName: "Quản trị An Land", adminUsername: "admin.anland", adminPassword: "Secure123!",
       },
@@ -126,6 +143,7 @@ describe("super admin routes", () => {
         phone: site.phone,
         email: site.email,
         address: site.address,
+        themeKey: "WARM_MINIMAL",
         planId: site.plan.id,
         subscriptionStatus: "ACTIVE",
         subscriptionEnd: "2027-06-20T00:00:00.000Z",
@@ -137,7 +155,7 @@ describe("super admin routes", () => {
     expect(receivedActor).toBe("super-user");
   });
 
-  it("ignores unsupported public theme fields from older clients", async () => {
+  it("rejects unsupported public theme fields from older clients", async () => {
     const response = await createApp().inject({
       method: "POST",
       url: "/v1/superadmin/sites",
@@ -156,8 +174,51 @@ describe("super admin routes", () => {
       },
     });
 
-    expect(response.statusCode).toBe(201);
-    expect(response.json().themeKey).toBe("WARM_MINIMAL");
+    expect(response.statusCode).toBe(400);
+  });
+
+  it("creates a tenant admin notification when resolving a renewal request", async () => {
+    const notificationInputs: Parameters<NotificationRepository["create"]>[0][] = [];
+    const repo = repository();
+    repo.resolveRenewal = async () => ({
+      id: "renewal-1",
+      status: "APPROVED",
+      note: "Gia hạn",
+      adminNote: "Đã duyệt",
+      requestedAt: "2026-06-20T00:00:00.000Z",
+      resolvedAt: "2026-06-21T00:00:00.000Z",
+      site: { id: "site-a", name: "Minh Phát", slug: "minhphat" },
+      plan: null,
+      requestedBy: { username: "admin", fullName: "Admin" },
+    });
+
+    const response = await createApp(repo, {
+      create: async (input) => {
+        notificationInputs.push(input);
+        return { id: "notification-2", createdAt: "2026-06-21T00:00:00.000Z" };
+      },
+      listTenantAdmin: async () => ({ items: [], unreadCount: 0 }),
+      markTenantAdminRead: async () => false,
+      markAllTenantAdminRead: async () => 0,
+      listSuperAdmin: async () => ({ items: [], unreadCount: 0 }),
+      markSuperAdminRead: async () => false,
+      markAllSuperAdminRead: async () => 0,
+    }).inject({
+      method: "PATCH",
+      url: "/v1/superadmin/renewal-requests/renewal-1",
+      headers,
+      payload: { status: "APPROVED" },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(notificationInputs).toMatchObject([
+      expect.objectContaining({
+        siteId: "site-a",
+        scope: "TENANT_ADMIN",
+        type: "RENEWAL_REQUEST_UPDATED",
+        link: "/admin/subscription?highlightRenewal=renewal-1",
+      }),
+    ]);
   });
 
   it("returns a password only once after reset", async () => {

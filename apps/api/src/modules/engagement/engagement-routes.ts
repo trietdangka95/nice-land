@@ -12,6 +12,8 @@ import { createTenantPreHandler } from "../tenancy/tenant-context.js";
 import type { TenantSiteRepository } from "../tenancy/tenant-resolver.js";
 import type { EngagementRepository } from "./engagement-repository.js";
 import type { LeadNotifier } from "./lead-notifier.js";
+import type { NotificationRepository } from "../notifications/notification-repository.js";
+import { buildLeadCreatedNotification } from "../notifications/notification-content.js";
 
 const BOT_PATTERN = /bot|crawler|spider|slurp|preview|facebookexternalhit/i;
 
@@ -23,6 +25,7 @@ export async function registerEngagementRoutes(
     accessTokens: AccessTokenService;
     repository: EngagementRepository;
     notifier?: LeadNotifier;
+    notificationRepository?: NotificationRepository;
   },
 ) {
   const tenant = createTenantPreHandler(options.config, options.tenantRepository);
@@ -50,6 +53,32 @@ export async function registerEngagementRoutes(
     const input = propertyLeadInputSchema.parse(request.body);
     const lead = await options.repository.createLead(request.tenant!.siteId, request.params.id, input);
     if (!lead) return reply.status(404).send({ code: "POST_NOT_FOUND", message: "Tin đăng không tồn tại.", requestId: request.id });
+    if (options.notificationRepository) {
+      const notification = buildLeadCreatedNotification({
+        siteName: lead.notification.siteName,
+        postTitle: lead.notification.postTitle,
+        leadName: input.name,
+        leadId: lead.id,
+      });
+      void options.notificationRepository.create({
+        siteId: request.tenant!.siteId,
+        scope: "TENANT_ADMIN",
+        type: "LEAD_CREATED",
+        title: notification.title,
+        body: notification.body,
+        link: notification.link,
+        payload: {
+          ...notification.payload,
+          leadId: lead.id,
+          postId: request.params.id,
+        },
+      }).catch((error) => {
+        request.log.error(
+          { err: error, leadId: lead.id, siteId: request.tenant!.siteId },
+          "notification create failed",
+        );
+      });
+    }
     if (options.notifier && lead.notification.recipient) {
       void options.notifier
         .notify({

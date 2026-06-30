@@ -148,7 +148,7 @@ describe("tenant admin category routes", () => {
       method: "POST",
       url: "/v1/admin/categories",
       headers,
-      payload: { name: "Căn hộ", slug: "can-ho" },
+      payload: { name: "Căn hộ", slug: "can-ho", type: "APARTMENT" },
     });
 
     expect(response.statusCode).toBe(201);

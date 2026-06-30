@@ -5,7 +5,6 @@ import { useTenantRouting } from "@/lib/use-tenant-routing";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
-  Bell,
   Building2,
   ChevronDown,
   ExternalLink,
@@ -23,6 +22,7 @@ import type { AdminSiteIdentity } from "@/lib/admin-site";
 import { findActiveNavigationHref } from "@/lib/navigation";
 import { MobileNavigation } from "@/components/shared/mobile-navigation";
 import { useAuth } from "@/components/shared/auth-guard";
+import { AdminNotificationsBell } from "@/components/admin/admin-notifications-bell";
 
 export function AdminShell({
   site,
@@ -222,10 +222,11 @@ export function AdminShell({
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button className="relative grid size-10 place-items-center border border-ink/10" aria-label="Thông báo">
-              <Bell size={18} />
-              <span className="absolute right-2 top-2 size-2 rounded-full bg-red-500 ring-2 ring-white" />
-            </button>
+            <AdminNotificationsBell
+              superAdmin={superAdmin}
+              siteSlug={site?.slug}
+              onNavigate={(href) => router.push(href)}
+            />
             <div className="hidden items-center gap-3 sm:flex">
               <span className="grid size-10 place-items-center rounded-full bg-gradient-to-br from-moss to-ink shadow-md text-sm font-bold text-white border border-white/20">
                 {superAdmin ? "SA" : initials}

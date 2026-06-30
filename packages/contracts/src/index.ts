@@ -23,6 +23,12 @@ export const publicThemeSchema = z.enum([
   "WARM_MINIMAL",
   "COLD_MODERN",
 ]);
+export const notificationTypeSchema = z.enum([
+  "LEAD_CREATED",
+  "CONTACT_REQUEST_CREATED",
+  "RENEWAL_REQUEST_CREATED",
+  "RENEWAL_REQUEST_UPDATED",
+]);
 
 export const tenantHostSchema = z
   .string()
@@ -310,6 +316,10 @@ export const contactStatusInputSchema = z.object({
   status: z.enum(["NEW", "IN_PROGRESS", "DONE", "REJECTED"]),
 });
 
+export const notificationListQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(50).default(8),
+});
+
 export interface AuthUser {
   id: string;
   siteId: string | null;
@@ -331,6 +341,7 @@ export type PropertyType = z.infer<typeof propertyTypeSchema>;
 export type PostStatus = z.infer<typeof postStatusSchema>;
 export type SubscriptionStatus = z.infer<typeof subscriptionStatusSchema>;
 export type PublicTheme = z.infer<typeof publicThemeSchema>;
+export type NotificationType = z.infer<typeof notificationTypeSchema>;
 export type ContactRequestInput = z.infer<typeof contactRequestInputSchema>;
 export type PropertyLeadInput = z.infer<typeof propertyLeadInputSchema>;
 export type LeadUpdate = z.infer<typeof leadUpdateSchema>;
@@ -365,6 +376,7 @@ export type SiteActiveInput = z.infer<typeof siteActiveInputSchema>;
 export type SubscriptionPlanInput = z.infer<typeof subscriptionPlanInputSchema>;
 export type RenewalResolutionInput = z.infer<typeof renewalResolutionInputSchema>;
 export type ContactStatusInput = z.infer<typeof contactStatusInputSchema>;
+export type NotificationListQuery = z.infer<typeof notificationListQuerySchema>;
 
 export interface SuperAdminSite {
   id: string;
@@ -456,6 +468,24 @@ export interface AuditLogItem {
   createdAt: string;
   site: { id: string; name: string } | null;
   user: { id: string; username: string } | null;
+}
+
+export interface NotificationItem {
+  id: string;
+  type: NotificationType;
+  title: string;
+  body: string;
+  link: string;
+  isRead: boolean;
+  readAt: string | null;
+  createdAt: string;
+  payload: unknown;
+  site: { id: string; name: string; slug: string } | null;
+}
+
+export interface NotificationListResponse {
+  items: NotificationItem[];
+  unreadCount: number;
 }
 
 export interface TenantLead {

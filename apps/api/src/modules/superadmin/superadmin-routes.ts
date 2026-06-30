@@ -15,10 +15,16 @@ import {
   SuperAdminConflictError,
   type SuperAdminRepository,
 } from "./superadmin-repository.js";
+import type { NotificationRepository } from "../notifications/notification-repository.js";
+import { buildRenewalRequestUpdatedNotification } from "../notifications/notification-content.js";
 
 export async function registerSuperAdminRoutes(
   app: FastifyInstance,
-  options: { accessTokens: AccessTokenService; repository: SuperAdminRepository },
+  options: {
+    accessTokens: AccessTokenService;
+    repository: SuperAdminRepository;
+    notificationRepository?: NotificationRepository;
+  },
 ) {
   const guards = [
     createRequireAuth(options.accessTokens),
@@ -78,8 +84,40 @@ export async function registerSuperAdminRoutes(
   });
 
   app.get("/v1/superadmin/renewal-requests", { preHandler: guards }, () => options.repository.listRenewals());
-  app.patch<{ Params: { id: string } }>("/v1/superadmin/renewal-requests/:id", { preHandler: guards }, async (request, reply) =>
-    (await options.repository.resolveRenewal(request.params.id, renewalResolutionInputSchema.parse(request.body), request.auth!.sub)) ?? reply.status(404).send(notFound(request.id)));
+  app.patch<{ Params: { id: string } }>("/v1/superadmin/renewal-requests/:id", { preHandler: guards }, async (request, reply) => {
+    const resolved = await options.repository.resolveRenewal(
+      request.params.id,
+      renewalResolutionInputSchema.parse(request.body),
+      request.auth!.sub,
+    );
+    if (!resolved) return reply.status(404).send(notFound(request.id));
+
+    if (options.notificationRepository) {
+      const notification = buildRenewalRequestUpdatedNotification(
+        resolved.status,
+        resolved.id,
+      );
+      void options.notificationRepository.create({
+        siteId: resolved.site.id,
+        scope: "TENANT_ADMIN",
+        type: "RENEWAL_REQUEST_UPDATED",
+        title: notification.title,
+        body: notification.body,
+        link: notification.link,
+        payload: {
+          ...notification.payload,
+          renewalRequestId: resolved.id,
+        },
+      }).catch((error) => {
+        request.log.error(
+          { err: error, renewalRequestId: resolved.id, siteId: resolved.site.id },
+          "notification create failed",
+        );
+      });
+    }
+
+    return resolved;
+  });
   app.get("/v1/superadmin/contacts", { preHandler: guards }, () => options.repository.listContacts());
   app.patch<{ Params: { id: string } }>("/v1/superadmin/contacts/:id", { preHandler: guards }, async (request, reply) => {
     const input = contactStatusInputSchema.parse(request.body);

@@ -58,6 +58,18 @@ enum PublicTheme {
   COLD_MODERN
 }
 
+enum NotificationScope {
+  TENANT_ADMIN
+  SUPER_ADMIN
+}
+
+enum NotificationType {
+  LEAD_CREATED
+  CONTACT_REQUEST_CREATED
+  RENEWAL_REQUEST_CREATED
+  RENEWAL_REQUEST_UPDATED
+}
+
 model Site {
   id                 String                 @id @default(uuid())
   name               String
@@ -94,6 +106,7 @@ model Site {
   leads              Lead[]
   propertyViews      PropertyView[]
   contactRequests    ContactRequest[]
+  notifications      Notification[]
   plan               SubscriptionPlan?      @relation(fields: [planId], references: [id], onDelete: Restrict)
 
   @@index([isActive, subscriptionStatus])
@@ -371,6 +384,24 @@ model ContactRequest {
 
   @@index([siteId, status, createdAt])
   @@index([createdAt])
+}
+
+model Notification {
+  id        String            @id @default(uuid())
+  siteId    String?
+  scope     NotificationScope
+  type      NotificationType
+  title     String
+  body      String
+  link      String
+  payload   Json?
+  isRead    Boolean           @default(false)
+  readAt    DateTime?
+  createdAt DateTime          @default(now())
+  site      Site?             @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([scope, isRead, createdAt])
+  @@index([siteId, scope, isRead, createdAt])
 }
 
 model SystemSetting {

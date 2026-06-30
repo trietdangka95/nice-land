@@ -39,6 +39,9 @@ import type { AdminCategoryRepository } from "./modules/categories/admin-categor
 import { registerAdminCategoryRoutes } from "./modules/categories/admin-category-routes.js";
 import type { AdminDashboardRepository } from "./modules/dashboard/admin-dashboard-repository.js";
 import { registerAdminDashboardRoutes } from "./modules/dashboard/admin-dashboard-routes.js";
+import type { NotificationRepository } from "./modules/notifications/notification-repository.js";
+import { registerNotificationRoutes } from "./modules/notifications/notification-routes.js";
+import { buildContactRequestCreatedNotification } from "./modules/notifications/notification-content.js";
 
 interface BuildAppOptions {
   tenantRepository?: TenantSiteRepository;
@@ -53,6 +56,7 @@ interface BuildAppOptions {
   adminSiteRepository?: AdminSiteRepository;
   superAdminRepository?: SuperAdminRepository;
   engagementRepository?: EngagementRepository;
+  notificationRepository?: NotificationRepository;
   leadNotifier?: LeadNotifier;
   postImageDependencies?: {
     repository: PostImageRepository;
@@ -253,6 +257,32 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
           "contact request created",
         );
 
+        if (options.notificationRepository) {
+          const notification = buildContactRequestCreatedNotification({
+            contactName: input.name,
+            source: request.tenant ? "TENANT_WEBSITE" : "LANDING_PAGE",
+            themePreference: input.themePreference,
+            contactRequestId: created.id,
+          });
+          void options.notificationRepository.create({
+            siteId: request.tenant?.siteId ?? null,
+            scope: "SUPER_ADMIN",
+            type: "CONTACT_REQUEST_CREATED",
+            title: notification.title,
+            body: notification.body,
+            link: notification.link,
+            payload: {
+              ...notification.payload,
+              contactRequestId: created.id,
+            },
+          }).catch((error) => {
+            request.log.error(
+              { err: error, contactRequestId: created.id, siteId: request.tenant?.siteId },
+              "notification create failed",
+            );
+          });
+        }
+
         return reply.status(201).send({
           id: created.id,
           createdAt: created.createdAt.toISOString(),
@@ -339,6 +369,7 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
     void registerSuperAdminRoutes(app, {
       accessTokens: options.accessTokens,
       repository: options.superAdminRepository,
+      notificationRepository: options.notificationRepository,
     });
   }
 
@@ -353,6 +384,20 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
       accessTokens: options.accessTokens,
       repository: options.engagementRepository,
       notifier: options.leadNotifier,
+      notificationRepository: options.notificationRepository,
+    });
+  }
+
+  if (
+    options.tenantRepository &&
+    options.accessTokens &&
+    options.notificationRepository
+  ) {
+    void registerNotificationRoutes(app, {
+      config,
+      tenantRepository: options.tenantRepository,
+      accessTokens: options.accessTokens,
+      repository: options.notificationRepository,
     });
   }
 
@@ -411,6 +456,7 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
       tenantRepository: options.tenantRepository,
       accessTokens: options.accessTokens,
       repository: options.adminSiteRepository,
+      notificationRepository: options.notificationRepository,
     });
   }
 

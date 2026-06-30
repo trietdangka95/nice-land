@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { buildApp } from "../src/app.js";
 import { loadConfig } from "../src/config.js";
 import type { ContactRequestRepository } from "../src/modules/contacts/contact-request-repository.js";
+import type { NotificationRepository } from "../src/modules/notifications/notification-repository.js";
 import type { TenantSiteRepository } from "../src/modules/tenancy/tenant-resolver.js";
 
 const apps: ReturnType<typeof buildApp>[] = [];
@@ -24,6 +25,7 @@ const tenantRepository: TenantSiteRepository = {
 describe("POST /v1/public/contact-requests", () => {
   it("persists a tenant-scoped contact request", async () => {
     const createdInputs: Parameters<ContactRequestRepository["create"]>[0][] = [];
+    const notificationInputs: Parameters<NotificationRepository["create"]>[0][] = [];
     const contactRequestRepository: ContactRequestRepository = {
       create: async (input) => {
         createdInputs.push(input);
@@ -33,6 +35,18 @@ describe("POST /v1/public/contact-requests", () => {
         };
       },
     };
+    const notificationRepository: NotificationRepository = {
+      create: async (input) => {
+        notificationInputs.push(input);
+        return { id: "notification-1", createdAt: "2026-06-20T00:00:00.000Z" };
+      },
+      listTenantAdmin: async () => ({ items: [], unreadCount: 0 }),
+      markTenantAdminRead: async () => false,
+      markAllTenantAdminRead: async () => 0,
+      listSuperAdmin: async () => ({ items: [], unreadCount: 0 }),
+      markSuperAdminRead: async () => false,
+      markAllSuperAdminRead: async () => 0,
+    };
 
     const app = buildApp(
       loadConfig({
@@ -40,7 +54,7 @@ describe("POST /v1/public/contact-requests", () => {
         LOG_LEVEL: "silent",
         ROOT_DOMAIN: "nice-land.vn",
       }),
-      { tenantRepository, contactRequestRepository },
+      { tenantRepository, contactRequestRepository, notificationRepository },
     );
     apps.push(app);
 
@@ -64,13 +78,23 @@ describe("POST /v1/public/contact-requests", () => {
         phone: "0905123456",
         email: "minhanh@example.com",
         message: "Tôi muốn xem căn biệt thự.",
+        themePreference: "warm",
         source: "TENANT_WEBSITE",
       },
+    ]);
+    expect(notificationInputs).toMatchObject([
+      expect.objectContaining({
+        siteId: "site-a",
+        scope: "SUPER_ADMIN",
+        type: "CONTACT_REQUEST_CREATED",
+        link: "/superadmin/contacts?highlightContact=contact-1",
+      }),
     ]);
   });
 
   it("persists a platform landing request without a tenant siteId", async () => {
     const createdInputs: Parameters<ContactRequestRepository["create"]>[0][] = [];
+    const notificationInputs: Parameters<NotificationRepository["create"]>[0][] = [];
     const contactRequestRepository: ContactRequestRepository = {
       create: async (input) => {
         createdInputs.push(input);
@@ -80,6 +104,18 @@ describe("POST /v1/public/contact-requests", () => {
         };
       },
     };
+    const notificationRepository: NotificationRepository = {
+      create: async (input) => {
+        notificationInputs.push(input);
+        return { id: "notification-2", createdAt: "2026-06-20T00:00:00.000Z" };
+      },
+      listTenantAdmin: async () => ({ items: [], unreadCount: 0 }),
+      markTenantAdminRead: async () => false,
+      markAllTenantAdminRead: async () => 0,
+      listSuperAdmin: async () => ({ items: [], unreadCount: 0 }),
+      markSuperAdminRead: async () => false,
+      markAllSuperAdminRead: async () => 0,
+    };
 
     const app = buildApp(
       loadConfig({
@@ -87,7 +123,7 @@ describe("POST /v1/public/contact-requests", () => {
         LOG_LEVEL: "silent",
         ROOT_DOMAIN: "nice-land.vn",
       }),
-      { tenantRepository, contactRequestRepository },
+      { tenantRepository, contactRequestRepository, notificationRepository },
     );
     apps.push(app);
 
@@ -110,8 +146,17 @@ describe("POST /v1/public/contact-requests", () => {
         phone: "0905123456",
         email: undefined,
         message: "Tôi muốn tạo website.",
+        themePreference: "warm",
         source: "LANDING_PAGE",
       },
+    ]);
+    expect(notificationInputs).toMatchObject([
+      expect.objectContaining({
+        siteId: null,
+        scope: "SUPER_ADMIN",
+        type: "CONTACT_REQUEST_CREATED",
+        link: "/superadmin/contacts?highlightContact=contact-platform",
+      }),
     ]);
   });
 

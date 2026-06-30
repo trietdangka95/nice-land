@@ -36,6 +36,7 @@ import type {
   AuditLogItem,
   ContactStatusInput,
   LeadUpdate,
+  NotificationListResponse,
   PropertyLeadInput,
   PropertyInteractionInput,
   PropertyCategory,
@@ -265,6 +266,18 @@ export function createApiClient(options: ApiClientOptions) {
           body: JSON.stringify(input),
         },
       ),
+    listAdminNotifications: (limit?: number) =>
+      request<NotificationListResponse>(
+        `/v1/admin/notifications${limit ? `?limit=${encodeURIComponent(String(limit))}` : ""}`,
+      ),
+    markAdminNotificationRead: (id: string) =>
+      request<void>(`/v1/admin/notifications/${encodeURIComponent(id)}/read`, {
+        method: "PATCH",
+      }),
+    markAllAdminNotificationsRead: () =>
+      request<void>("/v1/admin/notifications/read-all", {
+        method: "POST",
+      }),
     listSuperAdminSites: (query: Partial<SuperAdminSiteListQuery> = {}) => {
       const search = new URLSearchParams();
       for (const [key, value] of Object.entries(query)) {
@@ -330,6 +343,18 @@ export function createApiClient(options: ApiClientOptions) {
       request<void>(`/v1/superadmin/contacts/${encodeURIComponent(id)}`, {
         method: "PATCH",
         body: JSON.stringify(input),
+      }),
+    listSuperAdminNotifications: (limit?: number) =>
+      request<NotificationListResponse>(
+        `/v1/superadmin/notifications${limit ? `?limit=${encodeURIComponent(String(limit))}` : ""}`,
+      ),
+    markSuperAdminNotificationRead: (id: string) =>
+      request<void>(`/v1/superadmin/notifications/${encodeURIComponent(id)}/read`, {
+        method: "PATCH",
+      }),
+    markAllSuperAdminNotificationsRead: () =>
+      request<void>("/v1/superadmin/notifications/read-all", {
+        method: "POST",
       }),
     listAuditLogs: () =>
       request<AuditLogItem[]>("/v1/superadmin/audit-logs"),
