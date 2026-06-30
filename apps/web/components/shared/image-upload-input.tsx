@@ -20,6 +20,7 @@ interface ImageUploadInputProps {
     headers: Record<string, string>;
   }>;
   wide?: boolean;
+  previewStyle?: "cover" | "avatar" | "contain";
 }
 
 export function ImageUploadInput({
@@ -29,6 +30,7 @@ export function ImageUploadInput({
   folder,
   presignGenericImage,
   wide = false,
+  previewStyle = "cover",
 }: ImageUploadInputProps) {
   const [mode, setMode] = useState<ImageUploadMode>(value ? "url" : "url");
   const [uploading, setUploading] = useState(false);
@@ -167,12 +169,12 @@ export function ImageUploadInput({
       )}
 
       {value && !imgError && (
-        <div className="group relative mt-1 overflow-hidden rounded-xl border border-ink/10">
+        <div className={`group relative mt-1 overflow-hidden border border-ink/10 ${previewStyle === "avatar" ? "w-20 rounded-full" : "w-full rounded-xl"}`}>
           <img
             key={value}
             src={value}
             alt={label}
-            className="h-20 w-full object-cover"
+            className={`h-20 ${previewStyle === "contain" ? "w-full object-contain" : previewStyle === "avatar" ? "w-20 object-cover" : "w-full object-cover"}`}
             onError={() => setImgError(true)}
           />
           <button
