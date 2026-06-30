@@ -95,6 +95,8 @@ const planSelect = {
   price: true,
   durationDays: true,
   isActive: true,
+  isPopular: true,
+  createdAt: true,
   _count: { select: { sites: true } },
 } satisfies Prisma.SubscriptionPlanSelect;
 
@@ -108,6 +110,7 @@ function mapPlan(plan: Prisma.SubscriptionPlanGetPayload<{ select: typeof planSe
     price: plan.price.toNumber(),
     durationDays: plan.durationDays,
     isActive: plan.isActive,
+    isPopular: plan.isPopular,
     siteCount: plan._count.sites,
   };
 }
@@ -369,7 +372,12 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
   async createPlan(input: SubscriptionPlanInput, actorId: string) {
     let plan;
     try {
-      plan = await prisma.subscriptionPlan.create({ data: input, select: planSelect });
+      plan = await prisma.$transaction(async (tx) => {
+        if (input.isPopular) {
+          await tx.subscriptionPlan.updateMany({ data: { isPopular: false } });
+        }
+        return await tx.subscriptionPlan.create({ data: input, select: planSelect });
+      });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
         throw new SuperAdminConflictError("Tên hoặc mã gói đã tồn tại.");
@@ -390,7 +398,12 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
     if (!exists) return null;
     let plan;
     try {
-      plan = await prisma.subscriptionPlan.update({ where: { id }, data: input, select: planSelect });
+      plan = await prisma.$transaction(async (tx) => {
+        if (input.isPopular) {
+          await tx.subscriptionPlan.updateMany({ data: { isPopular: false } });
+        }
+        return await tx.subscriptionPlan.update({ where: { id }, data: input, select: planSelect });
+      });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
         throw new SuperAdminConflictError("Tên hoặc mã gói đã tồn tại.");

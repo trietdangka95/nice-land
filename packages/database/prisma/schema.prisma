@@ -245,6 +245,7 @@ model SubscriptionPlan {
   price            Decimal               @db.Decimal(18, 2)
   durationDays     Int
   isActive         Boolean               @default(true)
+  isPopular        Boolean               @default(false)
   createdAt        DateTime              @default(now())
   updatedAt        DateTime              @updatedAt
   renewalRequests  RenewalRequest[]

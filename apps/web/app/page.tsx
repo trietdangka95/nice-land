@@ -23,7 +23,7 @@ import { getPlatformStats, getPublicPlans, getPublicSystemSetting } from "@/lib/
 import type { SubscriptionPlan } from "@nice-land/contracts";
 
 function getPlanPresentation(plan: SubscriptionPlan) {
-  const isPopular = plan.code === "PROFESSIONAL";
+  const isPopular = plan.isPopular;
   const isTrial = plan.price === 0;
 
   return {
@@ -364,7 +364,7 @@ export default async function LandingPage({
                 return (
                   <article
                     key={plan.id}
-                    className={`motion-card relative flex flex-col rounded-3xl p-8 sm:p-10 ${presentation.popular
+                    className={`motion-card relative flex flex-col h-full rounded-3xl p-8 sm:p-10 ${presentation.popular
                       ? "bg-gradient-to-b from-moss to-ink text-white border-none shadow-[0_20px_50px_rgba(49,92,69,0.3)] transform lg:-translate-y-4 lg:hover:-translate-y-6"
                       : "glass-card bg-white/70"
                       }`}
@@ -374,8 +374,8 @@ export default async function LandingPage({
                     )}
 
                     <div className="relative z-10 flex-1">
-                      <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-display text-3xl font-medium">{plan.name}</h3>
+                      <div className="flex justify-between items-start mb-4 min-h-[4rem] gap-2">
+                        <h3 className="font-display text-3xl font-medium line-clamp-2">{plan.name}</h3>
                         {presentation.popular && (
                           <span className="bg-gold px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-ink shadow-sm">
                             Phổ biến

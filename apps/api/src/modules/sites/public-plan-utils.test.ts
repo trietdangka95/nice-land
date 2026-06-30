@@ -13,6 +13,7 @@ describe("ensureTrialPlan", () => {
         price: 299000,
         durationDays: 30,
         isActive: true,
+        isPopular: false,
         siteCount: 4,
       },
     ]);

@@ -308,6 +308,7 @@ export const subscriptionPlanInputSchema = z.object({
   price: z.coerce.number().nonnegative(),
   durationDays: z.coerce.number().int().positive().max(3650),
   isActive: z.boolean().default(true),
+  isPopular: z.boolean().default(false),
 });
 
 export const renewalResolutionInputSchema = z.object({
@@ -435,6 +436,7 @@ export interface SubscriptionPlan {
   price: number;
   durationDays: number;
   isActive: boolean;
+  isPopular: boolean;
   siteCount: number;
 }
 

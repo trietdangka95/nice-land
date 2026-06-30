@@ -11,6 +11,7 @@ export const trialPlanTemplate: PublicPlan = {
   price: 0,
   durationDays: 14,
   isActive: true,
+  isPopular: false,
   siteCount: 0,
 };
 
