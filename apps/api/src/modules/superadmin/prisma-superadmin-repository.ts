@@ -407,8 +407,14 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
   }
 
   async deletePlan(id: string, actorId: string) {
-    const plan = await prisma.subscriptionPlan.findUnique({ where: { id }, select: { _count: { select: { sites: true } } } });
+    const plan = await prisma.subscriptionPlan.findUnique({
+      where: { id },
+      select: { code: true, _count: { select: { sites: true } } },
+    });
     if (!plan) return false;
+    if (plan.code === "TRIAL") {
+      throw new SuperAdminConflictError("Không thể xóa gói dùng thử mặc định.");
+    }
     if (plan._count.sites > 0) throw new SuperAdminConflictError("Không thể xóa gói đang được website sử dụng.");
     await prisma.$transaction(async (tx) => {
       await tx.subscriptionPlan.delete({ where: { id } });

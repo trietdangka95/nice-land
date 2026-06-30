@@ -1,4 +1,5 @@
 import { prisma } from "@nice-land/database";
+import { ensureTrialPlan, type PublicPlan } from "./public-plan-utils.js";
 import type { PublicSiteRepository } from "./public-site-repository.js";
 
 export class PrismaPublicSiteRepository implements PublicSiteRepository {
@@ -51,7 +52,7 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
 
   async listPublicPlans() {
     const plans = await prisma.subscriptionPlan.findMany({
-      where: { isActive: true },
+      where: { OR: [{ isActive: true }, { code: "TRIAL" }] },
       orderBy: { price: "asc" },
       select: {
         id: true,
@@ -66,7 +67,7 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
       },
     });
 
-    return plans.map((plan) => ({
+    return ensureTrialPlan(plans.map((plan) => ({
       id: plan.id,
       name: plan.name,
       code: plan.code,
@@ -76,6 +77,6 @@ export class PrismaPublicSiteRepository implements PublicSiteRepository {
       durationDays: plan.durationDays,
       isActive: plan.isActive,
       siteCount: plan._count.sites,
-    }));
+    })) as PublicPlan[]);
   }
 }
