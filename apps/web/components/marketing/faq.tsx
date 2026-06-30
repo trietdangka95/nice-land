@@ -12,12 +12,12 @@ const questions = [
   {
     question: "Website có dùng được tên miền riêng không?",
     answer:
-      "Gói Doanh nghiệp hỗ trợ kết nối tên miền riêng. Các gói còn lại sử dụng subdomain thương hiệu trên nice-land.id.vn.",
+      "Các gói hiện sử dụng subdomain thương hiệu trên nice-land.id.vn.",
   },
   {
-    question: "Tôi có thể chuyển dữ liệu tin đăng cũ sang không?",
+    question: "Tôi có thể nâng cấp hoặc hủy gói cước bất kỳ lúc nào không?",
     answer:
-      "Có. Đội ngũ hỗ trợ có thể tư vấn nhập dữ liệu từ file Excel hoặc hệ thống cũ tùy số lượng và định dạng.",
+      "Có. Bạn hoàn toàn có thể nâng cấp lên gói cao hơn hoặc hủy gia hạn bất cứ lúc nào trực tiếp trên trang quản trị.",
   },
   {
     question: "Dữ liệu giữa các khách hàng có được tách biệt?",

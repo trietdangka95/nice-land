@@ -514,6 +514,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
       bankId: setting.bankId,
       bankAccount: setting.bankAccount,
       bankAccountName: setting.bankAccountName,
+      supportZaloPhone: setting.supportZaloPhone,
       updatedAt: setting.updatedAt,
     };
   }
@@ -541,6 +542,7 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
       bankId: setting.bankId,
       bankAccount: setting.bankAccount,
       bankAccountName: setting.bankAccountName,
+      supportZaloPhone: setting.supportZaloPhone,
       updatedAt: setting.updatedAt,
     };
   }

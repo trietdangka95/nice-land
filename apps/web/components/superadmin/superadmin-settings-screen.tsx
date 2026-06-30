@@ -15,6 +15,7 @@ export function SuperAdminSettingsScreen() {
   const [bankId, setBankId] = useState("");
   const [bankAccount, setBankAccount] = useState("");
   const [bankAccountName, setBankAccountName] = useState("");
+  const [supportZaloPhone, setSupportZaloPhone] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -25,6 +26,7 @@ export function SuperAdminSettingsScreen() {
           setBankId(data.bankId || "");
           setBankAccount(data.bankAccount || "");
           setBankAccountName(data.bankAccountName || "");
+          setSupportZaloPhone(data.supportZaloPhone || "");
         }
       })
       .finally(() => active && setLoading(false));
@@ -41,9 +43,10 @@ export function SuperAdminSettingsScreen() {
         bankId: bankId || null,
         bankAccount: bankAccount || null,
         bankAccountName: bankAccountName || null,
+        supportZaloPhone: supportZaloPhone || null,
       });
       setSetting(updated);
-      toast.success("Đã lưu cấu hình thanh toán thành công.", "Đã lưu");
+      toast.success("Đã lưu cấu hình landing page và thanh toán thành công.", "Đã lưu");
     } catch {
       toast.error("Không thể lưu cấu hình, vui lòng thử lại.", "Lỗi");
     } finally {
@@ -67,11 +70,21 @@ export function SuperAdminSettingsScreen() {
             Cấu hình thanh toán
           </h1>
           <p className="mt-2 text-sm text-ink/60">
-            Cấu hình tài khoản ngân hàng để hiển thị mã QR thanh toán (VietQR) cho khách hàng khi gia hạn hoặc đăng ký mới.
+            Cấu hình tài khoản thanh toán và kênh liên hệ nhanh để hiển thị trên landing page khi khách cần liên hệ ngay.
           </p>
         </div>
       </header>
       <form onSubmit={handleSave} className="grid max-w-2xl gap-6">
+        <label className="grid gap-2 text-sm font-semibold text-ink">
+          Số Zalo hỗ trợ
+          <input
+            className="h-10 rounded-lg border border-ink/20 px-3 font-normal"
+            value={supportZaloPhone}
+            onChange={(e) => setSupportZaloPhone(e.target.value)}
+            placeholder="Ví dụ: 0903868979"
+          />
+          <p className="text-xs font-normal text-ink/50">Dùng cho nút Zalo trên landing page. Khách bấm là mở liên hệ ngay.</p>
+        </label>
         <label className="grid gap-2 text-sm font-semibold text-ink">
           Mã ngân hàng (Bank BIN/ShortName)
           <input

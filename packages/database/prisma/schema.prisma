@@ -409,5 +409,6 @@ model SystemSetting {
   bankId          String?
   bankAccount     String?
   bankAccountName String?
+  supportZaloPhone String?
   updatedAt       DateTime @updatedAt
 }

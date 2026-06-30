@@ -1,5 +1,5 @@
 import type { PropertyPost, Site } from "@/lib/types";
-import type { SubscriptionPlan } from "@nice-land/contracts";
+import type { SubscriptionPlan, SystemSetting } from "@nice-land/contracts";
 import {
   isPublicThemeDemoSlug,
   resolvePublicTheme,
@@ -357,6 +357,23 @@ export async function getPlatformStats(): Promise<{
   } catch (error) {
     console.error("❌ Lỗi khi fetch getPlatformStats:", error);
     return { totalSites: 0, totalPosts: 0, totalThemes: 0 };
+  }
+}
+
+export async function getPublicSystemSetting(): Promise<SystemSetting | null> {
+  try {
+    const response = await fetch(`${apiUrl}/v1/public/bank-info`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return (await response.json()) as SystemSetting;
+  } catch (error) {
+    console.error("❌ Lỗi khi fetch getPublicSystemSetting:", error);
+    return null;
   }
 }
 

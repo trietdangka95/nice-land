@@ -5,6 +5,7 @@ import {
   Building2,
   Check,
   Globe2,
+  MessageCircle,
   MousePointerClick,
   Palette,
   PhoneCall,
@@ -18,7 +19,7 @@ import { Faq } from "@/components/marketing/faq";
 import { ThemeShowcase } from "@/components/marketing/theme-showcase";
 import { MobileNavigation } from "@/components/shared/mobile-navigation";
 import { properties } from "@/lib/data";
-import { getPlatformStats, getPublicPlans } from "@/lib/server-api";
+import { getPlatformStats, getPublicPlans, getPublicSystemSetting } from "@/lib/server-api";
 import type { SubscriptionPlan } from "@nice-land/contracts";
 
 function getPlanPresentation(plan: SubscriptionPlan) {
@@ -51,7 +52,9 @@ export default async function LandingPage({
   const initialThemePreference = query.theme === "cold" ? "cold" : "warm";
   const stats = await getPlatformStats();
   const plans = await getPublicPlans();
+  const systemSetting = await getPublicSystemSetting();
   const featuredPreview = properties[0];
+  const supportZaloPhone = systemSetting?.supportZaloPhone?.replace(/\D/g, "") ?? "";
 
   return (
     <main className="overflow-hidden">
@@ -104,7 +107,7 @@ export default async function LandingPage({
           <div className="max-w-2xl" data-reveal="soft">
             <div className="inline-flex items-center gap-2 rounded-full border border-moss/15 bg-white/70 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-moss shadow-sm sm:text-xs">
               <Sparkles size={14} aria-hidden="true" />
-              <span>Nền tảng website cho người làm địa ốc</span>
+              <span>Nền tảng website cho chuyên gia bất động sản</span>
             </div>
 
             <h1 className="mt-6 text-balance font-display text-4xl font-semibold leading-[1.02] min-[420px]:text-5xl sm:text-6xl lg:text-[68px]">
@@ -127,7 +130,7 @@ export default async function LandingPage({
             </div>
 
             <div className="mt-7 grid max-w-xl gap-2 text-sm font-semibold text-ink/65 sm:grid-cols-3">
-              {["Dùng thử 14 ngày", "Không cần thẻ", "Hỗ trợ thiết lập"].map((item) => (
+              {["Dùng thử 14 ngày", "Không cần thẻ", "Thiết lập nhanh chống"].map((item) => (
                 <span key={item} className="flex items-center gap-2 rounded-full border border-ink/8 bg-white/55 px-3 py-2 text-xs sm:text-sm">
                   <span className="flex size-5 items-center justify-center rounded-full bg-moss/10">
                     <Check className="text-moss" size={12} aria-hidden="true" />
@@ -147,7 +150,7 @@ export default async function LandingPage({
                   <span className="size-3 rounded-full bg-gold"></span>
                   <span className="size-3 rounded-full bg-leaf"></span>
                 </div>
-                <span className="rounded-full bg-cream px-4 py-1 text-[11px] font-bold text-ink/45">minhphat.nice-land.id.vn</span>
+                <span className="rounded-full bg-cream px-4 py-1 text-[11px] font-bold text-ink/45">ten-cua-ban.nice-land.id.vn</span>
               </div>
               <div className="grid gap-4 p-4 sm:grid-cols-[1.1fr_0.9fr] sm:p-5">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-sand">
@@ -194,7 +197,7 @@ export default async function LandingPage({
 
 
       {/* Stats Section */}
-      <section className="relative z-20 pb-16">
+      <section className="relative z-20 pb-8">
         <div className="page-shell">
           <div className="glass-panel rounded-3xl grid gap-8 sm:gap-5 text-center sm:grid-cols-3 sm:text-left p-10 mx-auto max-w-5xl" data-reveal-group>
             {[
@@ -221,7 +224,7 @@ export default async function LandingPage({
       </section>
 
       {/* Featured Theme Showcase */}
-      <section id="themes" className="warm-surface relative overflow-hidden py-24 sm:py-32">
+      <section id="themes" className="warm-surface relative overflow-hidden py-14 sm:py-16">
         <div className="page-shell relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-16" data-reveal="soft">
             <SectionHeading
@@ -249,7 +252,7 @@ export default async function LandingPage({
       </section>
 
       {/* Features Section (Bento Grid) */}
-      <section id="features" className="py-24 sm:py-32 relative">
+      <section id="features" className="py-14 sm:py-16 relative">
         <div className="absolute inset-0 bg-white/40 -z-10 backdrop-blur-3xl"></div>
         <div className="page-shell">
           <div className="text-center max-w-2xl mx-auto" data-reveal="soft">
@@ -315,7 +318,7 @@ export default async function LandingPage({
       </section>
 
       {/* Process Section */}
-      <section id="process" className="dark-surface relative overflow-hidden py-24 sm:py-32">
+      <section id="process" className="dark-surface relative overflow-hidden py-14 sm:py-16">
         <div className="page-shell relative z-10 text-white">
           <SectionHeading
             eyebrow="Đơn giản từ ngày đầu"
@@ -340,7 +343,7 @@ export default async function LandingPage({
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 sm:py-32 relative">
+      <section id="pricing" className="py-14 sm:py-16 relative">
         <div className="page-shell">
           <div data-reveal="soft">
             <SectionHeading
@@ -442,6 +445,23 @@ export default async function LandingPage({
               Kể chúng tôi nghe về cách bạn đang làm việc. Chúng tôi sẽ cùng bạn chọn cấu hình website
               vừa đủ cho hiện tại và sẵn sàng cho bước tiếp theo.
             </p>
+            {supportZaloPhone ? (
+              <div className="mt-8 rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold/85">Liên hệ nhanh</p>
+                <p className="mt-3 max-w-md text-sm leading-6 text-white/70">
+                  Cần trao đổi ngay? Bấm vào Zalo để kết nối trực tiếp với đội ngũ Nice Land chỉ trong một bước.
+                </p>
+                <a
+                  href={`https://zalo.me/${supportZaloPhone}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-5 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#0068ff] px-5 text-sm font-bold text-white transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#1a74ff]"
+                >
+                  <MessageCircle size={18} aria-hidden="true" />
+                  Nhắn Zalo ngay
+                </a>
+              </div>
+            ) : null}
           </div>
           <div className="glass-dark rounded-3xl p-6 sm:p-10">
             <ContactForm

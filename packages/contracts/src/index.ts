@@ -123,6 +123,7 @@ export const systemSettingSchema = z.object({
   bankId: z.string().nullable(),
   bankAccount: z.string().nullable(),
   bankAccountName: z.string().nullable(),
+  supportZaloPhone: z.string().nullable(),
   updatedAt: z.union([z.string(), z.date()]).transform((d) => new Date(d)),
 });
 
@@ -130,6 +131,7 @@ export const systemSettingInputSchema = z.object({
   bankId: z.string().trim().nullable(),
   bankAccount: z.string().trim().nullable(),
   bankAccountName: z.string().trim().nullable(),
+  supportZaloPhone: z.string().trim().max(20).nullable(),
 });
 
 export const changePasswordInputSchema = z.object({
