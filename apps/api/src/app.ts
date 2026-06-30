@@ -245,6 +245,7 @@ export function buildApp(config: AppConfig, options: BuildAppOptions = {}) {
           phone: input.phone,
           email: input.email || undefined,
           message: input.message,
+          selectedPlan: input.selectedPlan || undefined,
           themePreference: input.themePreference,
           source: request.tenant ? "TENANT_WEBSITE" : "LANDING_PAGE",
         });

@@ -102,7 +102,7 @@ export default async function LandingPage({
       </header>
 
       {/* Hero Section */}
-      <section className="hero-surface relative overflow-hidden py-10 lg:py-14">
+      <section className="hero-surface relative overflow-hidden py-4 lg:py-8">
         <div className="page-shell relative z-10 grid min-h-[clamp(560px,calc(100dvh-5rem),760px)] gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(390px,0.95fr)] lg:items-center">
           <div className="max-w-2xl" data-reveal="soft">
             <div className="inline-flex items-center gap-2 rounded-full border border-moss/15 bg-white/70 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-moss shadow-sm sm:text-xs">
@@ -408,7 +408,7 @@ export default async function LandingPage({
                     </div>
 
                     <Link
-                      href={`/themes?plan=${encodeURIComponent(plan.name)}`}
+                      href={`/?plan=${encodeURIComponent(plan.name)}#contact`}
                       className={`mt-10 relative z-10 w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-6 text-sm font-bold transition-all ${presentation.popular
                         ? "bg-gold text-ink hover:bg-white hover:shadow-lg hover:-translate-y-0.5"
                         : "bg-white border-2 border-ink/5 text-ink hover:bg-moss hover:text-white hover:border-moss shadow-sm hover:-translate-y-0.5"

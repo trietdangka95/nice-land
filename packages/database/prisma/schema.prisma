@@ -375,6 +375,7 @@ model ContactRequest {
   phone     String
   email     String?
   message   String?
+  selectedPlan String?
   themePreference String    @default("warm") @map("theme_preference")
   status    RequestStatus @default(NEW)
   source    String?

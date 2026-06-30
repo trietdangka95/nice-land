@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
 import { useToast } from "@/components/shared/toast-provider";
 import { VietQR } from "@/components/shared/viet-qr";
@@ -22,7 +22,23 @@ export function ContactForm({
   const [loading, setLoading] = useState(false);
   const [bankInfo, setBankInfo] = useState<SystemSetting | null>(null);
   const [phone, setPhone] = useState("");
+  const [selectedPlanValue, setSelectedPlanValue] = useState(selectedPlan ?? "");
   const [themePreference, setThemePreference] = useState<"warm" | "cold">(initialThemePreference);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setSelectedPlanValue(selectedPlan ?? "");
+  }, [selectedPlan]);
+
+  useEffect(() => {
+    if (!selectedPlan) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      nameInputRef.current?.focus({ preventScroll: true });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [selectedPlan]);
 
   useEffect(() => {
     let active = true;
@@ -39,19 +55,13 @@ export function ContactForm({
     const formEl = event.currentTarget;
     setLoading(true);
     const form = new FormData(formEl);
-    const selection = [
-      selectedPlan ? `Gói quan tâm: ${selectedPlan}` : "",
-      String(form.get("message") ?? ""),
-    ]
-      .filter(Boolean)
-      .join("\n");
-
     try {
       await api.createContactRequest({
         name: String(form.get("name") ?? ""),
         phone: String(form.get("phone") ?? ""),
         email: String(form.get("email") ?? ""),
-        message: selection,
+        message: String(form.get("message") ?? ""),
+        selectedPlan: selectedPlanValue,
         themePreference,
       });
       setSubmitted(true);
@@ -87,11 +97,6 @@ export function ContactForm({
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4 border border-white/15 bg-white/5 p-6 sm:p-8">
-      {selectedPlan && (
-        <div className="border border-gold/30 bg-gold/10 p-4 text-sm text-white/80">
-          <p>Gói quan tâm: <strong>{selectedPlan}</strong></p>
-        </div>
-      )}
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-2 text-sm font-semibold">
           Họ và tên
@@ -100,6 +105,7 @@ export function ContactForm({
             name="name"
             placeholder="Nguyễn Văn A"
             required
+            ref={nameInputRef}
           />
         </label>
         <label className="grid gap-2 text-sm font-semibold">
@@ -124,6 +130,22 @@ export function ContactForm({
           placeholder="ten-email@gmail.com"
         />
       </label>
+      <label className="grid gap-2 text-sm font-semibold">
+        Gói quan tâm
+        <select
+          className="h-12 border border-white/15 bg-white/10 px-4 font-normal text-white"
+          name="selectedPlan"
+          value={selectedPlanValue}
+          onChange={(e) => setSelectedPlanValue(e.target.value)}
+        >
+          <option value="" className="text-ink">Chưa chọn gói</option>
+          {plans.map((plan) => (
+            <option key={plan.name} value={plan.name} className="text-ink">
+              {plan.name}
+            </option>
+          ))}
+        </select>
+      </label>
       <fieldset className="grid gap-3">
         <legend className="text-sm font-semibold">Giao diện mong muốn</legend>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -137,6 +159,7 @@ export function ContactForm({
               selected={themePreference === option.preference}
               onSelect={setThemePreference}
               tone="dark"
+              emphasisTone={option.preference}
             />
           ))}
         </div>
@@ -151,7 +174,7 @@ export function ContactForm({
       </label>
 
       {(() => {
-        const sp = plans.find((p) => p.name === selectedPlan);
+        const sp = plans.find((p) => p.name === selectedPlanValue);
         if (sp && sp.price > 0 && bankInfo?.bankId) {
           return (
             <div className="mt-4 rounded-xl bg-white/10 p-4">

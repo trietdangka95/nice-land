@@ -10,6 +10,34 @@ import { useToast } from "@/components/shared/toast-provider";
 import { getPublicThemePreferenceLabel } from "@/lib/public-themes";
 import { useSearchParams } from "next/navigation";
 
+function parseSelectedPlan(message: string | null) {
+  if (!message) return { selectedPlan: null, cleanedMessage: null };
+
+  const lines = message
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const selectedPlanLine = lines.find((line) => line.startsWith("Gói quan tâm:"));
+  const selectedPlan = selectedPlanLine?.replace("Gói quan tâm:", "").trim() || null;
+  const cleanedMessage = lines
+    .filter((line) => line !== selectedPlanLine)
+    .join("\n")
+    .trim();
+
+  return {
+    selectedPlan,
+    cleanedMessage: cleanedMessage || null,
+  };
+}
+
+function resolveSelectedPlan(item: SuperAdminContact) {
+  if (item.selectedPlan) {
+    return { selectedPlan: item.selectedPlan, cleanedMessage: item.message };
+  }
+
+  return parseSelectedPlan(item.message);
+}
+
 export function SuperAdminRequestsScreen() {
   const toast = useToast();
   const searchParams = useSearchParams();
@@ -82,7 +110,8 @@ export function SuperAdminRequestsScreen() {
     })}</div></section>
     <section className="mt-12"><h2 className="font-display text-2xl">Liên hệ từ landing page</h2><div className="mt-6 space-y-4">{contacts.map((item) => {
       const highlighted = highlightContactId === item.id;
-      return <article id={`contact-${item.id}`} key={item.id} className={`grid gap-5 rounded-3xl p-6 md:grid-cols-[1fr_1fr_1.5fr_auto] md:items-center ${highlighted ? "glass-panel ring-2 ring-moss/30 bg-moss/5 scroll-mt-28" : "glass-panel"}`}><div><strong className="font-display text-xl">{item.name}</strong><div className="mt-3 flex flex-wrap gap-2"><StatusPill tone={item.status === "NEW" ? "gold" : "gray"}>{item.status}</StatusPill><span className="rounded-full border border-moss/10 bg-white/60 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-moss">{getPublicThemePreferenceLabel(item.themePreference)} theme</span></div></div><div className="space-y-3 text-xs text-ink/60 font-medium"><p className="flex items-center gap-2"><Phone size={14} className="text-moss/60" />{item.phone}</p>{item.email && <p className="flex items-center gap-2"><Mail size={14} className="text-moss/60" />{item.email}</p>}</div><p className="text-sm leading-6 text-ink/70 font-medium">{item.message || "Không có nội dung"}</p><select disabled={updatingContactId === item.id} value={item.status} onChange={(e) => void updateContact(item, e.target.value as "IN_PROGRESS" | "DONE" | "REJECTED")} className="h-10 rounded-xl bg-white/50 border border-ink/5 px-4 text-xs font-bold focus:bg-white transition-colors disabled:opacity-60 disabled:cursor-wait"><option value="NEW" disabled>Mới</option><option value="IN_PROGRESS">Đang xử lý</option><option value="DONE">Hoàn tất</option><option value="REJECTED">Từ chối</option></select></article>;
+      const { selectedPlan, cleanedMessage } = resolveSelectedPlan(item);
+      return <article id={`contact-${item.id}`} key={item.id} className={`grid gap-5 rounded-3xl p-6 md:grid-cols-[1fr_1fr_1.5fr_auto] md:items-center ${highlighted ? "glass-panel ring-2 ring-moss/30 bg-moss/5 scroll-mt-28" : "glass-panel"}`}><div><strong className="font-display text-xl">{item.name}</strong><div className="mt-3 flex flex-wrap gap-2"><StatusPill tone={item.status === "NEW" ? "gold" : "gray"}>{item.status}</StatusPill><span className="rounded-full border border-moss/10 bg-white/60 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-moss">{getPublicThemePreferenceLabel(item.themePreference)} theme</span><span className={`rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] ${selectedPlan ? "border border-gold/25 bg-gold/10 text-[#8b5a1f]" : "border border-ink/10 bg-white/60 text-ink/55"}`}>{selectedPlan ?? "Chưa chọn gói"}</span></div></div><div className="space-y-3 text-xs text-ink/60 font-medium"><p className="flex items-center gap-2"><Phone size={14} className="text-moss/60" />{item.phone}</p>{item.email && <p className="flex items-center gap-2"><Mail size={14} className="text-moss/60" />{item.email}</p>}</div><p className="text-sm leading-6 text-ink/70 font-medium">{cleanedMessage || "Không có nội dung"}</p><select disabled={updatingContactId === item.id} value={item.status} onChange={(e) => void updateContact(item, e.target.value as "IN_PROGRESS" | "DONE" | "REJECTED")} className="h-10 rounded-xl bg-white/50 border border-ink/5 px-4 text-xs font-bold focus:bg-white transition-colors disabled:opacity-60 disabled:cursor-wait"><option value="NEW" disabled>Mới</option><option value="IN_PROGRESS">Đang xử lý</option><option value="DONE">Hoàn tất</option><option value="REJECTED">Từ chối</option></select></article>;
     })}</div></section>
   </>;
 }

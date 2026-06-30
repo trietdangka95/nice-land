@@ -2,9 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
+import { ApiClientError } from "@nice-land/api-client";
 import { api } from "@/lib/api";
 import { useToast } from "@/components/shared/toast-provider";
 import type { SystemSetting } from "@nice-land/contracts";
+
+function supportsSupportZaloPhone(error: unknown) {
+  if (!(error instanceof ApiClientError)) return false;
+
+  const message = error.message.toLowerCase();
+  return error.status >= 500 ||
+    error.status === 400 ||
+    error.status === 422 ||
+    message.includes("supportzalophone") ||
+    message.includes("unrecognized key") ||
+    message.includes("unknown argument");
+}
 
 export function SuperAdminSettingsScreen() {
   const toast = useToast();
@@ -47,7 +60,25 @@ export function SuperAdminSettingsScreen() {
       });
       setSetting(updated);
       toast.success("Đã lưu cấu hình landing page và thanh toán thành công.", "Đã lưu");
-    } catch {
+    } catch (error) {
+      if (supportZaloPhone.trim() && supportsSupportZaloPhone(error)) {
+        try {
+          const updated = await api.updateSystemSetting({
+            bankId: bankId || null,
+            bankAccount: bankAccount || null,
+            bankAccountName: bankAccountName || null,
+          });
+          setSetting({
+            ...updated,
+            supportZaloPhone,
+          });
+          toast.success("Đã lưu cấu hình thanh toán. API hiện tại chưa hỗ trợ lưu số Zalo.", "Đã lưu một phần");
+          return;
+        } catch {
+          toast.error("Không thể lưu cấu hình, vui lòng thử lại.", "Lỗi");
+          return;
+        }
+      }
       toast.error("Không thể lưu cấu hình, vui lòng thử lại.", "Lỗi");
     } finally {
       setSaving(false);
@@ -67,7 +98,7 @@ export function SuperAdminSettingsScreen() {
       <header className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="font-display text-3xl font-semibold text-ink">
-            Cấu hình thanh toán
+            Cấu hình landing page & thanh toán
           </h1>
           <p className="mt-2 text-sm text-ink/60">
             Cấu hình tài khoản thanh toán và kênh liên hệ nhanh để hiển thị trên landing page khi khách cần liên hệ ngay.

@@ -15,6 +15,7 @@ export class PrismaContactRequestRepository
         phone: input.phone,
         email: input.email || null,
         message: input.message || null,
+        selectedPlan: input.selectedPlan || null,
         themePreference: input.themePreference,
         source: input.source,
       },

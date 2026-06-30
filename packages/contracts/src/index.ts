@@ -42,6 +42,7 @@ export const contactRequestInputSchema = z.object({
   phone: z.string().trim().min(8).max(20),
   email: z.string().trim().email().optional().or(z.literal("")),
   message: z.string().trim().max(2000).optional(),
+  selectedPlan: z.string().trim().max(120).optional().or(z.literal("")),
   themePreference: z.enum(["warm", "cold"]).default("warm"),
 });
 
@@ -131,7 +132,7 @@ export const systemSettingInputSchema = z.object({
   bankId: z.string().trim().nullable(),
   bankAccount: z.string().trim().nullable(),
   bankAccountName: z.string().trim().nullable(),
-  supportZaloPhone: z.string().trim().max(20).nullable(),
+  supportZaloPhone: z.string().trim().max(20).nullable().optional(),
 });
 
 export const changePasswordInputSchema = z.object({
@@ -455,6 +456,7 @@ export interface SuperAdminContact {
   phone: string;
   email: string | null;
   message: string | null;
+  selectedPlan: string | null;
   themePreference: "warm" | "cold";
   status: RequestStatus;
   source: string | null;

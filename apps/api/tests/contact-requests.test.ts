@@ -78,6 +78,7 @@ describe("POST /v1/public/contact-requests", () => {
         phone: "0905123456",
         email: "minhanh@example.com",
         message: "Tôi muốn xem căn biệt thự.",
+        selectedPlan: undefined,
         themePreference: "warm",
         source: "TENANT_WEBSITE",
       },
@@ -146,6 +147,7 @@ describe("POST /v1/public/contact-requests", () => {
         phone: "0905123456",
         email: undefined,
         message: "Tôi muốn tạo website.",
+        selectedPlan: undefined,
         themePreference: "warm",
         source: "LANDING_PAGE",
       },
@@ -188,5 +190,54 @@ describe("POST /v1/public/contact-requests", () => {
 
     expect(response.statusCode).toBe(400);
     expect(createCount).toBe(0);
+  });
+
+  it("persists the selected plan when submitted from landing page", async () => {
+    const createdInputs: Parameters<ContactRequestRepository["create"]>[0][] = [];
+    const contactRequestRepository: ContactRequestRepository = {
+      create: async (input) => {
+        createdInputs.push(input);
+        return {
+          id: "contact-plan",
+          createdAt: new Date("2026-06-20T00:00:00.000Z"),
+        };
+      },
+    };
+
+    const app = buildApp(
+      loadConfig({
+        NODE_ENV: "test",
+        LOG_LEVEL: "silent",
+        ROOT_DOMAIN: "nice-land.vn",
+      }),
+      { tenantRepository, contactRequestRepository },
+    );
+    apps.push(app);
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/v1/public/contact-requests",
+      headers: { "x-tenant-host": "nice-land.vn" },
+      payload: {
+        name: "Khách chọn gói",
+        phone: "0905123456",
+        selectedPlan: "Chuyên nghiệp",
+        message: "Tôi cần website cho đội nhóm.",
+      },
+    });
+
+    expect(response.statusCode).toBe(201);
+    expect(createdInputs).toEqual([
+      {
+        siteId: null,
+        name: "Khách chọn gói",
+        phone: "0905123456",
+        email: undefined,
+        message: "Tôi cần website cho đội nhóm.",
+        selectedPlan: "Chuyên nghiệp",
+        themePreference: "warm",
+        source: "LANDING_PAGE",
+      },
+    ]);
   });
 });

@@ -4,6 +4,7 @@ export interface CreateContactRequestInput {
   phone: string;
   email?: string;
   message?: string;
+  selectedPlan?: string;
   themePreference: "warm" | "cold";
   source: "LANDING_PAGE" | "TENANT_WEBSITE";
 }
