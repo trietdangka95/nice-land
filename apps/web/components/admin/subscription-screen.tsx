@@ -116,7 +116,9 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
   }
 
   function closeExpiredDialog() {
-    setDismissedExpiredDialog(true);
+    if (!pending) {
+      setDismissedExpiredDialog(true);
+    }
     expiredDialogRef.current?.close();
   }
 
@@ -175,6 +177,13 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
               <p className="mt-3 text-xs leading-5 text-white/60">
                 Đã gửi ngày {new Date(subscription.latestRenewalRequest!.requestedAt).toLocaleDateString("vi-VN")}.
               </p>
+              <button
+                type="button"
+                onClick={() => expiredDialogRef.current?.showModal()}
+                className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl border border-white/15 bg-white/10 px-4 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+              >
+                Xem lại yêu cầu
+              </button>
             </div>
           ) : isExpired ? (
             <div className="mt-7 rounded-2xl border border-gold/25 bg-white/10 p-5 backdrop-blur-sm">
@@ -232,7 +241,7 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
           </div>
         </aside>
       </div>
-      {isExpired && !pending ? (
+      {isExpired ? (
         <dialog
           ref={expiredDialogRef}
           aria-labelledby="expired-renewal-title"
@@ -248,7 +257,7 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-moss">Gia hạn dịch vụ</p>
                   <h2 id="expired-renewal-title" className="mt-2 font-display text-3xl text-ink">
-                    Gói dịch vụ đã hết hạn
+                    {pending ? "Yêu cầu gia hạn đang được xử lý" : "Gói dịch vụ đã hết hạn"}
                   </h2>
                 </div>
                 <button
@@ -262,12 +271,18 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
               </div>
               <div className="px-6 py-6 sm:px-8 sm:py-7">
                 <p className="text-base leading-7 text-ink/70">
-                  Gửi yêu cầu để đội ngũ quản trị hệ thống kiểm tra và hỗ trợ gia hạn website của bạn.
+                  {pending
+                    ? "Yêu cầu gia hạn của bạn đã được ghi nhận. Đội ngũ quản trị hệ thống sẽ sớm liên hệ để hỗ trợ website này."
+                    : "Gửi yêu cầu để đội ngũ quản trị hệ thống kiểm tra và hỗ trợ gia hạn website của bạn."}
                 </p>
                 <div className="mt-5 rounded-2xl border border-moss/10 bg-white/80 p-4">
-                  <p className="text-sm font-semibold text-ink">Thông tin sẽ được ghi nhận theo website hiện tại.</p>
+                  <p className="text-sm font-semibold text-ink">
+                    {pending ? "Yêu cầu đã được ghi nhận." : "Thông tin sẽ được ghi nhận theo website hiện tại."}
+                  </p>
                   <p className="mt-1 text-sm leading-6 text-ink/60">
-                    Sau khi gửi, yêu cầu sẽ chuyển sang trạng thái đang xử lý và chúng tôi sẽ sớm liên hệ hỗ trợ bạn.
+                    {pending
+                      ? `Trạng thái hiện tại: đang xử lý. Đã gửi ngày ${new Date(subscription.latestRenewalRequest!.requestedAt).toLocaleDateString("vi-VN")}.`
+                      : "Sau khi gửi, yêu cầu sẽ chuyển sang trạng thái đang xử lý và chúng tôi sẽ sớm liên hệ hỗ trợ bạn."}
                   </p>
                 </div>
                 <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
@@ -276,17 +291,19 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
                     onClick={closeExpiredDialog}
                     className="button-secondary"
                   >
-                    Để sau
+                    {pending ? "Đóng" : "Để sau"}
                   </button>
-                  <button
-                    type="button"
-                    disabled={sending}
-                    onClick={() => void requestExpiredRenewal()}
-                    className="button-primary min-w-[180px] disabled:opacity-60"
-                  >
-                    <Send size={16} aria-hidden="true" />
-                    {sending ? "Đang gửi..." : "Yêu cầu gia hạn"}
-                  </button>
+                  {!pending ? (
+                    <button
+                      type="button"
+                      disabled={sending}
+                      onClick={() => void requestExpiredRenewal()}
+                      className="button-primary min-w-[180px] disabled:opacity-60"
+                    >
+                      <Send size={16} aria-hidden="true" />
+                      {sending ? "Đang gửi..." : "Yêu cầu gia hạn"}
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </div>
