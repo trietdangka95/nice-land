@@ -1,7 +1,13 @@
 import { ApiClientError } from "@nice-land/api-client";
 
 export function getErrorMessage(error: unknown, fallback: string) {
-  if (error instanceof ApiClientError) return error.message;
+  if (error instanceof ApiClientError) {
+    if (error.status === 402) {
+      return "Gói dịch vụ đã hết hạn. Vui lòng gia hạn để tiếp tục sử dụng hệ thống.";
+    }
+
+    return error.message;
+  }
   if (error instanceof Error) return error.message;
   return fallback;
 }

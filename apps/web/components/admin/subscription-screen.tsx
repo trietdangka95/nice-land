@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import { CalendarDays, Check, Gauge, ImageIcon, Send, ArrowRight } from "lucide-react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { CalendarDays, Check, Gauge, ImageIcon, Send, X } from "lucide-react";
 import type { AdminSubscription, SubscriptionPlan, SystemSetting } from "@nice-land/contracts";
 import { createTenantApi, api } from "@/lib/api";
 import { getErrorMessage } from "@/lib/notifications";
@@ -19,6 +19,7 @@ const statusLabels: Record<AdminSubscription["status"], string> = {
 export function SubscriptionScreen({ slug }: { slug: string }) {
   const client = useMemo(() => createTenantApi(slug), [slug]);
   const toast = useToast();
+  const expiredDialogRef = useRef<HTMLDialogElement>(null);
   const [subscription, setSubscription] = useState<AdminSubscription | null>(null);
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [selectedPlanId, setSelectedPlanId] = useState("");
@@ -27,6 +28,7 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const [dismissedExpiredDialog, setDismissedExpiredDialog] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -45,21 +47,44 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
     };
   }, [client]);
 
-  async function requestRenewal(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const pending =
+    subscription?.latestRenewalRequest &&
+    ["NEW", "IN_PROGRESS"].includes(subscription.latestRenewalRequest.status);
+  const isExpired = subscription?.status === "EXPIRED";
+
+  useEffect(() => {
+    const dialog = expiredDialogRef.current;
+    if (!dialog) return;
+
+    if (isExpired && !pending && !dismissedExpiredDialog) {
+      if (!dialog.open) dialog.showModal();
+      return;
+    }
+
+    if (dialog.open) dialog.close();
+  }, [dismissedExpiredDialog, isExpired, pending]);
+
+  async function submitRenewalRequest({
+    planId,
+    note: requestNote,
+    successTitle,
+    successMessage,
+  }: {
+    planId: string | null;
+    note: string | null;
+    successTitle: string;
+    successMessage: string;
+  }) {
     if (!subscription) return;
     setSending(true);
     try {
       const request = await client.createRenewalRequest({
-        planId: selectedPlanId || null,
-        note: note || null,
+        planId,
+        note: requestNote,
       });
       setSubscription({ ...subscription, latestRenewalRequest: request });
       setNote("");
-      toast.success(
-        "Yêu cầu gia hạn đã được gửi tới quản trị hệ thống.",
-        "Đã gửi yêu cầu",
-      );
+      toast.success(successMessage, successTitle);
     } catch (requestError) {
       toast.error(
         getErrorMessage(requestError, "Không thể gửi yêu cầu gia hạn."),
@@ -68,6 +93,31 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
     } finally {
       setSending(false);
     }
+  }
+
+  async function requestRenewal(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await submitRenewalRequest({
+      planId: selectedPlanId || null,
+      note: note || null,
+      successTitle: "Đã gửi yêu cầu",
+      successMessage: "Yêu cầu gia hạn đã được gửi tới quản trị hệ thống.",
+    });
+  }
+
+  async function requestExpiredRenewal() {
+    await submitRenewalRequest({
+      planId: subscription?.plan?.id ?? null,
+      note: null,
+      successTitle: "Đã ghi nhận yêu cầu",
+      successMessage:
+        "Yêu cầu đang trong quá trình xử lý. Chúng tôi sẽ sớm liên hệ và hỗ trợ bạn.",
+    });
+  }
+
+  function closeExpiredDialog() {
+    setDismissedExpiredDialog(true);
+    expiredDialogRef.current?.close();
   }
 
   if (loading) {
@@ -79,7 +129,6 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
 
   const plan = subscription.plan;
   const remainingPosts = Math.max(0, (plan?.maxPosts ?? 0) - subscription.usage.posts);
-  const pending = subscription.latestRenewalRequest && ["NEW", "IN_PROGRESS"].includes(subscription.latestRenewalRequest.status);
 
   return (
     <>
@@ -120,9 +169,29 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
           {pending ? (
             <div id="subscription-renewal-highlight" className="mt-7 rounded-2xl border p-5 backdrop-blur-sm border-white/15 bg-white/5">
               <p className="text-sm font-bold text-gold">Yêu cầu đang được xử lý</p>
-              <p className="mt-2 text-xs leading-5 text-white/70">
+              <p className="mt-2 text-sm leading-6 text-white/75">
+                Chúng tôi đã ghi nhận yêu cầu của bạn và sẽ sớm liên hệ để hỗ trợ gia hạn.
+              </p>
+              <p className="mt-3 text-xs leading-5 text-white/60">
                 Đã gửi ngày {new Date(subscription.latestRenewalRequest!.requestedAt).toLocaleDateString("vi-VN")}.
               </p>
+            </div>
+          ) : isExpired ? (
+            <div className="mt-7 rounded-2xl border border-gold/25 bg-white/10 p-5 backdrop-blur-sm">
+              <p className="text-sm font-bold text-gold">Website đang chờ yêu cầu gia hạn</p>
+              <p className="mt-2 text-sm leading-6 text-white/75">
+                Gửi yêu cầu ngay để đội ngũ quản trị hệ thống tiếp nhận và hỗ trợ bạn sớm nhất.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setDismissedExpiredDialog(false);
+                  expiredDialogRef.current?.showModal();
+                }}
+                className="mt-5 inline-flex min-h-12 items-center justify-center rounded-xl bg-gold px-5 text-sm font-bold text-ink transition-colors hover:bg-gold/90"
+              >
+                Yêu cầu gia hạn
+              </button>
             </div>
           ) : (
             <form onSubmit={requestRenewal} className="mt-7 grid gap-5">
@@ -163,6 +232,67 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
           </div>
         </aside>
       </div>
+      {isExpired && !pending ? (
+        <dialog
+          ref={expiredDialogRef}
+          aria-labelledby="expired-renewal-title"
+          className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none bg-black/50 p-0 backdrop:bg-transparent"
+          onCancel={closeExpiredDialog}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeExpiredDialog();
+          }}
+        >
+          <section className="mx-auto flex min-h-dvh w-full max-w-xl items-center px-5 py-8">
+            <div className="w-full overflow-hidden rounded-[2rem] border border-ink/10 bg-[#fbf7ee] shadow-[0_28px_80px_rgba(23,33,27,0.22)]">
+              <div className="flex items-start justify-between gap-4 border-b border-ink/10 px-6 py-5 sm:px-8">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-moss">Gia hạn dịch vụ</p>
+                  <h2 id="expired-renewal-title" className="mt-2 font-display text-3xl text-ink">
+                    Gói dịch vụ đã hết hạn
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeExpiredDialog}
+                  className="grid size-11 shrink-0 place-items-center rounded-full border border-ink/10 bg-white/80 text-ink/70 transition-colors hover:bg-white hover:text-ink"
+                  aria-label="Đóng popup yêu cầu gia hạn"
+                >
+                  <X size={18} aria-hidden="true" />
+                </button>
+              </div>
+              <div className="px-6 py-6 sm:px-8 sm:py-7">
+                <p className="text-base leading-7 text-ink/70">
+                  Gửi yêu cầu để đội ngũ quản trị hệ thống kiểm tra và hỗ trợ gia hạn website của bạn.
+                </p>
+                <div className="mt-5 rounded-2xl border border-moss/10 bg-white/80 p-4">
+                  <p className="text-sm font-semibold text-ink">Thông tin sẽ được ghi nhận theo website hiện tại.</p>
+                  <p className="mt-1 text-sm leading-6 text-ink/60">
+                    Sau khi gửi, yêu cầu sẽ chuyển sang trạng thái đang xử lý và chúng tôi sẽ sớm liên hệ hỗ trợ bạn.
+                  </p>
+                </div>
+                <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                  <button
+                    type="button"
+                    onClick={closeExpiredDialog}
+                    className="button-secondary"
+                  >
+                    Để sau
+                  </button>
+                  <button
+                    type="button"
+                    disabled={sending}
+                    onClick={() => void requestExpiredRenewal()}
+                    className="button-primary min-w-[180px] disabled:opacity-60"
+                  >
+                    <Send size={16} aria-hidden="true" />
+                    {sending ? "Đang gửi..." : "Yêu cầu gia hạn"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </dialog>
+      ) : null}
     </>
   );
 }
