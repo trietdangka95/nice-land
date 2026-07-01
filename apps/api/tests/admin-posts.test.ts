@@ -51,6 +51,7 @@ const post = {
   slug: "nha-pho-song-han",
   title: "Nhà phố gần sông Hàn",
   description: "Nhà phố ba tầng có không gian thoáng và pháp lý rõ ràng.",
+  featured: false,
   type: "HOUSE" as const,
   price: 8_500_000_000,
   area: 120,
@@ -152,6 +153,7 @@ describe("tenant admin post routes", () => {
         title: "Nhà phố mới gần sông Hàn",
         description:
           "Nhà phố ba tầng có không gian thoáng, vị trí đẹp và pháp lý rõ ràng.",
+        featured: true,
         type: "HOUSE",
         status: "DRAFT",
       },

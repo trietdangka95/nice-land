@@ -66,6 +66,7 @@ export const propertyInteractionInputSchema = z.object({
 export const publicPostListQuerySchema = z
   .object({
     q: z.string().trim().max(120).optional(),
+    featured: z.coerce.boolean().optional(),
     type: propertyTypeSchema.optional(),
     categoryId: z.string().uuid().optional(),
     minPrice: z.coerce.number().nonnegative().optional(),
@@ -143,6 +144,7 @@ export const changePasswordInputSchema = z.object({
 export const adminPostInputSchema = z.object({
   title: z.string().trim().min(5).max(180),
   description: z.string().trim().min(20).max(10000),
+  featured: z.boolean().default(false),
   type: propertyTypeSchema,
   price: z.coerce.number().nonnegative().nullable().optional(),
   area: z.coerce.number().positive().nullable().optional(),
@@ -585,6 +587,7 @@ export interface AdminPost {
   slug: string;
   title: string;
   description: string;
+  featured: boolean;
   type: PropertyType;
   price: number | null;
   area: number | null;

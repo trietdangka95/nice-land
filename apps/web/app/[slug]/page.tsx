@@ -129,7 +129,7 @@ export default async function TenantHomePage({
     : "newest";
   const renderedTheme = resolvePublicTheme(site.themeKey);
 
-  const [listing, featuredListing] = await Promise.all([
+  const [listing, featuredListing, fallbackFeaturedListing] = await Promise.all([
     getTenantPosts(slug, site.id, {
       page,
       limit: 12,
@@ -139,9 +139,13 @@ export default async function TenantHomePage({
       province,
       sort,
     }),
+    getTenantPosts(slug, site.id, { page: 1, limit: 1, featured: true }),
     getTenantPosts(slug, site.id, { page: 1, limit: 1 }),
   ]);
-  const featured = featuredListing.items[0] ?? createEmptyFeaturedPost(site);
+  const featured =
+    featuredListing.items[0] ??
+    fallbackFeaturedListing.items[0] ??
+    createEmptyFeaturedPost(site);
 
   const ThemeHome = getPublicThemeHomeRenderer(renderedTheme);
 

@@ -7,6 +7,7 @@ const recentPostSelect = {
   slug: true,
   title: true,
   description: true,
+  featured: true,
   type: true,
   price: true,
   area: true,

@@ -47,6 +47,7 @@ function filterMockPosts(
   siteId: string,
   options: {
     q?: string;
+    featured?: boolean;
     type?: PropertyPost["type"];
     province?: string;
     sort?: "newest" | "price_asc" | "price_desc";
@@ -55,6 +56,7 @@ function filterMockPosts(
   const keyword = options.q?.trim().toLowerCase();
   const province = options.province?.trim().toLowerCase();
   const items = getMockPosts(siteId).filter((post) => {
+    if (options.featured && !post.featured) return false;
     if (options.type && post.type !== options.type) return false;
     if (province && post.province.toLowerCase() !== province) return false;
     if (!keyword) return true;
@@ -168,6 +170,7 @@ export async function getTenantPosts(
     page?: number;
     limit?: number;
     q?: string;
+    featured?: boolean;
     type?: PropertyPost["type"];
     categoryId?: string;
     province?: string;
@@ -185,6 +188,7 @@ export async function getTenantPosts(
     limit: String(options.limit ?? 12),
   });
   if (options.q) query.set("q", options.q);
+  if (options.featured) query.set("featured", "true");
   if (options.type) query.set("type", options.type);
   if (options.categoryId) query.set("categoryId", options.categoryId);
   if (options.province) query.set("province", options.province);
@@ -222,6 +226,7 @@ export async function getTenantPosts(
         id: string;
         slug: string;
         title: string;
+        featured: boolean;
         type: PropertyPost["type"];
         price: string | null;
         area: number | null;
@@ -244,6 +249,7 @@ export async function getTenantPosts(
         siteId,
         title: post.title,
         description: "",
+        featured: post.featured,
         type: post.type,
         price: Number(post.price ?? 0),
         area: post.area ?? 0,
@@ -300,6 +306,7 @@ export async function getTenantPost(
       slug: string;
       title: string;
       description: string;
+      featured: boolean;
       type: PropertyPost["type"];
       price: string | null;
       area: number | null;
@@ -319,6 +326,7 @@ export async function getTenantPost(
       siteId,
       title: post.title,
       description: post.description,
+      featured: post.featured,
       type: post.type,
       price: Number(post.price ?? 0),
       area: post.area ?? 0,

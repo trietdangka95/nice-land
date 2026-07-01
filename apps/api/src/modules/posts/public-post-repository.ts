@@ -8,6 +8,7 @@ export interface PublicPostSummary {
   id: string;
   slug: string;
   title: string;
+  featured: boolean;
   type: PropertyType;
   price: string | null;
   area: number | null;

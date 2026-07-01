@@ -35,6 +35,7 @@ const PROVINCES = [
 type FormState = {
   title: string;
   description: string;
+  featured: boolean;
   type: PropertyType;
   categoryId: string;
   price: string;
@@ -53,6 +54,7 @@ function initialState(post?: AdminPost): FormState {
   return {
     title: post?.title ?? "",
     description: post?.description ?? "",
+    featured: post?.featured ?? false,
     type: post?.type ?? "HOUSE",
     categoryId: post?.categoryId ?? "",
     price: post?.price?.toString() ?? "",
@@ -104,6 +106,7 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
     const input: AdminPostInput = {
       title: form.title,
       description: form.description,
+      featured: form.featured,
       type: form.type,
       categoryId: form.categoryId || null,
       price: form.price ? Number(form.price) : null,
@@ -445,6 +448,20 @@ export function PropertyForm({ slug, post }: { slug: string; post?: AdminPost })
         </section>
         <section className="glass-panel rounded-3xl p-6 sm:p-8">
           <h2 className="font-display text-xl">Xuất bản</h2>
+          <label className="mt-6 flex items-start gap-3 rounded-2xl border border-moss/10 bg-moss/5 p-4 text-sm text-ink/75">
+            <input
+              type="checkbox"
+              checked={form.featured}
+              onChange={(e) => field("featured", e.target.checked)}
+              className="mt-1 size-4 rounded border-ink/20 text-moss focus:ring-gold/70"
+            />
+            <span>
+              <strong className="block font-semibold text-ink">Gợi ý hôm nay</strong>
+              <span className="mt-1 block leading-6 text-ink/60">
+                Khi bật, bài đăng này sẽ được ưu tiên hiển thị ở vị trí “Gợi ý hôm nay” trên trang chủ website.
+              </span>
+            </span>
+          </label>
           <label className="mt-6 grid gap-2 text-sm font-bold text-ink/80">
             Trạng thái
             <select value={form.status} onChange={(e) => field("status", e.target.value as FormState["status"])} className="h-12 rounded-xl bg-white/50 border border-ink/5 backdrop-blur-sm px-4 font-normal focus:bg-white transition-colors">

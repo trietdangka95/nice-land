@@ -10,6 +10,7 @@ const summarySelect = {
   id: true,
   slug: true,
   title: true,
+  featured: true,
   type: true,
   price: true,
   area: true,
@@ -32,6 +33,7 @@ function mapSummary(
     id: post.id,
     slug: post.slug,
     title: post.title,
+    featured: post.featured,
     type: post.type,
     price: post.price?.toString() ?? null,
     area: post.area,
@@ -50,6 +52,7 @@ export class PrismaPublicPostRepository implements PublicPostRepository {
       siteId: input.siteId,
       deletedAt: null,
       status: { in: ["PUBLISHED", "SOLD"] },
+      ...(input.featured ? { featured: true } : {}),
       ...(input.type ? { type: input.type } : {}),
       ...(input.categoryId ? { categoryId: input.categoryId } : {}),
       ...(input.province

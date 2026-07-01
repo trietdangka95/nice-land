@@ -120,6 +120,7 @@ export function AdminPostsTable({ slug }: { slug: string }) {
               const post = await client.createAdminPost({
                 title: "Tin đăng mới",
                 description: "",
+                featured: false,
                 type: "HOUSE",
                 categoryId: null,
                 price: null,

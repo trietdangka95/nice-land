@@ -18,6 +18,7 @@ const adminPostSelect = {
   slug: true,
   title: true,
   description: true,
+  featured: true,
   type: true,
   price: true,
   area: true,
@@ -74,6 +75,7 @@ function postData(input: Partial<AdminPostInput>) {
     ...(input.description !== undefined
       ? { description: input.description }
       : {}),
+    ...(input.featured !== undefined ? { featured: input.featured } : {}),
     ...(input.type !== undefined ? { type: input.type } : {}),
     ...(input.price !== undefined ? { price: input.price } : {}),
     ...(input.area !== undefined ? { area: input.area } : {}),
@@ -95,6 +97,24 @@ function postData(input: Partial<AdminPostInput>) {
         }
       : {}),
   };
+}
+
+async function clearFeaturedPost(
+  tx: Prisma.TransactionClient,
+  siteId: string,
+  excludeId?: string,
+) {
+  await tx.propertyPost.updateMany({
+    where: {
+      siteId,
+      deletedAt: null,
+      featured: true,
+      ...(excludeId ? { id: { not: excludeId } } : {}),
+    },
+    data: {
+      featured: false,
+    },
+  });
 }
 
 export class PrismaAdminPostRepository implements AdminPostRepository {
@@ -165,12 +185,17 @@ export class PrismaAdminPostRepository implements AdminPostRepository {
       });
       const slug = duplicateCount === 0 ? baseSlug : `${baseSlug}-${duplicateCount + 1}`;
 
+      if (input.featured) {
+        await clearFeaturedPost(tx, context.siteId);
+      }
+
       const created = await tx.propertyPost.create({
         data: {
           siteId: context.siteId,
           slug,
           title: input.title,
           description: input.description,
+          featured: input.featured,
           type: input.type,
           price: input.price,
           area: input.area,
@@ -224,6 +249,10 @@ export class PrismaAdminPostRepository implements AdminPostRepository {
           select: { id: true },
         });
         if (!category) throw new InvalidPostCategoryError();
+      }
+
+      if (changes.featured === true) {
+        await clearFeaturedPost(tx, siteId, id);
       }
 
       const result = await tx.propertyPost.updateMany({

@@ -33,6 +33,7 @@ describe("public property APIs", () => {
               id: "post-a",
               slug: "biet-thu-son-tra",
               title: "Biệt thự Sơn Trà",
+              featured: true,
               type: "HOUSE",
               price: "18500000000",
               area: 285,

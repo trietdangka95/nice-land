@@ -11,6 +11,7 @@ export interface AdminPostRecord {
   slug: string;
   title: string;
   description: string;
+  featured: boolean;
   type: PropertyType;
   price: number | null;
   area: number | null;

@@ -148,6 +148,7 @@ model PropertyPost {
   slug        String
   title       String
   description String
+  featured    Boolean           @default(false)
   type        PropertyType
   price       Decimal?          @db.Decimal(18, 2)
   area        Float?
@@ -179,6 +180,7 @@ model PropertyPost {
 
   @@unique([siteId, slug])
   @@index([siteId, status, publishedAt])
+  @@index([siteId, featured])
   @@index([siteId, type, price])
   @@index([siteId, province, district])
   @@index([siteId, deletedAt])
