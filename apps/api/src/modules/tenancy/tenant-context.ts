@@ -70,6 +70,7 @@ export function createOptionalTenantPreHandler(
     if (
       hostname === rootDomain ||
       hostname === `www.${rootDomain}` ||
+      hostname === `api.${rootDomain}` ||
       (rootDomain === "localhost" && hostname === "localhost")
     ) {
       request.tenant = null;

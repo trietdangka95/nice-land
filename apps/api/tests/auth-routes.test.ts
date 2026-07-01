@@ -272,4 +272,21 @@ describe("auth routes", () => {
     expect(missing.statusCode).toBe(202);
     expect(existing.json()).toEqual(missing.json());
   });
+
+  it("handles platform password reset routes on the API host without a tenant header", async () => {
+    const app = await createAuthApp();
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/v1/auth/reset-password",
+      headers: { host: "api.nice-land.vn" },
+      payload: {
+        token: "a".repeat(64),
+        password: "NewPassword123!",
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toMatchObject({ code: "INVALID_RESET_TOKEN" });
+  });
 });
