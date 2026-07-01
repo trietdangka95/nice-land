@@ -82,10 +82,12 @@ export function ForgotPasswordForm({
 
 export function ResetPasswordForm({
   token,
+  resetUrl,
   slug,
   superAdmin = false,
 }: {
   token: string;
+  resetUrl: string;
   slug?: string;
   superAdmin?: boolean;
 }) {
@@ -136,6 +138,16 @@ export function ResetPasswordForm({
         <KeyRound size={22} />
       </span>
       <h1 className="mt-6 font-display text-4xl">Tạo mật khẩu mới</h1>
+      <noscript>
+        <a
+          className="mt-6 block rounded-xl border border-moss/15 bg-moss/5 px-4 py-3 text-center text-sm font-bold text-moss"
+          href={resetUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Mở trang đặt lại mật khẩu trong tab mới
+        </a>
+      </noscript>
       {completed ? (
         <div className="mt-6">
           <p className="text-sm text-ink/60">
@@ -188,13 +200,23 @@ export function ResetPasswordForm({
         </p>
       )}
       {!completed && (
-        <Link
-          className="mt-6 block text-center text-sm font-semibold text-moss hover:underline"
-          href={loginHref(slug, superAdmin)}
-          prefetch={false}
-        >
-          Quay lại đăng nhập
-        </Link>
+        <div className="mt-6 grid gap-3 text-center text-sm font-semibold">
+          <a
+            className="text-moss hover:underline"
+            href={resetUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Mở trong tab trình duyệt mới
+          </a>
+          <Link
+            className="text-moss hover:underline"
+            href={loginHref(slug, superAdmin)}
+            prefetch={false}
+          >
+            Quay lại đăng nhập
+          </Link>
+        </div>
       )}
     </div>
   );

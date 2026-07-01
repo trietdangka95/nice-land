@@ -1,24 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async headers() {
-    return [
-      {
-        source: "/superadmin/:path*",
-        headers: [
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
-        ],
-      },
-      {
-        source: "/:slug/admin/:path*",
-        headers: [
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
-        ],
-      },
-    ];
-  },
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 86_400,
