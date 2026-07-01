@@ -16,7 +16,7 @@ import type { TenantDashboard } from "@nice-land/contracts";
 import { createTenantApi } from "@/lib/api";
 import { DashboardStat } from "@/components/shared/dashboard-stat";
 import { StatusPill } from "@/components/shared/status-pill";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, formatVietnamDate } from "@/lib/format";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
 
@@ -246,7 +246,7 @@ export function TenantDashboardScreen({ slug }: { slug: string }) {
             <div className="mt-6 flex items-center gap-2 border-t border-white/15 pt-5 text-sm">
               <CalendarClock size={17} className="text-gold" />
               {subscription?.endsAt
-                ? `Hết hạn ngày ${new Date(subscription.endsAt).toLocaleDateString("vi-VN")}`
+                ? `Hết hạn ngày ${formatVietnamDate(subscription.endsAt)}`
                 : "Không có ngày hết hạn"}
             </div>
             </div>

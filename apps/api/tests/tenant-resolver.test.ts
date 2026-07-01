@@ -94,6 +94,26 @@ describe("resolveTenant", () => {
     ).rejects.toMatchObject({ code: "TENANT_EXPIRED" } satisfies Partial<TenantResolutionError>);
   });
 
+  it("still allows access on the recorded expiration date", async () => {
+    const repository: TenantSiteRepository = {
+      findBySlug: async () => ({
+        ...activeSite,
+        subscriptionStatus: "EXPIRED",
+        subscriptionEnd: new Date("2026-07-31T00:00:00.000Z"),
+      }),
+      findByHostname: async () => null,
+    };
+
+    const tenant = await resolveTenant({
+      host: "minhphat.nice-land.vn",
+      rootDomain: "nice-land.vn",
+      repository,
+      now: new Date("2026-07-31T15:00:00.000Z"),
+    });
+
+    expect(tenant).toMatchObject({ siteId: "site-a" });
+  });
+
   it("can resolve an expired tenant for login and renewal flows", async () => {
     const repository: TenantSiteRepository = {
       findBySlug: async () => ({

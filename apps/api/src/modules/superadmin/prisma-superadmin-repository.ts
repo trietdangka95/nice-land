@@ -15,6 +15,7 @@ import {
   type SuperAdminRepository,
 } from "./superadmin-repository.js";
 import { writeAuditLog } from "../audit/audit-log-service.js";
+import { resolveRenewalPeriod } from "../sites/subscription-date-utils.js";
 
 const siteSelect = {
   id: true,
@@ -460,8 +461,11 @@ export class PrismaSuperAdminRepository implements SuperAdminRepository {
       });
       if (input.status === "APPROVED" && request.planId && request.plan) {
         const current = await tx.site.findUniqueOrThrow({ where: { id: request.siteId }, select: { subscriptionEnd: true } });
-        const startsAt = current.subscriptionEnd && current.subscriptionEnd > now ? current.subscriptionEnd : now;
-        const endsAt = new Date(startsAt.getTime() + request.plan.durationDays * 86_400_000);
+        const { startsAt, endsAt } = resolveRenewalPeriod(
+          current.subscriptionEnd,
+          request.plan.durationDays,
+          now,
+        );
         await tx.site.update({ where: { id: request.siteId }, data: { planId: request.planId, subscriptionStatus: "ACTIVE", subscriptionStart: startsAt, subscriptionEnd: endsAt, isActive: true } });
         await tx.subscriptionHistory.create({ data: { siteId: request.siteId, planId: request.planId, status: "ACTIVE", startsAt, endsAt, amount: request.plan.price, note: input.adminNote || "Gia hạn được duyệt" } });
       }

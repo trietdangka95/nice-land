@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { CalendarDays, Check, Gauge, ImageIcon, Send, X } from "lucide-react";
 import type { AdminSubscription, SubscriptionPlan, SystemSetting } from "@nice-land/contracts";
 import { createTenantApi, api } from "@/lib/api";
+import { formatVietnamDate } from "@/lib/format";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
 import { VietQR } from "@/components/shared/viet-qr";
@@ -164,7 +165,7 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
           <CalendarDays className="text-gold" />
           <p className="mt-5 text-xs uppercase tracking-widest text-white/45">Ngày hết hạn</p>
           <strong className="mt-2 block font-display text-3xl">
-            {subscription.endsAt ? new Date(subscription.endsAt).toLocaleDateString("vi-VN") : "Không giới hạn"}
+            {subscription.endsAt ? formatVietnamDate(subscription.endsAt) : "Không giới hạn"}
           </strong>
           <p className="mt-3 text-sm text-white/60">Còn khả dụng {remainingPosts.toLocaleString("vi-VN")} tin đăng.</p>
 
@@ -175,7 +176,7 @@ export function SubscriptionScreen({ slug }: { slug: string }) {
                 Chúng tôi đã ghi nhận yêu cầu của bạn và sẽ sớm liên hệ để hỗ trợ gia hạn.
               </p>
               <p className="mt-3 text-xs leading-5 text-white/60">
-                Đã gửi ngày {new Date(subscription.latestRenewalRequest!.requestedAt).toLocaleDateString("vi-VN")}.
+                Đã gửi ngày {formatVietnamDate(subscription.latestRenewalRequest!.requestedAt)}.
               </p>
               <button
                 type="button"

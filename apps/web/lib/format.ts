@@ -1,5 +1,7 @@
 import type { PropertyType } from "@/lib/types";
 
+const VIETNAM_TIME_ZONE = "Asia/Ho_Chi_Minh";
+
 export function formatPrice(price: number, type?: PropertyType) {
   if (type === "RENTAL") {
     return `${new Intl.NumberFormat("vi-VN").format(price)} đ/tháng`;
@@ -19,3 +21,9 @@ export const propertyTypeLabels: Record<PropertyType, string> = {
   APARTMENT: "Căn hộ",
   RENTAL: "Cho thuê",
 };
+
+export function formatVietnamDate(value: string | Date) {
+  return new Date(value).toLocaleDateString("vi-VN", {
+    timeZone: VIETNAM_TIME_ZONE,
+  });
+}

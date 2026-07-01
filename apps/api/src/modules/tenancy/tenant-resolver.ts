@@ -1,3 +1,5 @@
+import { isSubscriptionExpired } from "../sites/subscription-date-utils.js";
+
 export type TenantSubscriptionStatus =
   | "TRIAL"
   | "ACTIVE"
@@ -100,10 +102,8 @@ export async function resolveTenant({
   }
 
   if (
-    (!allowExpired && site.subscriptionStatus === "EXPIRED") ||
-    (!allowExpired &&
-      site.subscriptionEnd !== null &&
-      site.subscriptionEnd.getTime() < now.getTime())
+    !allowExpired &&
+    isSubscriptionExpired(site.subscriptionStatus, site.subscriptionEnd, now)
   ) {
     throw new TenantResolutionError(
       "TENANT_EXPIRED",

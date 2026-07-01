@@ -7,6 +7,7 @@ import type { SuperAdminRenewalRequest, SuperAdminSite } from "@nice-land/contra
 import { api } from "@/lib/api";
 import { DashboardStat } from "@/components/shared/dashboard-stat";
 import { StatusPill } from "@/components/shared/status-pill";
+import { formatVietnamDate } from "@/lib/format";
 import { getErrorMessage } from "@/lib/notifications";
 import { useToast } from "@/components/shared/toast-provider";
 
@@ -94,7 +95,7 @@ export function SuperAdminDashboardScreen() {
                     <td className="px-6 py-4">
                       <StatusPill tone={site.isActive ? "green" : "red"}>{site.isActive ? site.subscriptionStatus : "Tạm ngưng"}</StatusPill>
                     </td>
-                    <td className="px-6 py-4 text-xs font-medium text-ink/60">{site.subscriptionEnd ? new Date(site.subscriptionEnd).toLocaleDateString("vi-VN") : "—"}</td>
+                    <td className="px-6 py-4 text-xs font-medium text-ink/60">{site.subscriptionEnd ? formatVietnamDate(site.subscriptionEnd) : "—"}</td>
                   </tr>
                 ))}
               </tbody>
