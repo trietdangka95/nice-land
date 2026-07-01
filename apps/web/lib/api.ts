@@ -1,6 +1,29 @@
 import { createApiClient } from "@nice-land/api-client";
 import { getApiBaseUrl } from "@/lib/api-url";
 
+function getRootDomain() {
+  return process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "nice-land.id.vn";
+}
+
+export function resolveTenantHost(
+  slug: string,
+  locationLike: Pick<Location, "hostname" | "pathname">,
+) {
+  const { hostname, pathname } = locationLike;
+  const isPathBased =
+    pathname === `/${slug}` || pathname.startsWith(`/${slug}/`);
+
+  if (isPathBased) {
+    const rootDomain = getRootDomain();
+    if (hostname === "localhost" || rootDomain === "localhost") {
+      return `${slug}.localhost`;
+    }
+    return `${slug}.${rootDomain}`;
+  }
+
+  return hostname === "localhost" ? `${slug}.localhost` : hostname;
+}
+
 export const api = createApiClient({
   baseUrl: getApiBaseUrl(),
   getTenantHost: () =>
@@ -16,9 +39,7 @@ export function createTenantApi(slug: string) {
     baseUrl: getApiBaseUrl(),
     getTenantHost: () => {
       if (typeof window === "undefined") return undefined;
-      return window.location.hostname === "localhost"
-        ? `${slug}.localhost`
-        : window.location.hostname;
+      return resolveTenantHost(slug, window.location);
     },
     getAccessToken: () =>
       typeof window === "undefined"

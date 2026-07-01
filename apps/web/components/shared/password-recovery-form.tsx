@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 import { KeyRound, MailCheck, Loader2 } from "lucide-react";
 import { api, createTenantApi } from "@/lib/api";
 import { getErrorMessage } from "@/lib/notifications";
+import { validateResetPasswordInput } from "@/lib/reset-password-validation";
 import { useToast } from "@/components/shared/toast-provider";
 
 function loginHref(slug?: string, superAdmin?: boolean) {
@@ -94,16 +95,22 @@ export function ResetPasswordForm({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setLoading(true);
     const form = new FormData(event.currentTarget);
     const password = String(form.get("password") ?? "");
     const confirmation = String(form.get("confirmation") ?? "");
-    if (password !== confirmation) {
-      toast.warning("Mật khẩu xác nhận chưa trùng khớp.", "Kiểm tra mật khẩu");
-      setLoading(false);
+
+    const validationMessage = validateResetPasswordInput({
+      token,
+      password,
+      confirmation,
+    });
+
+    if (validationMessage) {
+      toast.warning(validationMessage, "Kiểm tra mật khẩu");
       return;
     }
 
+    setLoading(true);
     try {
       const client = slug ? createTenantApi(slug) : api;
       await client.resetPassword({ token, password });
@@ -144,7 +151,7 @@ export function ResetPasswordForm({
           </Link>
         </div>
       ) : token ? (
-        <form onSubmit={handleSubmit} className="mt-7 grid gap-4">
+        <form noValidate onSubmit={handleSubmit} className="mt-7 grid gap-4">
           <label className="grid gap-2 text-sm font-bold">
             Mật khẩu mới
             <input
@@ -167,7 +174,10 @@ export function ResetPasswordForm({
               minLength={8}
             />
           </label>
-          <button className="button-primary mt-2 w-full disabled:cursor-wait" disabled={loading}>
+          <p className="text-xs text-ink/55">
+            Mật khẩu mới cần ít nhất 8 ký tự.
+          </p>
+          <button type="submit" className="button-primary mt-2 w-full disabled:cursor-wait" disabled={loading}>
             {loading && <Loader2 className="mr-2 animate-spin" size={16} />}
             {loading ? "Đang cập nhật..." : "Cập nhật mật khẩu"}
           </button>
