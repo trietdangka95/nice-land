@@ -39,6 +39,13 @@ export async function registerAdminSiteRoutes(
   app: FastifyInstance,
   options: AdminSiteRouteOptions,
 ) {
+  const publicSubscriptionGuard = createTenantPreHandler(
+    options.config,
+    options.tenantRepository,
+    {
+      allowExpired: true,
+    },
+  );
   const activeGuards = [
     createTenantPreHandler(options.config, options.tenantRepository),
     createRequireAuth(options.accessTokens),
@@ -78,6 +85,52 @@ export async function registerAdminSiteRoutes(
 
   app.get("/v1/admin/plans", { preHandler: subscriptionGuards }, async () => {
     return options.repository.listAvailablePlans();
+  });
+
+  app.post("/v1/public/renewal-request", { preHandler: publicSubscriptionGuard }, async (request, reply) => {
+    try {
+      const created = await options.repository.createPublicRenewalRequest(
+        request.tenant!.siteId,
+      );
+      if (options.notificationRepository) {
+        const notification = buildRenewalRequestCreatedNotification(created.id);
+        void options.notificationRepository.create({
+          siteId: request.tenant!.siteId,
+          scope: "SUPER_ADMIN",
+          type: "RENEWAL_REQUEST_CREATED",
+          title: notification.title,
+          body: notification.body,
+          link: notification.link,
+          payload: {
+            ...notification.payload,
+            renewalRequestId: created.id,
+            source: "EXPIRED_LOGIN_PAGE",
+          },
+        }).catch((error) => {
+          request.log.error(
+            { err: error, renewalRequestId: created.id, siteId: request.tenant!.siteId },
+            "notification create failed",
+          );
+        });
+      }
+      return reply.status(201).send(created);
+    } catch (error) {
+      if (error instanceof PendingRenewalRequestError) {
+        return reply.status(409).send({
+          code: "RENEWAL_REQUEST_PENDING",
+          message: error.message,
+          requestId: request.id,
+        });
+      }
+      if (error instanceof Error && "statusCode" in error && typeof error.statusCode === "number") {
+        return reply.status(error.statusCode).send({
+          code: error.statusCode === 404 ? "ADMIN_NOT_FOUND" : "RENEWAL_REQUEST_FAILED",
+          message: error.message,
+          requestId: request.id,
+        });
+      }
+      throw error;
+    }
   });
 
   app.post("/v1/admin/renewal-requests", { preHandler: subscriptionGuards }, async (request, reply) => {

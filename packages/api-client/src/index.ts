@@ -205,6 +205,15 @@ export function createApiClient(options: ApiClientOptions) {
       }),
     listPublicCategories: () =>
       request<PropertyCategory[]>("/v1/public/categories"),
+    createPublicRenewalRequest: () =>
+      request<{
+        id: string;
+        status: "NEW" | "IN_PROGRESS" | "APPROVED" | "REJECTED" | "DONE";
+        note: string | null;
+        requestedAt: string;
+      }>("/v1/public/renewal-request", {
+        method: "POST",
+      }),
     presignPostImage: (postId: string, input: ImagePresignInput) =>
       request<{
         uploadUrl: string;

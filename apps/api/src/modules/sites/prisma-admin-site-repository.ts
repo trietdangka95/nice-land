@@ -228,6 +228,86 @@ export class PrismaAdminSiteRepository implements AdminSiteRepository {
     });
   }
 
+  async createPublicRenewalRequest(siteId: string) {
+    return prisma.$transaction(async (tx) => {
+      const admin = await tx.user.findFirst({
+        where: {
+          siteId,
+          role: "ADMIN",
+          isActive: true,
+          deletedAt: null,
+        },
+        select: { id: true },
+      });
+      if (!admin) {
+        const error = new Error("Không tìm thấy tài khoản quản trị cho website này.");
+        Object.assign(error, { statusCode: 404 });
+        throw error;
+      }
+
+      const site = await tx.site.findFirstOrThrow({
+        where: { id: siteId, deletedAt: null },
+        select: { planId: true },
+      });
+
+      const pending = await tx.renewalRequest.findFirst({
+        where: {
+          siteId,
+          status: { in: ["NEW", "IN_PROGRESS"] },
+        },
+        select: {
+          id: true,
+          status: true,
+          note: true,
+          requestedAt: true,
+        },
+      });
+      if (pending) {
+        throw new PendingRenewalRequestError();
+      }
+
+      let created;
+      try {
+        created = await tx.renewalRequest.create({
+          data: {
+            siteId,
+            planId: site.planId,
+            requestedById: admin.id,
+            note: "Yêu cầu từ trang đăng nhập tenant hết hạn.",
+          },
+          select: {
+            id: true,
+            status: true,
+            note: true,
+            requestedAt: true,
+          },
+        });
+      } catch (error) {
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === "P2002"
+        ) {
+          throw new PendingRenewalRequestError();
+        }
+        throw error;
+      }
+
+      await writeAuditLog(tx, {
+        siteId,
+        userId: admin.id,
+        action: "PUBLIC_RENEWAL_REQUEST_CREATED",
+        entityType: "RenewalRequest",
+        entityId: created.id,
+        details: { source: "EXPIRED_LOGIN_PAGE", planId: site.planId },
+      });
+
+      return {
+        ...created,
+        requestedAt: created.requestedAt.toISOString(),
+      };
+    });
+  }
+
   async listAvailablePlans() {
     const plans = await prisma.subscriptionPlan.findMany({
       where: { isActive: true },

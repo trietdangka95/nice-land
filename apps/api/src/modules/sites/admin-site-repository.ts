@@ -19,6 +19,9 @@ export interface AdminSiteRepository {
     input: RenewalRequestInput,
     userId: string,
   ): Promise<NonNullable<AdminSubscription["latestRenewalRequest"]>>;
+  createPublicRenewalRequest(
+    siteId: string,
+  ): Promise<NonNullable<AdminSubscription["latestRenewalRequest"]>>;
   listAvailablePlans(): Promise<SubscriptionPlan[]>;
 }
 

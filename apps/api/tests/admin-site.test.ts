@@ -90,6 +90,12 @@ function repository(): AdminSiteRepository {
       note: input.note ?? null,
       requestedAt: "2026-06-20T00:00:00.000Z",
     }),
+    createPublicRenewalRequest: async (siteId) => ({
+      id: `${siteId}-public`,
+      status: "NEW",
+      note: "Yêu cầu từ trang đăng nhập tenant hết hạn.",
+      requestedAt: "2026-06-20T00:00:00.000Z",
+    }),
     listAvailablePlans: async () => [],
   };
 }
@@ -267,6 +273,53 @@ describe("tenant admin site routes", () => {
     ]);
   });
 
+  it("creates a public renewal request from the expired login page", async () => {
+    const notificationInputs: Parameters<NotificationRepository["create"]>[0][] = [];
+    const expiredTenantRepository: TenantSiteRepository = {
+      findBySlug: async () => ({
+        id: "site-a",
+        slug: "minhphat",
+        isActive: true,
+        subscriptionStatus: "EXPIRED",
+        subscriptionEnd: new Date("2026-01-01T00:00:00.000Z"),
+      }),
+      findByHostname: async () => null,
+    };
+    const response = await createApp(
+      repository(),
+      expiredTenantRepository,
+      {
+        create: async (input) => {
+          notificationInputs.push(input);
+          return { id: "notification-public", createdAt: "2026-06-20T00:00:00.000Z" };
+        },
+        listTenantAdmin: async () => ({ items: [], unreadCount: 0 }),
+        markTenantAdminRead: async () => false,
+        markAllTenantAdminRead: async () => 0,
+        listSuperAdmin: async () => ({ items: [], unreadCount: 0 }),
+        markSuperAdminRead: async () => false,
+        markAllSuperAdminRead: async () => 0,
+      },
+    ).inject({
+      method: "POST",
+      url: "/v1/public/renewal-request",
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
+    });
+
+    expect(response.statusCode).toBe(201);
+    expect(response.json()).toMatchObject({
+      id: "site-a-public",
+      status: "NEW",
+    });
+    expect(notificationInputs).toMatchObject([
+      expect.objectContaining({
+        siteId: "site-a",
+        scope: "SUPER_ADMIN",
+        type: "RENEWAL_REQUEST_CREATED",
+      }),
+    ]);
+  });
+
   it("returns a clear conflict for a duplicate pending renewal", async () => {
     const custom = repository();
     custom.createRenewalRequest = async () => {
@@ -278,6 +331,33 @@ describe("tenant admin site routes", () => {
       headers: authHeaders,
       payload: {},
     });
+    expect(response.statusCode).toBe(409);
+    expect(response.json()).toMatchObject({
+      code: "RENEWAL_REQUEST_PENDING",
+    });
+  });
+
+  it("returns the same conflict for a duplicate public renewal request", async () => {
+    const custom = repository();
+    custom.createPublicRenewalRequest = async () => {
+      throw new PendingRenewalRequestError();
+    };
+    const expiredTenantRepository: TenantSiteRepository = {
+      findBySlug: async () => ({
+        id: "site-a",
+        slug: "minhphat",
+        isActive: true,
+        subscriptionStatus: "EXPIRED",
+        subscriptionEnd: new Date("2026-01-01T00:00:00.000Z"),
+      }),
+      findByHostname: async () => null,
+    };
+    const response = await createApp(custom, expiredTenantRepository).inject({
+      method: "POST",
+      url: "/v1/public/renewal-request",
+      headers: { "x-tenant-host": "minhphat.nice-land.vn" },
+    });
+
     expect(response.statusCode).toBe(409);
     expect(response.json()).toMatchObject({
       code: "RENEWAL_REQUEST_PENDING",
