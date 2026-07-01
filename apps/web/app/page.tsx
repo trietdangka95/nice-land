@@ -82,16 +82,55 @@ export default async function LandingPage({
           <MobileNavigation
             label="Mở menu"
             title="Nice Land"
-            triggerClassName="grid size-11 place-items-center rounded-xl bg-white/80 border border-ink/10 shadow-sm sm:hidden"
+            triggerClassName="grid size-11 place-items-center rounded-full border border-ink/10 bg-white/80 shadow-sm transition-colors hover:bg-white sm:hidden"
+            contentClassName="overflow-hidden rounded-l-[1.75rem] border-l border-y border-ink/10 bg-[linear-gradient(180deg,rgba(253,250,243,0.98),rgba(245,243,237,0.98))] text-ink shadow-[0_28px_80px_rgba(23,33,27,0.18)]"
           >
-            <nav className="flex flex-col p-4 text-base font-semibold" aria-label="Điều hướng chính trên di động">
-              <a href="#features" className="border-b border-ink/5 px-3 py-4">Tính năng</a>
-              <Link href="/themes" className="border-b border-ink/5 px-3 py-4">Giao diện mẫu</Link>
-              <a href="#process" className="border-b border-ink/5 px-3 py-4">Cách hoạt động</a>
-              <a href="#pricing" className="border-b border-ink/5 px-3 py-4">Bảng giá</a>
-              <a href="#faq" className="border-b border-ink/5 px-3 py-4">Hỏi đáp</a>
+            <nav className="flex flex-col gap-4 p-4" aria-label="Điều hướng chính trên di động">
+              <div className="rounded-2xl border border-ink/10 bg-white/75 p-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-moss">Khám phá nhanh</p>
+                <p className="mt-1 text-sm leading-6 text-ink/60">
+                  Chạm vào các phần quan trọng để xem cách Nice Land trình bày thương hiệu của bạn.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <a
+                  href="#features"
+                  className="flex items-center justify-between rounded-2xl border border-ink/10 bg-white/80 px-4 py-4 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-moss/20 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70"
+                >
+                  <span>Tính năng</span>
+                  <ArrowRight size={16} className="text-moss" aria-hidden="true" />
+                </a>
+                <Link
+                  href="/themes"
+                  className="flex items-center justify-between rounded-2xl border border-ink/10 bg-white/80 px-4 py-4 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-moss/20 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70"
+                >
+                  <span>Giao diện mẫu</span>
+                  <ArrowRight size={16} className="text-moss" aria-hidden="true" />
+                </Link>
+                <a
+                  href="#process"
+                  className="flex items-center justify-between rounded-2xl border border-ink/10 bg-white/80 px-4 py-4 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-moss/20 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70"
+                >
+                  <span>Cách hoạt động</span>
+                  <ArrowRight size={16} className="text-moss" aria-hidden="true" />
+                </a>
+                <a
+                  href="#pricing"
+                  className="flex items-center justify-between rounded-2xl border border-ink/10 bg-white/80 px-4 py-4 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-moss/20 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70"
+                >
+                  <span>Bảng giá</span>
+                  <ArrowRight size={16} className="text-moss" aria-hidden="true" />
+                </a>
+                <a
+                  href="#faq"
+                  className="flex items-center justify-between rounded-2xl border border-ink/10 bg-white/80 px-4 py-4 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-moss/20 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70"
+                >
+                  <span>Hỏi đáp</span>
+                  <ArrowRight size={16} className="text-moss" aria-hidden="true" />
+                </a>
+              </div>
             </nav>
-            <div className="mt-auto space-y-3 border-t border-ink/5 p-4 bg-cream/30">
+            <div className="mt-auto space-y-3 border-t border-ink/10 bg-[#f8f4ea] p-4">
               <Link href="/themes" className="button-secondary w-full">
                 Xem website mẫu
               </Link>

@@ -158,9 +158,6 @@ export function ColdModernHome(model: PublicThemeHomeProps) {
               <p className="text-xs font-black uppercase tracking-[0.22em] text-[var(--cold-accent-dark)]">Danh mục tài sản</p>
               <h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Tin đăng nổi bật</h2>
             </div>
-            <p className="max-w-md text-sm leading-6 text-[var(--cold-muted)]">
-              Grid sắc nét, thông tin cô đọng và bộ lọc rõ ràng cho quyết định nhanh hơn.
-            </p>
           </div>
           <PropertyBrowser
             variant="cold"
